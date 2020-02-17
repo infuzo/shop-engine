@@ -6,7 +6,14 @@
 	<link rel="stylesheet" href="~/css/adminpanel.css" />
 </head>
 <body>
-	<div class=".content">
+	@if(User.IsInRole(Consts.AdminRoleName))
+	{
+		<div class="header">
+			<a href="/AdminPanel/Logout" class="signOutButton">Sign Out</a>
+		</div>
+	}
+
+	<div class="content">
 		@RenderBody()
 	</div>
 </body>

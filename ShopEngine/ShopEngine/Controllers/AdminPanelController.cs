@@ -30,16 +30,23 @@ namespace ShopEngine.Controllers
             var signInResult = await signInManager.PasswordSignInAsync(model.Username, model.Password, false, false);
             if (signInResult.Succeeded)
             {
-                RedirectToAction("Index", "AdminPanel");
+                return RedirectToAction("Index", "AdminPanel");
             }
 
             ModelState.AddModelError("", "Invalid username or password");
             return View(model);
         }
 
+        public async Task<IActionResult> Logout(
+            [FromServices] SignInManager<IdentityUser> signInManager)
+        {
+            await signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home");
+        }
+
         public IActionResult Index()
         {
-            return Ok("This is admin panel");
+            return View();
         }
     }
 }

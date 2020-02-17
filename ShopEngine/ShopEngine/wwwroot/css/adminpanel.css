@@ -8,6 +8,29 @@ div {
 	padding: 0px;
 	margin: 0px;
 }
+a:link, a:visited {
+	color: black;
+}
+a:hover, a:active {
+	color: #707070;
+}
+
+.header {
+	height: 50px;
+
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: black;
+}
+	.header a {
+		display: inline-block;
+	}
+	.header .signOutButton {
+		font-size: 18px;
+		float: right;
+		margin-right: 10px;
+		margin-top: 12px;
+	}
 .content {
 	width: 100%;
 }
