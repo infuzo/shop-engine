@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using ShopEngine.Models;
 using System.Threading.Tasks;
@@ -10,7 +11,6 @@ namespace ShopEngine.Controllers
     [Authorize(Roles = Consts.AdminRoleName)]
     public class AdminPanelController : Controller
     {
-
         [Route("Account/Login")] //TODO: remove after adding common users auth
         [AllowAnonymous]
         [HttpGet]
@@ -44,9 +44,10 @@ namespace ShopEngine.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        public IActionResult Index()
+        public IActionResult Index(
+            [FromServices] IConfiguration configuration)
         {
-            return View();
+            return View(configuration.GetSection("AdminPanel:StartPage").Value);
         }
     }
 }
