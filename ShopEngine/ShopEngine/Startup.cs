@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -30,6 +31,8 @@ namespace ShopEngine
 
             services.AddIdentity<IdentityUser, IdentityRole>(options => options.Password.RequireNonAlphanumeric = false)
                 .AddEntityFrameworkStores<ShopEngineIdentityDbContext>();
+
+            //TODO: replace after adding auth for users
 
             services.AddControllersWithViews();
         }

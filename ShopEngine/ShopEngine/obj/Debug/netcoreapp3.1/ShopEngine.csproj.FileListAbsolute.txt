@@ -68,3 +68,5 @@ C:\Users\Infuzo\Documents\Projects\shop-engine\ShopEngine\ShopEngine\obj\Debug\n
 C:\Users\Infuzo\Documents\Projects\shop-engine\ShopEngine\ShopEngine\obj\Debug\netcoreapp3.1\ShopEngine.Views.pdb
 C:\Users\Infuzo\Documents\Projects\shop-engine\ShopEngine\ShopEngine\obj\Debug\netcoreapp3.1\ShopEngine.dll
 C:\Users\Infuzo\Documents\Projects\shop-engine\ShopEngine\ShopEngine\obj\Debug\netcoreapp3.1\ShopEngine.pdb
+C:\Users\Infuzo\Documents\Projects\shop-engine\ShopEngine\ShopEngine\obj\Debug\netcoreapp3.1\Razor\Views\AdminPanel\Login.cshtml.g.cs
+C:\Users\Infuzo\Documents\Projects\shop-engine\ShopEngine\ShopEngine\obj\Debug\netcoreapp3.1\Razor\Views\AdminPanel\_Layout.cshtml.g.cs
