@@ -9,8 +9,12 @@
 	@if(User.IsInRole(Consts.AdminRoleName))
 	{
 		<div class="header">
+			<a href="/AdminPanel/SiteAbout">Site About</a>
+
 			<a href="/AdminPanel/Logout" class="signOutButton">Sign Out</a>
 		</div>
+
+		<h2>@ViewData["Title"]</h2>
 	}
 
 	<div class="content">

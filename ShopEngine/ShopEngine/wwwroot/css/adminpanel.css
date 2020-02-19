@@ -23,6 +23,8 @@ a:hover, a:active {
 	border-bottom-color: black;
 }
 	.header a {
+		padding-left: 20px;
+		margin-top: 15px;
 		display: inline-block;
 	}
 	.header .signOutButton {
@@ -61,3 +63,42 @@ a:hover, a:active {
 	.loginForm input[type=submit] {
 		margin-left: 50px;
 	}
+
+h2 {
+	padding-left: 30px;
+}
+div.centerForm {
+	width: 450px;
+	padding: 5px;
+	border-radius: 5px;
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+	margin: 100px auto;
+}
+.centerForm label {
+	width: 200px;
+	display: inline-block;
+}
+.centerForm input, .centerForm textarea {
+	width: 240px;
+	display: inline-block;
+}
+.centerForm textarea {
+	resize: vertical;
+}
+.centerForm span {
+	width: 440px;
+	height: 20px;
+	display: inline-block;
+	font-size: 12px;
+	color: red;
+}
+.centerForm input[type=submit] {
+	margin-left: 100px;
+}
+.centerForm img {
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+}

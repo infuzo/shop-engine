@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using ShopEngine.Models;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ShopEngine.Controllers
@@ -47,7 +49,49 @@ namespace ShopEngine.Controllers
         public IActionResult Index(
             [FromServices] IConfiguration configuration)
         {
-            return View(configuration.GetSection("AdminPanel:StartPage").Value);
+            return RedirectToAction(configuration.GetSection("AdminPanel:StartPage").Value, "AdminPanel");
+        }
+
+        public async Task<IActionResult> SiteAbout(
+            [FromServices] ShopEngineDbContext dbContext)
+        {
+            var siteAboutsRowsCount = await dbContext.SiteAbouts.CountAsync();
+            if (siteAboutsRowsCount > 0)
+            {
+                var siteAbout = await dbContext.SiteAbouts.FirstAsync();
+                return View(siteAbout);
+            }
+
+            var newModel = new SiteAboutModel { Id = 0 };
+            return View(newModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SiteAbout(
+            SiteAboutModel model,
+            [FromServices] ShopEngineDbContext dbContext,
+            [FromServices] ILoggerFactory loggerFactory)
+        {
+            if(ModelState.ErrorCount > 0)
+            {
+                loggerFactory.CreateLogger("AdminPanel").LogInformation($"Model errors count: {ModelState.ErrorCount}");
+                return View(model);
+            }
+
+            var siteAboutsRowsCount = await dbContext.SiteAbouts.CountAsync();
+            if (siteAboutsRowsCount == 0)
+            {
+                loggerFactory.CreateLogger("AdminPanel").LogInformation($"Add new model. Model ID: {model.Id}");
+                dbContext.SiteAbouts.Add(model);
+            }
+            else
+            {
+                loggerFactory.CreateLogger("AdminPanel").LogInformation($"Update existing model. Model ID: {model.Id}");
+                dbContext.SiteAbouts.Update(model);
+            }
+            await dbContext.SaveChangesAsync();
+
+            return RedirectToAction("SiteAbout", "AdminPanel");
         }
     }
 }

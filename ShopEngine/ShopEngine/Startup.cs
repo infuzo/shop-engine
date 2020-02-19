@@ -26,13 +26,13 @@ namespace ShopEngine
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ShopEngineIdentityDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<ShopEngineDbContext>(options => 
+                options.UseSqlServer(Configuration.GetConnectionString("Data")));
+            services.AddDbContext<ShopEngineIdentityDbContext>(options => 
+                options.UseSqlServer(Configuration.GetConnectionString("Identity")));
 
             services.AddIdentity<IdentityUser, IdentityRole>(options => options.Password.RequireNonAlphanumeric = false)
-                .AddEntityFrameworkStores<ShopEngineIdentityDbContext>();
-
-            //TODO: replace after adding auth for users
+                 .AddEntityFrameworkStores<ShopEngineIdentityDbContext>();
 
             services.AddControllersWithViews();
         }
