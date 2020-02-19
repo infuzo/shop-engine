@@ -3,7 +3,7 @@
 }
 @model EmailSettingsModel
 
-<div class="centerForm">
+<div class="centerForm bordered">
 	<form method="post" asp-action="EmailSettings" asp-controller="AdminPanel">
 		<div asp-validation-summary="ModelOnly"></div>
 		<input type="hidden" asp-for="Id" />
@@ -24,7 +24,7 @@
 			<span asp-validation-for="SmtpPort"></span>
 		</div>
 		<div>
-			<label asp-for="Password">Password:</label><input asp-for="Password" /><br />
+			<label asp-for="Password">Password:</label><input asp-for="Password" autocomplete="off"/><br />
 			<span asp-validation-for="Password"></span>
 		</div>
 		<div>

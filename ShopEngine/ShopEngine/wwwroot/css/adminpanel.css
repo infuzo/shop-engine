@@ -39,10 +39,6 @@ a:hover, a:active {
 .loginForm {
 	width: 250px;
 	padding: 5px;
-	border-radius: 5px;
-	border-style: solid;
-	border-width: 1px;
-	border-color: black;
 	margin: 200px auto;
 }
 	.loginForm label {
@@ -67,13 +63,15 @@ a:hover, a:active {
 h2 {
 	padding-left: 30px;
 }
-div.centerForm {
-	width: 450px;
-	padding: 5px;
+div.bordered {
 	border-radius: 5px;
 	border-style: solid;
 	border-width: 1px;
 	border-color: black;
+}
+div.centerForm {
+	width: 450px;
+	padding: 5px;
 	margin: 100px auto;
 }
 .centerForm label {
@@ -102,4 +100,15 @@ div.centerForm {
 	border-width: 1px;
 	border-color: black;
 	display: inline-block;
+}
+.selectedCategoryForm label {
+	width: 150px;
+	display: inline-block;
+}
+.selectedCategoryForm input[type=text], textarea {
+	width: 250px;
+	display: inline-block;
+}
+.selectedCategoryForm textarea {
+	resize: vertical;
 }

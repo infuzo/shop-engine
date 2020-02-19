@@ -1,0 +1,80 @@
+﻿@{
+	ViewData["Title"] = "View, add, change and remove categories";
+	Layout = "~/Views/AdminPanel/_Layout.cshtml";
+}
+@model IEnumerable<ShopEngine.Models.CategoryModel>
+
+<div class="bordered" style="width: 410px; height: 400px; display: inline-block; float: left;">
+	<strong style="margin: 5px 5px;" >List of categories:</strong>
+	<div class="bordered" style="width: 395px; height: 300px; margin-left: 5px; margin-top: 5px; overflow: scroll; padding: 5px;">
+		@for (int i = 0; i < 100; i++) { 
+			<a href="#" onclick="selectCategory(event, 'catGuid-@i', 'catSubCatGuid-@i', 'Link number @i', 'Link number @i description')">Link number @i</a><br />
+		}
+	</div>
+	<button style="display: block; margin: 5px auto;" onclick="addCategory(event)">Add category</button>
+</div> <div class="bordered selectedCategoryForm" style="margin-left: 5px; padding: 10px 10px; width: 410px; height: 400px; display: inline-block; float: left;">
+	<br />
+	<strong id="selectedCategoryHeader">HEADER_UNDEFINED_CONTENT</strong> <br /><br />
+	<label for="selectedCategoryName">Name: </label><input type="text" required="required" max="60" id="selectedCategoryName"/><br /><br />
+	<label for="selectedCategoryDescription">Description: </label><textarea required="required" maxlength="250" id="selectedCategoryDescription"></textarea><br /><br />
+	<label for="selectedCategorySubcatGuid">Subcategory guid: </label><input type="text" id="selectedCategorySubcatGuid" /><br />
+	<span><em>Paste guid of desired parent category here</em></span><br /><br /> <!--TODO: DropDownList-->
+
+	<label for="selectedCategoryGuid">GUID: </label><input type="text" id="selectedCategoryGuid" readonly="readonly" /><br /><br />
+
+	<br />
+	<button style="display: none;" id="selectedCategoryAdd">Add/Save category</button> <button style="display: none;" id="selectedCategoryRemove">Remove category</button>
+</div>
+
+<script>
+	const idSelectedCategoryHeader = "selectedCategoryHeader";
+	const idSelectedCategoryName = "selectedCategoryName";
+	const idSelectedCategoryDescription = "selectedCategoryDescription";
+	const idSelectedCategorySubcatGuid = "selectedCategorySubcatGuid";
+	const idSelectedCategoryGuid = "selectedCategoryGuid";
+	const idSelectedCategoryButtonAdd = "selectedCategoryAdd";
+	const idSelectedCategoryButtonRemove = "selectedCategoryRemove";
+
+	//TODO: from localization
+	const textDefault = "Select the category or add new one";
+	const textEditHeader = "Editing the "; 
+	const textAddHeader = "Adding the new category";
+
+	function setWaitingSelectedContent(header, value) {
+		document.getElementById(idSelectedCategoryHeader).innerText = header;
+
+		let currentStyleValue = value ? "display: none;" : "display: inline-block;";
+
+		document.getElementById(idSelectedCategoryName).style = currentStyleValue;
+		document.getElementById(idSelectedCategoryDescription).style = currentStyleValue;
+		document.getElementById(idSelectedCategorySubcatGuid).style = currentStyleValue;
+		document.getElementById(idSelectedCategoryGuid).style = currentStyleValue;
+		document.getElementById(idSelectedCategoryButtonAdd).style = currentStyleValue;
+		document.getElementById(idSelectedCategoryButtonRemove).style = currentStyleValue;
+	}
+
+	function selectCategory(event, guid, subCatGuid, name, description) {
+		setWaitingSelectedContent(textEditHeader + name, false);
+
+		document.getElementById(idSelectedCategoryName).value = name;
+		document.getElementById(idSelectedCategoryDescription).value = description;
+		document.getElementById(idSelectedCategorySubcatGuid).value = subCatGuid;
+		document.getElementById(idSelectedCategoryGuid).value = guid;
+
+		event.stopPropagation();
+	}
+
+	function addCategory(event) {
+		setWaitingSelectedContent(textAddHeader, false);
+		document.getElementById(idSelectedCategoryButtonRemove).style = "display: none;";
+
+		document.getElementById(idSelectedCategoryName).value = "";
+		document.getElementById(idSelectedCategoryDescription).value = "";
+		document.getElementById(idSelectedCategorySubcatGuid).value = "";
+		document.getElementById(idSelectedCategoryGuid).value = "";
+
+		event.stopPropagation();
+	}
+
+	setWaitingSelectedContent(textDefault, true);
+</script>

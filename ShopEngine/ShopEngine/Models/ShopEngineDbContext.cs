@@ -6,6 +6,7 @@ namespace ShopEngine.Models
     {
         public DbSet<SiteAboutModel> SiteAbouts { get; set; }
         public DbSet<EmailSettingsModel> EmailSettings { get; set; }
+        public DbSet<CategoryModel> Categories { get; set; }
 
         public ShopEngineDbContext(DbContextOptions<ShopEngineDbContext> options) : base(options)
         {
