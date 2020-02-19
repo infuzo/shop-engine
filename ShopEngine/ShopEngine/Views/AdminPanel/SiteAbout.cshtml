@@ -16,7 +16,7 @@
 			<span asp-validation-for="Description"></span>
 		</div>
 		<div>
-			Current Logo: @if (string.IsNullOrEmpty(Model?.LogoUrl))
+			<label>Current Logo:</label> @if (string.IsNullOrEmpty(Model?.LogoUrl))
 			{ <text>Undefined</text> }
 			else { <text><img src="@Model.LogoUrl" alt="Not found" width="100" /></text> }
 			<br />

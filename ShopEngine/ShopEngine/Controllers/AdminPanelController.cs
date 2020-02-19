@@ -69,29 +69,63 @@ namespace ShopEngine.Controllers
         [HttpPost]
         public async Task<IActionResult> SiteAbout(
             SiteAboutModel model,
-            [FromServices] ShopEngineDbContext dbContext,
-            [FromServices] ILoggerFactory loggerFactory)
+            [FromServices] ShopEngineDbContext dbContext)
         {
             if(ModelState.ErrorCount > 0)
             {
-                loggerFactory.CreateLogger("AdminPanel").LogInformation($"Model errors count: {ModelState.ErrorCount}");
                 return View(model);
             }
 
             var siteAboutsRowsCount = await dbContext.SiteAbouts.CountAsync();
             if (siteAboutsRowsCount == 0)
             {
-                loggerFactory.CreateLogger("AdminPanel").LogInformation($"Add new model. Model ID: {model.Id}");
                 dbContext.SiteAbouts.Add(model);
             }
             else
             {
-                loggerFactory.CreateLogger("AdminPanel").LogInformation($"Update existing model. Model ID: {model.Id}");
                 dbContext.SiteAbouts.Update(model);
             }
             await dbContext.SaveChangesAsync();
 
             return RedirectToAction("SiteAbout", "AdminPanel");
+        }
+
+        public async Task<IActionResult> EmailSettings(
+            [FromServices] ShopEngineDbContext dbContext) 
+        {
+            var emailSettingsRowsCount = await dbContext.EmailSettings.CountAsync();
+            if (emailSettingsRowsCount > 0)
+            {
+                var emailSettings = await dbContext.EmailSettings.FirstAsync();
+                return View(emailSettings);
+            }
+
+            var newModel = new EmailSettingsModel { Id = 0 };
+            return View(newModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EmailSettings(
+            EmailSettingsModel model,
+            [FromServices] ShopEngineDbContext dbContext)
+        {
+            if (ModelState.ErrorCount > 0)
+            {
+                return View(model);
+            }
+
+            var emailSettingsRowsCount = await dbContext.EmailSettings.CountAsync();
+            if (emailSettingsRowsCount == 0)
+            {
+                dbContext.EmailSettings.Add(model);
+            }
+            else
+            {
+                dbContext.EmailSettings.Update(model);
+            }
+            await dbContext.SaveChangesAsync();
+
+            return RedirectToAction("EmailSettings", "AdminPanel");
         }
     }
 }

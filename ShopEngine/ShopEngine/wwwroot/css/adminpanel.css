@@ -101,4 +101,5 @@ div.centerForm {
 	border-style: solid;
 	border-width: 1px;
 	border-color: black;
+	display: inline-block;
 }
