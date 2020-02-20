@@ -38,6 +38,13 @@
 	const textDefault = "Select the category or add new one";
 	const textEditHeader = "Editing the ";
 	const textAddHeader = "Adding the new category";
+	const textModelValidationFailed = "Name and description should have values.";
+	const textAddingModelProcess = "Category is adding... Please wait";
+	const textAddingFailed = "Adding the new category failed.";
+	const textDeleteCategoryConfirmation = "Do you want to delete categery ";
+	const textDeletingCategoryProcess = "Category is deleting. Please wait";
+	const textCategoryDeletedSuccessfully = "Category was deleted successfully";
+	const textDeletingFailed = "Deleting the category failed.";
 
 	class Category {
 		constructor(guid = "", subCatGuid = "", name = "", desc = "") {
@@ -68,34 +75,48 @@
 		categories.push(category);
 	}
 
+	function removeCategoryFromList(category = Category) {
+		var elementIndex = categories.indexOf(category);
+		if (elementIndex != -1) {
+			categories.splice(elementIndex, 1); 
+		}
+	}
+
 	function renderCategoryList() {
 		var categoriesParent = document.getElementById(idCategoriesListParent);
 		while (categoriesParent.firstChild != null) {
 			categoriesParent.removeChild(categoriesParent.firstChild);
 		}
 
-		//todo: add "broken" subcategories in roots
 		var roots = categories.filter(cat => cat.SubCategoryGuid == "" || cat.SubCategoryGuid == undefined);
+		var broken = categories.filter(cat => cat.SubCategoryGuid != "" && cat.SubCategoryGuid != undefined
+			&& !categories.some(cat2 => cat2.Id == cat.SubCategoryGuid));
 		for (var rootCat of roots) {
 			addCategoriesWithNesting(categoriesParent, rootCat, 0);
 		}
-	}
-
-	function addCategoriesWithNesting(parent = HTMLElement, rootCategory = Category, nestingLevel = 0) {
-		createCategoryLink(parent, rootCategory, nestingLevel);
-		var childs = categories.filter(cat => cat.SubCategoryGuid == rootCategory.Id);
-		nestingLevel++;
-		for (child of childs) {
-			addCategoriesWithNesting(parent, child, nestingLevel);
+		for (var brokenCat of broken) {
+			addCategoriesWithNesting(categoriesParent, brokenCat, 0, true);
 		}
 	}
 
-	function createCategoryLink(parent = HTMLElement, category = Category, nestingLevel = 0) {
+	function addCategoriesWithNesting(parent = HTMLElement, rootCategory = Category, nestingLevel = 0, broken = false) {
+		createCategoryLink(parent, rootCategory, nestingLevel, broken);
+		var childs = categories.filter(cat => cat.SubCategoryGuid == rootCategory.Id);
+		nestingLevel++;
+		for (child of childs) {
+			addCategoriesWithNesting(parent, child, nestingLevel, broken);
+		}
+	}
+
+	function createCategoryLink(parent = HTMLElement, category = Category, nestingLevel = 0, broken = false) {
 		let newCategoryLink = document.createElement("a");
 		newCategoryLink.href = "#";
 		let innerText = "";
 		for (var index = 0; index < nestingLevel; index++) { innerText += "-"; }
 		newCategoryLink.innerText = innerText + category.Name;
+		if (broken) {
+			newCategoryLink.style = "color: red;";
+		}
 
 		newCategoryLink.addEventListener("click", (event) => selectCategory(event, category));
 
@@ -138,10 +159,30 @@
 		console.log("Edit the " + category.Name);
 	}
 
-	function deleteSelectedCategory(event, category) {
-		let result = confirm("Do you want to delete categery \"" + category.Name + "\"?");
+	function deleteSelectedCategory(event, category = Category) {
+		let result = confirm(textDeleteCategoryConfirmation + "\"" + category.Name + "\"?");
 		if (result) {
-			console.log("Delete category " + category.Id);
+			let request = new XMLHttpRequest();
+			request.open("POST", "/AdminPanel/RemoveCategory");
+			request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded; charset=utf-8');
+
+			request.onreadystatechange = () => {
+				if (request.readyState == 4) {
+					if (request.status == 200) {
+						setWaitingSelectedContent(textCategoryDeletedSuccessfully, true);
+						removeCategoryFromList(category);
+						renderCategoryList();
+					}
+					else {
+						setWaitingSelectedContent("", false);
+						alert(`${textDeletingFailed}\n${request.status} - ${request.responseText}`);
+						selectCategory(null, category);
+					}
+				}
+			};
+
+			setWaitingSelectedContent(textDeletingCategoryProcess, true);
+			request.send("guid=" + category.Id);
 		}
 
 		event.stopPropagation();
@@ -175,11 +216,11 @@
 		event.stopPropagation();
 
 		if (category.Name == "" || category.Description == "") {
-			alert("Name and description should have values.");
+			alert(textModelValidationFailed);
 			return;
 		}
 
-		setWaitingSelectedContent("Category is adding... Please wait", true);
+		setWaitingSelectedContent(textAddingModelProcess, true);
 
 		let request = new XMLHttpRequest();
 		request.open("POST", "/AdminPanel/AddCategory");
@@ -194,7 +235,7 @@
 					selectCategory(null, addedObject);
 				}
 				else {
-					alert("Adding the new category failed.\n" + request.responseText);
+					alert(`${textAddingFailed}\n${request.status} - ${request.responseText}`);
 					setWaitingSelectedContent("", false);
 					addCategory(null, category.SubCategoryGuid, category.Name, category.Description);
 				}
@@ -207,15 +248,12 @@
 	var categories = [];
 	setWaitingSelectedContent(textDefault, true);
 </script>
-
-@{
-	foreach (var category in Model)
+<script>
+	@foreach (var category in Model)
 	{
 		<text>
-			<script>
 			addCategoryToList('@category.Id', '@category.SubCategoryGuid', '@category.Name', '@category.Description');
-			</script>
 		</text>
 	}
-	<script>renderCategoryList();</script>
-}
+	renderCategoryList();
+</script>

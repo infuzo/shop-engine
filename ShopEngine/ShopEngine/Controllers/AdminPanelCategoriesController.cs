@@ -8,6 +8,8 @@ using ShopEngine.Models;
 using Microsoft.Extensions.Logging;
 using System.Text;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.Threading;
 
 namespace ShopEngine.Controllers
 {
@@ -32,21 +34,7 @@ namespace ShopEngine.Controllers
         {
             if (ModelState.ErrorCount > 0)
             {
-                StringBuilder message = new StringBuilder("There are errors in the model.\n");
-                foreach (var error in ModelState)
-                {
-                    if (error.Value.Errors.Count > 0)
-                    {
-                        message.Append(error.Key + ": ");
-                        foreach (var errorMessage in error.Value.Errors)
-                        {
-                            message.Append(errorMessage.ErrorMessage + "; ");
-                        }
-                        message.AppendLine();
-                    }
-                }
-
-                return StatusCode(500, message.ToString());
+                return StatusCode(500, GetModelErrors(ModelState));
             }
 
             try
@@ -59,13 +47,62 @@ namespace ShopEngine.Controllers
                 await dbContext.Categories.AddAsync(model);
                 await dbContext.SaveChangesAsync();
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
                 loggerFactory.CreateLogger("AdminPanel").LogError(exception.ToString());
                 return StatusCode(500);
             }
 
-            return new JsonResult(model);            
+            return new JsonResult(model);
+        }
+
+        [Route("/AdminPanel/RemoveCategory")]
+        [HttpPost]
+        public async Task<IActionResult> RemoveCategory(
+            Guid guid, 
+            [FromServices] ShopEngineDbContext dbContext,
+            [FromServices] ILoggerFactory loggerFactory)
+        {
+            if (ModelState.ErrorCount > 0)
+            {
+                return StatusCode(500, GetModelErrors(ModelState));
+            }
+
+            try
+            {
+                var categoryToRemove = await dbContext.Categories.FindAsync(guid);
+                if (categoryToRemove == null)
+                {
+                    throw new ArgumentException("There isn't category with this guid.");
+                }
+                dbContext.Categories.Remove(categoryToRemove);
+                await dbContext.SaveChangesAsync();
+            }
+            catch(Exception exception)
+            {
+                loggerFactory.CreateLogger("RemoveCategory").LogError($"Remove category with guid {guid} failed. {exception}");
+                return StatusCode(500);
+            }
+
+            return Ok();
+        }
+
+        private string GetModelErrors(ModelStateDictionary modelState)
+        {
+            StringBuilder message = new StringBuilder("There are errors in the model.\n");
+            foreach (var error in modelState)
+            {
+                if (error.Value.Errors.Count > 0)
+                {
+                    message.Append(error.Key + ": ");
+                    foreach (var errorMessage in error.Value.Errors)
+                    {
+                        message.Append(errorMessage.ErrorMessage + "; ");
+                    }
+                    message.AppendLine();
+                }
+            }
+            return message.ToString();
         }
     }
 }
