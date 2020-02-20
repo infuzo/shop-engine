@@ -6,10 +6,8 @@
 
 <div class="bordered" style="width: 410px; height: 400px; display: inline-block; float: left;">
 	<strong style="margin: 5px 5px;" >List of categories:</strong>
-	<div class="bordered" style="width: 395px; height: 300px; margin-left: 5px; margin-top: 5px; overflow: scroll; padding: 5px;">
-		@for (int i = 0; i < 100; i++) { 
-			<a href="#" onclick="selectCategory(event, 'catGuid-@i', 'catSubCatGuid-@i', 'Link number @i', 'Link number @i description')">Link number @i</a><br />
-		}
+	<div class="bordered" id="categoriesListParent" style="width: 395px; height: 300px; margin-left: 5px; margin-top: 5px; overflow: scroll; padding: 5px;">
+		
 	</div>
 	<button style="display: block; margin: 5px auto;" onclick="addCategory(event)">Add category</button>
 </div> <div class="bordered selectedCategoryForm" style="margin-left: 5px; padding: 10px 10px; width: 410px; height: 400px; display: inline-block; float: left;">
@@ -27,6 +25,7 @@
 </div>
 
 <script>
+	const idCategoriesListParent = "categoriesListParent";
 	const idSelectedCategoryHeader = "selectedCategoryHeader";
 	const idSelectedCategoryName = "selectedCategoryName";
 	const idSelectedCategoryDescription = "selectedCategoryDescription";
@@ -41,17 +40,65 @@
 	const textAddHeader = "Adding the new category";
 
 	class Category {
-		constructor(guid, subCatGuid, name, desc) {
+		constructor(guid = "", subCatGuid = "", name = "", desc = "") {
 			this.Id = guid;
 			this.SubCategoryGuid = subCatGuid;
 			this.Name = name;
 			this.Description = desc;
 		}
 
+		setFromJson(jsonString) {
+			let json = JSON.parse(jsonString);
+
+			this.Id = json.id;
+			this.SubCategoryGuid = json.subCategoryGuid;
+			this.Name = json.name;
+			this.Description = json.description;
+		}
+
 		getFormData() {
 			return "Id=" + encodeURIComponent(this.Id) + "&SubCategoryGuid=" + encodeURIComponent(this.SubCategoryGuid) +
 				"&Name=" + encodeURIComponent(this.Name) + "&Description=" + encodeURIComponent(this.Description);
 		}
+	}
+
+	function addCategoryToList(guid, subCatGuid, name, description) {
+		let category = new Category(guid, subCatGuid, name, description);
+		categories.push(category);
+	}
+
+	function renderCategoryList() {
+		var categoriesParent = document.getElementById(idCategoriesListParent);
+		while (categoriesParent.firstChild != null) {
+			categoriesParent.removeChild(categoriesParent.firstChild);
+		}
+
+		var roots = categories.filter(cat => cat.SubCategoryGuid == "" || cat.SubCategoryGuid == undefined);
+		for (var rootCat of roots) {
+			addCategoriesWithNesting(categoriesParent, rootCat, 0);
+		}
+	}
+
+	function addCategoriesWithNesting(parent = HTMLElement, rootCategory = Category, nestingLevel = 0) {
+		createCategoryLink(parent, rootCategory, nestingLevel);
+		var childs = categories.filter(cat => cat.SubCategoryGuid == rootCategory.Id);
+		nestingLevel++;
+		for (child of childs) {
+			addCategoriesWithNesting(parent, child, nestingLevel);
+		}
+	}
+
+	function createCategoryLink(parent = HTMLElement, category = Category, nestingLevel = 0) {
+		let newCategoryLink = document.createElement("a");
+		newCategoryLink.href = "#";
+		let innerText = "";
+		for (var index = 0; index < nestingLevel; index++) { innerText += "-"; }
+		newCategoryLink.innerText = innerText + category.Name;
+
+		newCategoryLink.addEventListener("click", (event) => selectCategory(event, category));
+
+		parent.appendChild(newCategoryLink);
+		parent.appendChild(document.createElement("br"));
 	}
 
 	function setWaitingSelectedContent(header, value) {
@@ -67,9 +114,7 @@
 		document.getElementById(idSelectedCategoryButtonRemove).style = currentStyleValue;
 	}
 
-	function selectCategory(event, guid, subCatGuid, name, description) {
-		let selectedCategory = new Category(guid, subCatGuid, name, description);
-
+	function selectCategory(event, selectedCategory) {
 		setWaitingSelectedContent(textEditHeader + selectedCategory.Name, false);
 
 		document.getElementById(idSelectedCategoryName).value = selectedCategory.Name;
@@ -77,10 +122,13 @@
 		document.getElementById(idSelectedCategorySubcatGuid).value = selectedCategory.SubCategoryGuid;
 		document.getElementById(idSelectedCategoryGuid).value = selectedCategory.Id;
 
+		document.getElementById(idSelectedCategoryButtonAdd).innerText = "Save";
 		document.getElementById(idSelectedCategoryButtonAdd).onclick = (e) => editCategory(e, selectedCategory);
 		document.getElementById(idSelectedCategoryButtonRemove).onclick = (e) => deleteSelectedCategory(e, selectedCategory);
 
-		event.stopPropagation();
+		if (event != null) {
+			event.stopPropagation();
+		}
 	}
 
 	function editCategory(event, category) {
@@ -97,15 +145,16 @@
 		event.stopPropagation();
 	}
 
-	function addCategory(event) {
+	function addCategory(event, subCatGuid = "", name = "", desc = "") {
 		setWaitingSelectedContent(textAddHeader, false);
 		document.getElementById(idSelectedCategoryButtonRemove).style = "display: none;";
 
-		document.getElementById(idSelectedCategoryName).value = "";
-		document.getElementById(idSelectedCategoryDescription).value = "";
-		document.getElementById(idSelectedCategorySubcatGuid).value = "";
+		document.getElementById(idSelectedCategoryName).value = name;
+		document.getElementById(idSelectedCategoryDescription).value = desc;
+		document.getElementById(idSelectedCategorySubcatGuid).value = subCatGuid;
 		document.getElementById(idSelectedCategoryGuid).value = "";
 
+		document.getElementById(idSelectedCategoryButtonAdd).innerText = "Add";
 		document.getElementById(idSelectedCategoryButtonAdd).onclick =
 			(e) => {
 				let category = new Category("",
@@ -115,10 +164,12 @@
 				onAddCategory(e, category);
 			};
 
-		event.stopPropagation();
+		if (event != null) {
+			event.stopPropagation();
+		}
 	}
 
-	function onAddCategory(event, category) {
+	function onAddCategory(event, category = new Category()) {
 		event.stopPropagation();
 
 		if (category.Name == "" || category.Description == "") {
@@ -126,16 +177,24 @@
 			return;
 		}
 
+		setWaitingSelectedContent("Category is adding... Please wait", true);
+
 		let request = new XMLHttpRequest();
 		request.open("POST", "/AdminPanel/AddCategory");
 		request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded; charset=utf-8');
 		request.onreadystatechange = () => {
 			if (request.readyState == 4) {
 				if (request.status == 200) {
-					var addedObject = JSON.parse(request.responseText);
+					var addedObject = new Category();
+					addedObject.setFromJson(request.responseText);
+					addCategoryToList(addedObject.Id, addedObject.SubCategoryGuid, addedObject.Name, addedObject.Description);
+					renderCategoryList();
+					selectCategory(null, addedObject);
 				}
 				else {
 					alert("Adding the new category failed.\n" + request.responseText);
+					setWaitingSelectedContent("", false);
+					addCategory(null, category.SubCategoryGuid, category.Name, category.Description);
 				}
 			}
 		};
@@ -143,5 +202,6 @@
 		request.send(category.getFormData());
 	}
 
+	var categories = [];
 	setWaitingSelectedContent(textDefault, true);
 </script>
