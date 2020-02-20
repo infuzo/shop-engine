@@ -5,15 +5,13 @@
 @model IEnumerable<ShopEngine.Models.CategoryModel>
 
 <div class="bordered" style="width: 410px; height: 400px; display: inline-block; float: left;">
-	<strong style="margin: 5px 5px;" >List of categories:</strong>
-	<div class="bordered" id="categoriesListParent" style="width: 395px; height: 300px; margin-left: 5px; margin-top: 5px; overflow: scroll; padding: 5px;">
-		
-	</div>
+	<strong style="margin: 5px 5px;">List of categories:</strong>
+	<div class="bordered" id="categoriesListParent" style="width: 395px; height: 300px; margin-left: 5px; margin-top: 5px; overflow: scroll; padding: 5px;"></div>
 	<button style="display: block; margin: 5px auto;" onclick="addCategory(event)">Add category</button>
 </div> <div class="bordered selectedCategoryForm" style="margin-left: 5px; padding: 10px 10px; width: 410px; height: 400px; display: inline-block; float: left;">
 	<br />
 	<strong id="selectedCategoryHeader">HEADER_UNDEFINED_CONTENT</strong> <br /><br />
-	<label for="selectedCategoryName">Name: </label><input type="text" required="required" max="60" id="selectedCategoryName"/><br /><br />
+	<label for="selectedCategoryName">Name: </label><input type="text" required="required" max="60" id="selectedCategoryName" /><br /><br />
 	<label for="selectedCategoryDescription">Description: </label><textarea required="required" maxlength="250" id="selectedCategoryDescription"></textarea><br /><br />
 	<label for="selectedCategorySubcatGuid">Subcategory guid: </label><input type="text" id="selectedCategorySubcatGuid" /><br />
 	<span><em>Paste guid of desired parent category here</em></span><br /><br /> <!--TODO: DropDownList-->
@@ -25,6 +23,8 @@
 </div>
 
 <script>
+	const undefinedGuid = "00000000-0000-0000-0000-000000000000";
+
 	const idCategoriesListParent = "categoriesListParent";
 	const idSelectedCategoryHeader = "selectedCategoryHeader";
 	const idSelectedCategoryName = "selectedCategoryName";
@@ -36,7 +36,7 @@
 
 	//TODO: from localization
 	const textDefault = "Select the category or add new one";
-	const textEditHeader = "Editing the "; 
+	const textEditHeader = "Editing the ";
 	const textAddHeader = "Adding the new category";
 
 	class Category {
@@ -57,7 +57,8 @@
 		}
 
 		getFormData() {
-			return "Id=" + encodeURIComponent(this.Id) + "&SubCategoryGuid=" + encodeURIComponent(this.SubCategoryGuid) +
+			return "Id=" + (this.Id == "" ? undefinedGuid : encodeURIComponent(this.Id)) +
+				"&SubCategoryGuid=" + (this.SubCategoryGuid == "" ? undefinedGuid : encodeURIComponent(this.SubCategoryGuid)) +
 				"&Name=" + encodeURIComponent(this.Name) + "&Description=" + encodeURIComponent(this.Description);
 		}
 	}
@@ -73,6 +74,7 @@
 			categoriesParent.removeChild(categoriesParent.firstChild);
 		}
 
+		//todo: add "broken" subcategories in roots
 		var roots = categories.filter(cat => cat.SubCategoryGuid == "" || cat.SubCategoryGuid == undefined);
 		for (var rootCat of roots) {
 			addCategoriesWithNesting(categoriesParent, rootCat, 0);
@@ -205,3 +207,15 @@
 	var categories = [];
 	setWaitingSelectedContent(textDefault, true);
 </script>
+
+@{
+	foreach (var category in Model)
+	{
+		<text>
+			<script>
+			addCategoryToList('@category.Id', '@category.SubCategoryGuid', '@category.Name', '@category.Description');
+			</script>
+		</text>
+	}
+	<script>renderCategoryList();</script>
+}

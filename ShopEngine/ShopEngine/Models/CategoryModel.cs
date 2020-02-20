@@ -8,12 +8,12 @@ namespace ShopEngine.Models
     public class CategoryModel
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public string Id { get; set; }
+        public Guid Id { get; set; }
 
         /// <summary>
         /// Null for root categories.
         /// </summary>
-        public string SubCategoryGuid { get; set; }
+        public Guid? SubCategoryGuid { get; set; }
         [Required]
         [MaxLength(60)]
         public string Name { get; set; }

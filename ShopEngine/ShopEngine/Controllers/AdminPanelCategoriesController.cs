@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading.Tasks;
 
 using ShopEngine.Models;
 using Microsoft.Extensions.Logging;
 using System.Text;
+using System.Collections.Generic;
 
 namespace ShopEngine.Controllers
 {
@@ -13,9 +15,12 @@ namespace ShopEngine.Controllers
     public class AdminPanelCategoriesController : Controller
     {
         [Route("AdminPanel/Categories")]
-        public IActionResult Index()
+        public async Task<IActionResult> Index(
+            [FromServices] ShopEngineDbContext dbContext)
         {
-            return View("~/Views/AdminPanel/Categories.cshtml");
+            var allCategories = await dbContext.Categories.ToArrayAsync();
+
+            return View("~/Views/AdminPanel/Categories.cshtml", allCategories);
         }
 
         [Route("AdminPanel/AddCategory")]
@@ -46,6 +51,11 @@ namespace ShopEngine.Controllers
 
             try
             {
+                if (model.SubCategoryGuid == Guid.Empty)
+                {
+                    model.SubCategoryGuid = null;
+                }
+
                 await dbContext.Categories.AddAsync(model);
                 await dbContext.SaveChangesAsync();
             }
