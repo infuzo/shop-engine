@@ -61,6 +61,24 @@
 		document.getElementById(idSelectedCategorySubcatGuid).value = subCatGuid;
 		document.getElementById(idSelectedCategoryGuid).value = guid;
 
+		document.getElementById(idSelectedCategoryButtonAdd).onclick =
+			(e) => editCategory(e, guid, subCatGuid, name, description);
+		document.getElementById(idSelectedCategoryButtonRemove).onclick =
+			(e) => deleteSelectedCategory(e, guid, name);
+
+		event.stopPropagation();
+	}
+
+	function editCategory(event, guid, subCatGuid, name, description) {
+		console.log("Edit the " + guid);
+	}
+
+	function deleteSelectedCategory(event, guid, name) {
+		let result = confirm("Do you want to delete categery \"" + name + "\"?");
+		if (result) {
+			console.log("Delete category " + guid);
+		}
+
 		event.stopPropagation();
 	}
 
@@ -73,7 +91,37 @@
 		document.getElementById(idSelectedCategorySubcatGuid).value = "";
 		document.getElementById(idSelectedCategoryGuid).value = "";
 
+		document.getElementById(idSelectedCategoryButtonAdd).onclick =
+			(e) => onAddCategory(e,
+				document.getElementById(idSelectedCategorySubcatGuid).value,
+				document.getElementById(idSelectedCategoryName).value,
+				document.getElementById(idSelectedCategoryDescription).value);
+
 		event.stopPropagation();
+	}
+
+	function onAddCategory(event, subCatGuid, name, description) {
+		event.stopPropagation();
+
+		if (name == "" || description == "") {
+			alert("Name and description should have values.");
+			return;
+		}
+
+		let request = new XMLHttpRequest();
+		request.open("POST", "/AdminPanel/AddCategory");
+		request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded; charset=utf-8');
+		request.onreadystatechange = () => {
+			if (request.readyState == 4) {
+				console.log("Add category response: " + request.status + "; " + request.responseText);
+			}
+		};
+
+		request.send(getFormData("", subCatGuid, name, description));
+	}
+
+	function getFormData(guid, subCatGuid, name, desc) {
+		return ("Id=" + encodeURIComponent(guid) + "&SubCategoryGuid=" + encodeURIComponent(subCatGuid) + "&Name=" + encodeURIComponent(name) + "&Description=" + encodeURIComponent(desc));
 	}
 
 	setWaitingSelectedContent(textDefault, true);
