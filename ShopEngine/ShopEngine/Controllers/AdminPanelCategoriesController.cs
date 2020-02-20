@@ -46,9 +46,8 @@ namespace ShopEngine.Controllers
 
             try
             {
-                model.Id = null;
                 await dbContext.Categories.AddAsync(model);
-                var result = await dbContext.SaveChangesAsync();
+                await dbContext.SaveChangesAsync();
             }
             catch(Exception exception)
             {
@@ -56,7 +55,7 @@ namespace ShopEngine.Controllers
                 return StatusCode(500);
             }
 
-            return Ok();            
+            return new JsonResult(model);            
         }
     }
 }

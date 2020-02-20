@@ -9,7 +9,7 @@ namespace ShopEngine.Models
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string Id { get; set; }
-        
+
         /// <summary>
         /// Null for root categories.
         /// </summary>

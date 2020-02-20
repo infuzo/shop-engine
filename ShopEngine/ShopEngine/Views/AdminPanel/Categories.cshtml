@@ -40,6 +40,20 @@
 	const textEditHeader = "Editing the "; 
 	const textAddHeader = "Adding the new category";
 
+	class Category {
+		constructor(guid, subCatGuid, name, desc) {
+			this.Id = guid;
+			this.SubCategoryGuid = subCatGuid;
+			this.Name = name;
+			this.Description = desc;
+		}
+
+		getFormData() {
+			return "Id=" + encodeURIComponent(this.Id) + "&SubCategoryGuid=" + encodeURIComponent(this.SubCategoryGuid) +
+				"&Name=" + encodeURIComponent(this.Name) + "&Description=" + encodeURIComponent(this.Description);
+		}
+	}
+
 	function setWaitingSelectedContent(header, value) {
 		document.getElementById(idSelectedCategoryHeader).innerText = header;
 
@@ -54,29 +68,30 @@
 	}
 
 	function selectCategory(event, guid, subCatGuid, name, description) {
-		setWaitingSelectedContent(textEditHeader + name, false);
+		let selectedCategory = new Category(guid, subCatGuid, name, description);
 
-		document.getElementById(idSelectedCategoryName).value = name;
-		document.getElementById(idSelectedCategoryDescription).value = description;
-		document.getElementById(idSelectedCategorySubcatGuid).value = subCatGuid;
-		document.getElementById(idSelectedCategoryGuid).value = guid;
+		setWaitingSelectedContent(textEditHeader + selectedCategory.Name, false);
 
-		document.getElementById(idSelectedCategoryButtonAdd).onclick =
-			(e) => editCategory(e, guid, subCatGuid, name, description);
-		document.getElementById(idSelectedCategoryButtonRemove).onclick =
-			(e) => deleteSelectedCategory(e, guid, name);
+		document.getElementById(idSelectedCategoryName).value = selectedCategory.Name;
+		document.getElementById(idSelectedCategoryDescription).value = selectedCategory.Description;
+		document.getElementById(idSelectedCategorySubcatGuid).value = selectedCategory.SubCategoryGuid;
+		document.getElementById(idSelectedCategoryGuid).value = selectedCategory.Id;
+
+		document.getElementById(idSelectedCategoryButtonAdd).onclick = (e) => editCategory(e, selectedCategory);
+		document.getElementById(idSelectedCategoryButtonRemove).onclick = (e) => deleteSelectedCategory(e, selectedCategory);
 
 		event.stopPropagation();
 	}
 
-	function editCategory(event, guid, subCatGuid, name, description) {
-		console.log("Edit the " + guid);
+	function editCategory(event, category) {
+		event.stopPropagation();
+		console.log("Edit the " + category.Name);
 	}
 
-	function deleteSelectedCategory(event, guid, name) {
-		let result = confirm("Do you want to delete categery \"" + name + "\"?");
+	function deleteSelectedCategory(event, category) {
+		let result = confirm("Do you want to delete categery \"" + category.Name + "\"?");
 		if (result) {
-			console.log("Delete category " + guid);
+			console.log("Delete category " + category.Id);
 		}
 
 		event.stopPropagation();
@@ -92,18 +107,21 @@
 		document.getElementById(idSelectedCategoryGuid).value = "";
 
 		document.getElementById(idSelectedCategoryButtonAdd).onclick =
-			(e) => onAddCategory(e,
-				document.getElementById(idSelectedCategorySubcatGuid).value,
-				document.getElementById(idSelectedCategoryName).value,
-				document.getElementById(idSelectedCategoryDescription).value);
+			(e) => {
+				let category = new Category("",
+					document.getElementById(idSelectedCategorySubcatGuid).value,
+					document.getElementById(idSelectedCategoryName).value,
+					document.getElementById(idSelectedCategoryDescription).value);
+				onAddCategory(e, category);
+			};
 
 		event.stopPropagation();
 	}
 
-	function onAddCategory(event, subCatGuid, name, description) {
+	function onAddCategory(event, category) {
 		event.stopPropagation();
 
-		if (name == "" || description == "") {
+		if (category.Name == "" || category.Description == "") {
 			alert("Name and description should have values.");
 			return;
 		}
@@ -113,15 +131,16 @@
 		request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded; charset=utf-8');
 		request.onreadystatechange = () => {
 			if (request.readyState == 4) {
-				console.log("Add category response: " + request.status + "; " + request.responseText);
+				if (request.status == 200) {
+					var addedObject = JSON.parse(request.responseText);
+				}
+				else {
+					alert("Adding the new category failed.\n" + request.responseText);
+				}
 			}
 		};
 
-		request.send(getFormData("", subCatGuid, name, description));
-	}
-
-	function getFormData(guid, subCatGuid, name, desc) {
-		return ("Id=" + encodeURIComponent(guid) + "&SubCategoryGuid=" + encodeURIComponent(subCatGuid) + "&Name=" + encodeURIComponent(name) + "&Description=" + encodeURIComponent(desc));
+		request.send(category.getFormData());
 	}
 
 	setWaitingSelectedContent(textDefault, true);
