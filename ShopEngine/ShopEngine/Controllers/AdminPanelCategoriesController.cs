@@ -87,6 +87,37 @@ namespace ShopEngine.Controllers
             return Ok();
         }
 
+        [Route("/AdminPanel/EditCategory")]
+        [HttpPost]
+        public async Task<IActionResult> EditCategory(
+            CategoryModel model,
+            [FromServices] ShopEngineDbContext dbContext,
+            [FromServices] ILoggerFactory loggerFactory)
+        {
+            if (ModelState.ErrorCount > 0)
+            {
+                return StatusCode(500, GetModelErrors(ModelState));
+            }
+
+            try
+            {
+                if (model.SubCategoryGuid == Guid.Empty)
+                {
+                    model.SubCategoryGuid = null;
+                }
+
+                dbContext.Categories.Update(model);
+                await dbContext.SaveChangesAsync();
+            }
+            catch (Exception exception)
+            {
+                loggerFactory.CreateLogger("AdminPanel").LogError(exception.ToString());
+                return StatusCode(500);
+            }
+
+            return Ok();
+        }
+
         private string GetModelErrors(ModelStateDictionary modelState)
         {
             StringBuilder message = new StringBuilder("There are errors in the model.\n");

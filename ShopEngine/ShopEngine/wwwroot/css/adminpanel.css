@@ -101,14 +101,35 @@ div.centerForm {
 	border-color: black;
 	display: inline-block;
 }
+div.categories {
+	width: 850px;
+	margin: 50px auto;
+	padding: 0;
+}
+div.categoriesContainer {
+	width: 410px;
+	height: 400px;
+	display: inline-block;
+	float: left;
+	box-sizing: border-box;
+	padding: 10px 10px;
+}
 .selectedCategoryForm label {
-	width: 150px;
+	width: 140px;
 	display: inline-block;
 }
 .selectedCategoryForm input[type=text], textarea {
-	width: 250px;
+	width: 240px;
 	display: inline-block;
 }
 .selectedCategoryForm textarea {
 	resize: vertical;
+}
+#categoriesListParent {
+	width: 370px;
+	height: 300px;
+	margin-left: 5px;
+	margin-top: 5px;
+	overflow: scroll;
+	padding: 5px;
 }

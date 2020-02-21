@@ -18,6 +18,7 @@ namespace ShopEngine.Controllers
         [HttpGet]
         public IActionResult Login() 
         {
+            Response.StatusCode = 401;
             return View();
         }
 

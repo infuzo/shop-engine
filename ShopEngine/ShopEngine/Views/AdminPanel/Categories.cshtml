@@ -4,23 +4,25 @@
 }
 @model IEnumerable<ShopEngine.Models.CategoryModel>
 
-<div class="bordered" style="width: 410px; height: 400px; display: inline-block; float: left;">
-	<strong style="margin: 5px 5px;">List of categories:</strong>
-	<div class="bordered" id="categoriesListParent" style="width: 395px; height: 300px; margin-left: 5px; margin-top: 5px; overflow: scroll; padding: 5px;"></div>
-	<button style="display: block; margin: 5px auto;" onclick="addCategory(event)">Add category</button>
-</div> <div class="bordered selectedCategoryForm" style="margin-left: 5px; padding: 10px 10px; width: 410px; height: 400px; display: inline-block; float: left;">
-	<br />
-	<strong id="selectedCategoryHeader">HEADER_UNDEFINED_CONTENT</strong> <br /><br />
-	<label for="selectedCategoryName">Name: </label><input type="text" required="required" max="60" id="selectedCategoryName" /><br /><br />
-	<label for="selectedCategoryDescription">Description: </label><textarea required="required" maxlength="250" id="selectedCategoryDescription"></textarea><br /><br />
-	<label for="selectedCategorySubcatGuid">Subcategory guid: </label><input type="text" id="selectedCategorySubcatGuid" /><br />
-	<span><em>Paste guid of desired parent category here</em></span><br /><br /> <!--TODO: DropDownList-->
+	<div class="categories">
+		<div class="bordered categoriesContainer">
+			<br /><strong style="margin: 5px 5px;">List of categories:</strong>
+			<div class="bordered" id="categoriesListParent"></div>
+			<button style="display: block; margin: 5px auto;" onclick="addCategory(event)">Add category</button>
+		</div> <div class="bordered categoriesContainer selectedCategoryForm" style="margin-left: 5px;">
+			<br />
+			<strong id="selectedCategoryHeader">HEADER_UNDEFINED_CONTENT</strong> <br /><br />
+			<label for="selectedCategoryName">Name: </label><input type="text" required="required" max="60" id="selectedCategoryName" /><br /><br />
+			<label for="selectedCategoryDescription">Description: </label><textarea required="required" maxlength="250" id="selectedCategoryDescription"></textarea><br /><br />
+			<label for="selectedCategorySubcatGuid">Subcategory guid: </label><input type="text" id="selectedCategorySubcatGuid" /><br />
+			<span><em>Paste guid of desired parent category here</em></span><br /><br /> <!--TODO: DropDownList-->
 
-	<label for="selectedCategoryGuid">GUID: </label><input type="text" id="selectedCategoryGuid" readonly="readonly" /><br /><br />
+			<label for="selectedCategoryGuid">GUID: </label><input type="text" id="selectedCategoryGuid" readonly="readonly" /><br /><br />
 
-	<br />
-	<button style="display: none;" id="selectedCategoryAdd">Add/Save category</button> <button style="display: none;" id="selectedCategoryRemove">Remove category</button>
-</div>
+			<br />
+			<button style="display: none;" id="selectedCategoryAdd">UNDEFINED_ACTION_1</button> <button style="display: none;" id="selectedCategoryRemove">UNDEFINED_ACTION_2</button>
+		</div>
+	</div>
 
 <script>
 	const undefinedGuid = "00000000-0000-0000-0000-000000000000";
@@ -45,6 +47,8 @@
 	const textDeletingCategoryProcess = "Category is deleting. Please wait";
 	const textCategoryDeletedSuccessfully = "Category was deleted successfully";
 	const textDeletingFailed = "Deleting the category failed.";
+	const textEditWaiting = "Category is editing... Please wait";
+	const textEditFailed = "Edit the category failed.";
 
 	class Category {
 		constructor(guid = "", subCatGuid = "", name = "", desc = "") {
@@ -68,11 +72,17 @@
 				"&SubCategoryGuid=" + (this.SubCategoryGuid == "" ? undefinedGuid : encodeURIComponent(this.SubCategoryGuid)) +
 				"&Name=" + encodeURIComponent(this.Name) + "&Description=" + encodeURIComponent(this.Description);
 		}
+
+		isValid() {
+			return this.Name != null && this.Name.length > 0
+				&& this.Description != null && this.Description.length > 0;
+		}
 	}
 
 	function addCategoryToList(guid, subCatGuid, name, description) {
 		let category = new Category(guid, subCatGuid, name, description);
 		categories.push(category);
+		return category;
 	}
 
 	function removeCategoryFromList(category = Category) {
@@ -113,6 +123,7 @@
 		newCategoryLink.href = "#";
 		let innerText = "";
 		for (var index = 0; index < nestingLevel; index++) { innerText += "-"; }
+		if (innerText.length > 0) { innerText += " "; }
 		newCategoryLink.innerText = innerText + category.Name;
 		if (broken) {
 			newCategoryLink.style = "color: red;";
@@ -146,7 +157,8 @@
 		document.getElementById(idSelectedCategoryGuid).value = selectedCategory.Id;
 
 		document.getElementById(idSelectedCategoryButtonAdd).innerText = "Save";
-		document.getElementById(idSelectedCategoryButtonAdd).onclick = (e) => editCategory(e, selectedCategory);
+		document.getElementById(idSelectedCategoryButtonAdd).onclick = (e) => onEditCategory(e, selectedCategory);
+		document.getElementById(idSelectedCategoryButtonRemove).innerText = "Delete";
 		document.getElementById(idSelectedCategoryButtonRemove).onclick = (e) => deleteSelectedCategory(e, selectedCategory);
 
 		if (event != null) {
@@ -154,9 +166,41 @@
 		}
 	}
 
-	function editCategory(event, category) {
-		event.stopPropagation();
-		console.log("Edit the " + category.Name);
+	function onEditCategory(event, category = Category) {
+		if (event != null) {
+			event.stopPropagation();
+		}
+
+		category.Name = document.getElementById(idSelectedCategoryName).value;
+		category.Description = document.getElementById(idSelectedCategoryDescription).value;
+		category.SubCategoryGuid = document.getElementById(idSelectedCategorySubcatGuid).value;
+
+		if (category == null || !category.isValid()) {
+			alert(textModelValidationFailed);
+			return;
+		}
+
+		let request = new XMLHttpRequest();
+		request.open("POST", "/AdminPanel/EditCategory");
+		request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded; charset=utf-8');
+
+		request.onreadystatechange = () => {
+			if (request.readyState == 4) {
+				if (request.status == 200) {
+					removeCategoryFromList(category);
+					category = addCategoryToList(category.Id, category.SubCategoryGuid, category.Name, category.Description);
+					renderCategoryList();
+				}
+				else {
+					alert(`${textEditFailed}\n${request.status} - ${request.responseText}`);
+				}
+				setWaitingSelectedContent("", false);
+				selectCategory(null, category);
+			}
+		};
+
+		setWaitingSelectedContent(textEditWaiting, true);
+		request.send(category.getFormData());
 	}
 
 	function deleteSelectedCategory(event, category = Category) {
@@ -215,7 +259,7 @@
 	function onAddCategory(event, category = new Category()) {
 		event.stopPropagation();
 
-		if (category.Name == "" || category.Description == "") {
+		if (category == null || !category.isValid()) {
 			alert(textModelValidationFailed);
 			return;
 		}
@@ -230,7 +274,7 @@
 				if (request.status == 200) {
 					var addedObject = new Category();
 					addedObject.setFromJson(request.responseText);
-					addCategoryToList(addedObject.Id, addedObject.SubCategoryGuid, addedObject.Name, addedObject.Description);
+					addedObject = addCategoryToList(addedObject.Id, addedObject.SubCategoryGuid, addedObject.Name, addedObject.Description);
 					renderCategoryList();
 					selectCategory(null, addedObject);
 				}
@@ -247,8 +291,7 @@
 
 	var categories = [];
 	setWaitingSelectedContent(textDefault, true);
-</script>
-<script>
+
 	@foreach (var category in Model)
 	{
 		<text>
