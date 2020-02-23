@@ -38,6 +38,7 @@ CREATE TABLE dbo.Products(
 	Name NVARCHAR(max) NOT NULL,
 	Description NVARCHAR(max),
 	Specifications NVARCHAR(max) NOT NULL,
+	Price MONEY NOT NULL
 	CONSTRAINT PK_Products
 		PRIMARY KEY(Id),
 	CONSTRAINT FK_Products_Categories
