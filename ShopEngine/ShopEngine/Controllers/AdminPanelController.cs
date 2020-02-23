@@ -128,5 +128,7 @@ namespace ShopEngine.Controllers
 
             return RedirectToAction("EmailSettings", "AdminPanel");
         }
+
+
     }
 }
