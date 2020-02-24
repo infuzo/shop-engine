@@ -73,3 +73,4 @@ C:\Users\Infuzo\Documents\Projects\shop-engine\ShopEngine\ShopEngine\obj\Debug\n
 C:\Users\Infuzo\Documents\Projects\shop-engine\ShopEngine\ShopEngine\obj\Debug\netcoreapp3.1\Razor\Views\AdminPanel\SiteAbout.cshtml.g.cs
 C:\Users\Infuzo\Documents\Projects\shop-engine\ShopEngine\ShopEngine\obj\Debug\netcoreapp3.1\Razor\Views\AdminPanel\EmailSettings.cshtml.g.cs
 C:\Users\Infuzo\Documents\Projects\shop-engine\ShopEngine\ShopEngine\obj\Debug\netcoreapp3.1\Razor\Views\AdminPanel\Categories.cshtml.g.cs
+C:\Users\Infuzo\Documents\Projects\shop-engine\ShopEngine\ShopEngine\obj\Debug\netcoreapp3.1\Razor\Views\AdminPanel\Products.cshtml.g.cs

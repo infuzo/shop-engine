@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ShopEngine.Models;
+using ShopEngine.Services;
 
 namespace ShopEngine
 {
@@ -33,6 +34,8 @@ namespace ShopEngine
 
             services.AddIdentity<IdentityUser, IdentityRole>(options => options.Password.RequireNonAlphanumeric = false)
                  .AddEntityFrameworkStores<ShopEngineIdentityDbContext>();
+
+            services.AddTransient<IProductsService, ProductsService>();
 
             services.AddControllersWithViews();
         }

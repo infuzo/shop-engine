@@ -125,7 +125,7 @@ div.categoriesContainer {
 .selectedCategoryForm textarea {
 	resize: vertical;
 }
-#categoriesListParent {
+#categoriesListParent, #productsListParent {
 	width: 370px;
 	height: 300px;
 	margin-left: 5px;
@@ -133,3 +133,16 @@ div.categoriesContainer {
 	overflow: scroll;
 	padding: 5px;
 }
+.productsPagesNavigation {
+	margin-top: 3px;
+	text-align: center;
+}
+	.productsPagesNavigation button {
+		width: 85px;
+		max-width: 85px;
+		max-height: 20px;
+		height: 20px;
+		overflow: hidden;
+		margin-left: 2px;
+		margin-right: 2px;
+	}

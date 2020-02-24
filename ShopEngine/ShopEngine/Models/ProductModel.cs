@@ -11,8 +11,9 @@ namespace ShopEngine.Models
         public Guid Id { get; set; }
 
         [Required]
+        [ForeignKey("Categories")]
         public Guid CategoryId { get; set; }
-        [MaxLength(60)]
+        [MaxLength(100)]
         [Required]
         public string Name { get; set; }
         public string Description { get; set; }
@@ -29,7 +30,7 @@ namespace ShopEngine.Models
         public string ImagesUrlJson { get; set; }
         [Required]
         public int PreviewImageIndex { get; set; }
-        public int CustomVendorCode { get; set; }
+        public int? CustomVendorCode { get; set; }
 
         [NotMapped]
         public string CategoriesChain { get; set; }
