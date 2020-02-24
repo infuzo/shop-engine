@@ -37,8 +37,12 @@ CREATE TABLE dbo.Products(
 	CategoryId UNIQUEIDENTIFIER NOT NULL,
 	Name NVARCHAR(max) NOT NULL,
 	Description NVARCHAR(max),
-	Specifications NVARCHAR(max) NOT NULL,
-	Price MONEY NOT NULL
+	SpecificationsJson NVARCHAR(max) NOT NULL,
+	Price MONEY NOT NULL,
+	InStock BIT NOT NULL,
+	ImagesUrlJson NVARCHAR(max) NOT NULL,
+	PreviewImageIndex INT NOT NULL,
+	CustomVendorCode INT,
 	CONSTRAINT PK_Products
 		PRIMARY KEY(Id),
 	CONSTRAINT FK_Products_Categories

@@ -21,10 +21,25 @@ namespace ShopEngine.Models
         /// </summary>
         [Required]
         public string SpecificationsJson { get; set; }
+        [Required]
+        public decimal Price { get; set; }
+        [Required]
+        public bool InStock { get; set; }
+        [Required]
+        public string ImagesUrlJson { get; set; }
+        [Required]
+        public int PreviewImageIndex { get; set; }
+        public int CustomVendorCode { get; set; }
 
-        public CategoryModel Category { get; set; }
+        [NotMapped]
+        public string CategoriesChain { get; set; }
 
         public IDictionary<string, string> GetSpecifications()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<string> GetImagesUrl()
         {
             throw new NotImplementedException();
         }
