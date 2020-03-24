@@ -30,6 +30,12 @@ namespace ShopEngine.Controllers
             AdminPanelLoginModel model,
             [FromServices] SignInManager<IdentityUser> signInManager) 
         {
+            if(model == null)
+            {
+                ModelState.AddModelError("", "Invalid username or password");
+                return View(model);
+            }
+
             var signInResult = await signInManager.PasswordSignInAsync(model.Username, model.Password, false, false);
             if (signInResult.Succeeded)
             {

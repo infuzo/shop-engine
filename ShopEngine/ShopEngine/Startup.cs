@@ -33,7 +33,8 @@ namespace ShopEngine
                 options.UseSqlServer(Configuration.GetConnectionString("Identity")));
 
             services.AddIdentity<IdentityUser, IdentityRole>(options => options.Password.RequireNonAlphanumeric = false)
-                 .AddEntityFrameworkStores<ShopEngineIdentityDbContext>();
+                 .AddEntityFrameworkStores<ShopEngineIdentityDbContext>()
+                 .AddDefaultTokenProviders();
 
             services.AddTransient<IProductsService, ProductsService>();
 

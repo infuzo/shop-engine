@@ -133,10 +133,13 @@ div.categoriesContainer {
 	overflow: scroll;
 	padding: 5px;
 }
-.productsPagesNavigation {
-	margin-top: 3px;
-	text-align: center;
+#productsListParent {
+	height: 270px;
 }
+	.productsPagesNavigation {
+		margin-top: 3px;
+		text-align: center;
+	}
 	.productsPagesNavigation button {
 		width: 85px;
 		max-width: 85px;
@@ -146,3 +149,16 @@ div.categoriesContainer {
 		margin-left: 2px;
 		margin-right: 2px;
 	}
+.productsListSearchForm {
+	height: 25px;
+	margin-left: 5px;
+	margin-top: 1px;
+}
+.productsListSearchForm input {
+	width: 290px;
+}
+.productsListSearchForm button {
+	width: 80px;
+	float: right;
+	margin-right: 0px;
+}
