@@ -32,6 +32,7 @@ const idProductsListParent = "productsListParent";
 const textWaitingForProductsList = "Products list are loading. Please wait";
 
 var productsList = new Array();
+var searchResults = new Array();
 
 function loadProductsPageAndFillList(page = Number, fromCache = Boolean) {
 	setProductsListWaitingStatus(true);
@@ -74,6 +75,30 @@ function renderPageOfProductsList(
 	totalPages = Number,
 	productsCount = Number) {
 
+	createPagesNavigationBar(page, totalPages, productsCount, page => loadProductsPageAndFillList(page, true));
+
+	var productsListParent = document.getElementById(idProductsListParent);
+	removeAllChildren(productsListParent);
+
+	for (product of productsList) {
+		var newProductLink = document.createElement("a");
+		newProductLink.href = "#";
+		//todo: add event
+		newProductLink.innerText = `${product.Name} (${product.CategoriesChain})`;
+
+		productsListParent.appendChild(newProductLink);
+
+		var newBr = document.createElement("br");
+		productsListParent.appendChild(newBr);
+	}
+}
+
+function createPagesNavigationBar(
+	page = Number,
+	totalPages = Number,
+	productsCount = Number,
+	onButtonChangePageClick) {
+
 	var pagesNavigation = document.getElementById(idPagesNavigation);
 	removeAllChildren(pagesNavigation);
 
@@ -95,25 +120,6 @@ function renderPageOfProductsList(
 	}
 	nextButton.innerText = "Next >";
 	pagesNavigation.appendChild(nextButton);
-
-	var productsListParent = document.getElementById(idProductsListParent);
-	removeAllChildren(productsListParent);
-
-	for (product of productsList) {
-		var newProductLink = document.createElement("a");
-		newProductLink.href = "#";
-		//todo: add event
-		newProductLink.innerText = `${product.Name} (${product.CategoriesChain})`;
-
-		productsListParent.appendChild(newProductLink);
-
-		var newBr = document.createElement("br");
-		productsListParent.appendChild(newBr);
-	}
-}
-
-function onButtonChangePageClick(page = Number) {
-	loadProductsPageAndFillList(page, true);
 }
 
 function setProductsListWaitingStatus(waiting = Boolean) {
