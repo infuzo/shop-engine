@@ -133,6 +133,55 @@ namespace ShopEngine.Services
             return result;
         }
 
+        public async Task<IEnumerable<ProductModel>> FindProducts(string guidNameOrVendorCode)
+        {
+            if (string.IsNullOrEmpty(guidNameOrVendorCode))
+            {
+                throw new ArgumentNullException("Can't find the product with null argument");
+            }
+
+            var productModels = await FindProductByName(guidNameOrVendorCode);
+
+            Guid guid;
+            if (Guid.TryParse(guidNameOrVendorCode, out guid))
+            {
+                productModels.AddRange(await FindProductByGuid(guid));
+            }
+            else
+            {
+                int customVendorCode;
+                if(int.TryParse(guidNameOrVendorCode, out customVendorCode))
+                {
+                    productModels.AddRange(await FindProductByVendorCode(customVendorCode));
+                }
+            }
+
+            return productModels;
+        }
+
+        public Task<List<ProductModel>> FindProductByGuid(Guid guid)
+        {
+            return dbContext.Products
+                .Where(product => product.Id == guid)
+                .ToListAsync();
+        }
+
+        public Task<List<ProductModel>> FindProductByName(string name)
+        {
+            return dbContext.Products
+                .Where(product => product.Name.ToLower().Contains(name.ToLower()))
+                .ToListAsync();
+        }
+
+        public Task<List<ProductModel>> FindProductByVendorCode(int vendorCode)
+        {
+            return dbContext.Products
+                .Where(product => product.CustomVendorCode != null && product.CustomVendorCode == vendorCode)
+                .ToListAsync();
+        }
+
+
+
         //TODO: add get by category sorted by alphabets product with pagination
     }
 }
