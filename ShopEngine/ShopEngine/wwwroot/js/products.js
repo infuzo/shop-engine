@@ -28,8 +28,11 @@
 
 const idPagesNavigation = "pagesNavigation";
 const idProductsListParent = "productsListParent";
+const idSearchInputField = "productSearchInput";
+const idSearchButton = "productSearchButton";
 
 const textWaitingForProductsList = "Products list are loading. Please wait";
+const textEmptySearchRequest = "Search request is empty";
 
 var productsList = new Array();
 var searchResults = new Array();
@@ -76,6 +79,7 @@ function renderPageOfProductsList(
 	productsCount = Number) {
 
 	createPagesNavigationBar(page, totalPages, productsCount, page => loadProductsPageAndFillList(page, true));
+	subscribeSearchButton();
 
 	var productsListParent = document.getElementById(idProductsListParent);
 	removeAllChildren(productsListParent);
@@ -120,6 +124,19 @@ function createPagesNavigationBar(
 	}
 	nextButton.innerText = "Next >";
 	pagesNavigation.appendChild(nextButton);
+}
+
+function subscribeSearchButton() {
+	document.getElementById(idSearchButton).onclick = onSearchButtonClick;
+}
+
+function onSearchButtonClick() {
+	if (document.getElementById(idSearchInputField).value.length == 0) {
+		alert(textEmptySearchRequest);
+		return;
+	}
+
+
 }
 
 function setProductsListWaitingStatus(waiting = Boolean) {

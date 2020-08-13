@@ -105,7 +105,10 @@ namespace ShopEngine.Services
 
         private async Task<IEnumerable<ProductModel>> GetAllProductsSortedByAlphabetFromDatabase()
         {
-            var products = await dbContext.Products.OrderBy(p => p.Name).ToArrayAsync();
+            var products = dbContext.Products
+                .ToArray()
+                .OrderBy(p => p.Name)
+                .ToArray();
 
             foreach (var product in products) 
             {
@@ -133,6 +136,11 @@ namespace ShopEngine.Services
             return result;
         }
 
+        /// <summary>
+        /// If guid or vendor code are same or product name contains name string - it will return list of product.
+        /// </summary>
+        /// <param name="guidNameOrVendorCode"></param>
+        /// <returns></returns>
         public async Task<IEnumerable<ProductModel>> FindProducts(string guidNameOrVendorCode)
         {
             if (string.IsNullOrEmpty(guidNameOrVendorCode))
@@ -180,7 +188,31 @@ namespace ShopEngine.Services
                 .ToListAsync();
         }
 
+        public ProductsViewModel GetProductsViewModelOnPage(int page, IEnumerable<ProductModel> allProducts)
+        {
+            if (page <= 0)
+            {
+                throw new ArgumentException("Page number can't be less than 1.");
+            }
 
+            var productsCount = allProducts.Count();
+            var totalPagesCount = (int)MathF.Ceiling((float)productsCount / (float)PageSize);
+
+            if (page > totalPagesCount)
+            {
+                throw new ArgumentException($"Page number {page} is greater than max pages count {totalPagesCount}.");
+            }
+
+            var productsOnPage = allProducts.Skip((page - 1) * PageSize).Take(PageSize);
+
+            return new ProductsViewModel
+            {
+                Products = productsOnPage,
+                TotalProductsCount = productsCount,
+                CurrentPage = page,
+                TotalPagesCount = totalPagesCount
+            };
+        }
 
         //TODO: add get by category sorted by alphabets product with pagination
     }

@@ -6,10 +6,7 @@ using Microsoft.Extensions.Logging;
 using ShopEngine.Models;
 using ShopEngine.Services;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ShopEngine.Controllers
@@ -36,28 +33,32 @@ namespace ShopEngine.Controllers
             bool fromCache,
             [FromServices] IProductsService productService) 
         {
-            if(page <= 0)
+            try
             {
-                return NotFound("Page number can't be less than 1.");
+                var allProducts = await productService.GetAllProductsSortedByAlphabet(!fromCache);
+                return new JsonResult(productService.GetProductsViewModelOnPage(page, allProducts));
             }
-
-            var allProducts = await productService.GetAllProductsSortedByAlphabet(!fromCache);
-            var productsCount = allProducts.Count();
-            var totalPagesCount = (int)MathF.Ceiling((float)productsCount / (float)productService.PageSize);
-
-            if(page > totalPagesCount)
+            catch (ArgumentException exception)
             {
-                return NotFound($"Page number {page} is greater than max pages count {totalPagesCount}.");
+                return NotFound(exception.Message);
             }
+        }
 
-            var productsOnPage = allProducts.Skip((page - 1) * productService.PageSize).Take(productService.PageSize);
-
-            return new JsonResult(new ProductsViewModel { 
-                Products = productsOnPage, 
-                TotalProductsCount = productsCount, 
-                CurrentPage = page,
-                TotalPagesCount = totalPagesCount
-            });
+        [Route("AdminPanel/FindProducts")]
+        public async Task<IActionResult> FindProducts(
+            string guidNameOrVendorCode,
+            [FromServices] IProductsService productsService)
+        {
+            //todo: pagination for products
+            //var result = await productsService.FindProducts(guidNameOrVendorCode);
+            //return new JsonResult(new ProductsViewModel
+            //{
+            //    Products = productsOnPage,
+            //    TotalProductsCount = productsCount,
+            //    CurrentPage = page,
+            //    TotalPagesCount = totalPagesCount
+            //});
+            throw new NotImplementedException();
         }
     }
 }
