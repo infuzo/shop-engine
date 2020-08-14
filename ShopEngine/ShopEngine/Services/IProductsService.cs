@@ -7,7 +7,9 @@ namespace ShopEngine.Services
     public interface IProductsService
     {
         Task<IEnumerable<ProductModel>> GetAllProductsSortedByAlphabet(bool force = false);
-        Task<IEnumerable<ProductModel>> FindProducts(string guidNameOrVendorCode);
+        IEnumerable<ProductModel> FindProducts(
+            string guidNameOrVendorCode,
+            bool findInProductsCache);
         int PageSize { get; }
         ProductsViewModel GetProductsViewModelOnPage(int page, IEnumerable<ProductModel> allProducts);
     }

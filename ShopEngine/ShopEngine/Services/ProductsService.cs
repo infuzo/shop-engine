@@ -54,12 +54,7 @@ namespace ShopEngine.Services
                         cacheProvider.Set(cacheIdAllProductsArray, products, new MemoryCacheEntryOptions()
                             .SetAbsoluteExpiration(expiration));
                     }
-                    else
-                    {
-                        throw new Exception("Can't retrive products list from database.");
-                    }
                 }
-
                 return products;
             }
             catch (Exception exception)
@@ -139,53 +134,64 @@ namespace ShopEngine.Services
         /// <summary>
         /// If guid or vendor code are same or product name contains name string - it will return list of product.
         /// </summary>
-        /// <param name="guidNameOrVendorCode"></param>
+        /// <param name="findInProductsCache">If cache of products exists - it will search in this cache.</param>
         /// <returns></returns>
-        public async Task<IEnumerable<ProductModel>> FindProducts(string guidNameOrVendorCode)
+        public IEnumerable<ProductModel> FindProducts(
+            string guidNameOrVendorCode,
+            bool findInProductsCache)
         {
             if (string.IsNullOrEmpty(guidNameOrVendorCode))
             {
-                throw new ArgumentNullException("Can't find the product with null argument");
+                throw new ArgumentException("Can't find the product with null argument");
             }
 
-            var productModels = await FindProductByName(guidNameOrVendorCode);
+            IEnumerable<ProductModel> products = null;
+            //TODO: unite all to one "where"
+            if (findInProductsCache)
+            {
+                cacheProvider.TryGetValue(cacheIdAllProductsArray, out products);
+            }
+
+            if(products == null)
+            {
+                products = dbContext.Products.ToArray();
+            }
+
+            var productModels = FindProductByName(products, guidNameOrVendorCode);
 
             Guid guid;
             if (Guid.TryParse(guidNameOrVendorCode, out guid))
             {
-                productModels.AddRange(await FindProductByGuid(guid));
+                productModels.Union(FindProductByGuid(products, guid));
             }
             else
             {
                 int customVendorCode;
                 if(int.TryParse(guidNameOrVendorCode, out customVendorCode))
                 {
-                    productModels.AddRange(await FindProductByVendorCode(customVendorCode));
+                    productModels.Union(FindProductByVendorCode(products, customVendorCode));
                 }
             }
 
             return productModels;
         }
 
-        public Task<List<ProductModel>> FindProductByGuid(Guid guid)
+        public IEnumerable<ProductModel> FindProductByGuid(IEnumerable<ProductModel> products, Guid guid)
         {
             return dbContext.Products
-                .Where(product => product.Id == guid)
-                .ToListAsync();
+                .Where(product => product.Id == guid);
         }
 
-        public Task<List<ProductModel>> FindProductByName(string name)
+        public IEnumerable<ProductModel> FindProductByName(IEnumerable<ProductModel> products, string name)
         {
-            return dbContext.Products
-                .Where(product => product.Name.ToLower().Contains(name.ToLower()))
-                .ToListAsync();
+            return products
+                .Where(product => product.Name.ToLower().Contains(name.ToLower()));
         }
 
-        public Task<List<ProductModel>> FindProductByVendorCode(int vendorCode)
+        public IEnumerable<ProductModel> FindProductByVendorCode(IEnumerable<ProductModel> products, int vendorCode)
         {
-            return dbContext.Products
-                .Where(product => product.CustomVendorCode != null && product.CustomVendorCode == vendorCode)
-                .ToListAsync();
+            return products
+                .Where(product => product.CustomVendorCode != null && product.CustomVendorCode == vendorCode);
         }
 
         public ProductsViewModel GetProductsViewModelOnPage(int page, IEnumerable<ProductModel> allProducts)
@@ -214,6 +220,6 @@ namespace ShopEngine.Services
             };
         }
 
-        //TODO: add get by category sorted by alphabets product with pagination
+        //TODO: add get by category sorted by alphabets with pagination
     }
 }

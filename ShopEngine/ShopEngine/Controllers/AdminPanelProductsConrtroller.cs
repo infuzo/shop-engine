@@ -14,6 +14,8 @@ namespace ShopEngine.Controllers
     [Authorize(Roles = Consts.AdminRoleName)]
     public class AdminPanelProductsConrtroller : Controller
     {
+        private const string noProductsAfterSearch = "There are no products by this search request.";
+
         [Route("AdminPanel/Products")]
         public IActionResult Products(
             [FromServices] ILoggerFactory loggerFactory,
@@ -45,20 +47,25 @@ namespace ShopEngine.Controllers
         }
 
         [Route("AdminPanel/FindProducts")]
-        public async Task<IActionResult> FindProducts(
+        public IActionResult FindProducts(
             string guidNameOrVendorCode,
+            int page,
+            bool findInProductsCache,
             [FromServices] IProductsService productsService)
         {
-            //todo: pagination for products
-            //var result = await productsService.FindProducts(guidNameOrVendorCode);
-            //return new JsonResult(new ProductsViewModel
-            //{
-            //    Products = productsOnPage,
-            //    TotalProductsCount = productsCount,
-            //    CurrentPage = page,
-            //    TotalPagesCount = totalPagesCount
-            //});
-            throw new NotImplementedException();
+            try
+            {
+                var searchResult = productsService.FindProducts(guidNameOrVendorCode, findInProductsCache);
+                if(searchResult != null && searchResult.Any())
+                {
+                    return new JsonResult(productsService.GetProductsViewModelOnPage(page, searchResult)); 
+                }
+                return NotFound(noProductsAfterSearch);
+            }
+            catch(ArgumentException exception)
+            {
+                return NotFound(exception.Message);
+            }
         }
     }
 }
