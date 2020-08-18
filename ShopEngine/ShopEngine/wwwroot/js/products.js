@@ -30,28 +30,30 @@ const idPagesNavigation = "pagesNavigation";
 const idProductsListParent = "productsListParent";
 const idSearchInputField = "productSearchInput";
 const idSearchButton = "productSearchButton";
+const idSearchInput = "productSearchInput";
 
 const textWaitingForProductsList = "Products list are loading. Please wait";
 const textEmptySearchRequest = "Search request is empty";
 
 var productsList = new Array();
-var searchResults = new Array();
+var cachedSearchRequest = String;
+var isSearchRequestInAction = false;
 
 function loadProductsPageAndFillList(page = Number, fromCache = Boolean) {
 	setProductsListWaitingStatus(true);
 
 	getProductsOnPage(page, fromCache)
 		.then(content => {
-		setProductsListWaitingStatus(false);
-		initializeArrayAndPaginationFromJson(content);
-	})
-	.catch(content => {
-		setProductsListWaitingStatus(false);
-		alert(content);
-	});
+			setProductsListWaitingStatus(false);
+			initializeArrayAndPaginationFromJson(content, page => loadProductsPageAndFillList(page, true));
+		})
+		.catch(content => {
+			setProductsListWaitingStatus(false);
+			alert(content);
+		});
 }
 
-function initializeArrayAndPaginationFromJson(json = String) {
+function initializeArrayAndPaginationFromJson(json = String, onButtonChangePageClick) {
 	var response = JSON.parse(json);
 
 	productsList = new Array();
@@ -70,15 +72,20 @@ function initializeArrayAndPaginationFromJson(json = String) {
 			product.customVendorCode
 		));
 	}
-	renderPageOfProductsList(response.currentPage, response.totalPagesCount, response.totalProductsCount);
+	renderPageOfProductsList(
+		response.currentPage,
+		response.totalPagesCount,
+		response.totalProductsCount,
+		onButtonChangePageClick);
 }
 
 function renderPageOfProductsList(
 	page = Number,
 	totalPages = Number,
-	productsCount = Number) {
+	productsCount = Number,
+	onButtonChangePageClick) {
 
-	createPagesNavigationBar(page, totalPages, productsCount, page => loadProductsPageAndFillList(page, true));
+	createPagesNavigationBar(page, totalPages, productsCount, onButtonChangePageClick);
 	subscribeSearchButton();
 
 	var productsListParent = document.getElementById(idProductsListParent);
@@ -127,16 +134,49 @@ function createPagesNavigationBar(
 }
 
 function subscribeSearchButton() {
-	document.getElementById(idSearchButton).onclick = onSearchButtonClick;
+	document.getElementById(idSearchButton).onclick = () => onSearchButtonClick(null);
+	document.getElementById(idSearchInput).removeEventListener("keyup", onSearchButtonClick);
+	document.getElementById(idSearchInput).addEventListener("keyup", onSearchButtonClick);
+	//todo: focus and select all event
 }
 
-function onSearchButtonClick() {
-	if (document.getElementById(idSearchInputField).value.length == 0) {
+function onSearchButtonClick(event) {
+	if (event != null) {
+		if (event.keyCode != 13 || event.key != "Enter") {
+			return;
+		}
+	}
+
+	if (isSearchRequestInAction) {
+		return;
+	}
+
+	//TODO: reset search results button
+	var searchRequest = document.getElementById(idSearchInputField).value;
+	if (searchRequest.length == 0) {
 		alert(textEmptySearchRequest);
 		return;
 	}
 
+	cachedSearchRequest = searchRequest;
+	findProductsRequestByCached(1, true);
+}
 
+function findProductsRequestByCached(page = Number, fromCache = Boolean) {
+	isSearchRequestInAction = true;
+
+	setProductsListWaitingStatus(true);
+	findProducts(cachedSearchRequest, page, fromCache)
+		.then(content => {
+			setProductsListWaitingStatus(false);
+			isSearchRequestInAction = false;
+			initializeArrayAndPaginationFromJson(content, page => findProductsRequestByCached(page, true));
+		})
+		.catch(content => {
+			setProductsListWaitingStatus(false);
+			isSearchRequestInAction = false;
+			alert(content);
+		});
 }
 
 function setProductsListWaitingStatus(waiting = Boolean) {
@@ -156,6 +196,25 @@ function getProductsOnPage(pageNumber = Number, fromCache = Boolean) {
 	return new Promise(function (succeed, fail) {
 		let request = new XMLHttpRequest();
 		request.open("GET", "/AdminPanel/GetProductsPage?page=" + pageNumber + "&fromCache=" + fromCache, true);
+		request.addEventListener("load", function () {
+			if (request.status == 200) {
+				succeed(request.response);
+			}
+			else {
+				fail(new Error("Status code: " + request.status + "; Message: " + request.response));
+			}
+		});
+		request.addEventListener("error", function () {
+			fail(new Error("NetworkError"));
+		});
+		request.send();
+	});
+}
+
+function findProducts(guidNameOrVendorCode = String, page = Number, fromCache = Boolean) {
+	return new Promise(function (succeed, fail) {
+		let request = new XMLHttpRequest();
+		request.open("GET", "/AdminPanel/FindProducts?guidNameOrVendorCode=" + guidNameOrVendorCode + "&page=" + page + "&findInProductsCache=" + fromCache, true);
 		request.addEventListener("load", function () {
 			if (request.status == 200) {
 				succeed(request.response);
