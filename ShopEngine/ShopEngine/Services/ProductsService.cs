@@ -146,7 +146,6 @@ namespace ShopEngine.Services
             }
 
             IEnumerable<ProductModel> products = null;
-            //TODO: unite all to one "where"
             if (findInProductsCache)
             {
                 cacheProvider.TryGetValue(cacheIdAllProductsArray, out products);
@@ -162,14 +161,14 @@ namespace ShopEngine.Services
             Guid guid;
             if (Guid.TryParse(guidNameOrVendorCode, out guid))
             {
-                productModels.Union(FindProductByGuid(products, guid));
+                productModels = productModels.Union(FindProductByGuid(products, guid));
             }
             else
             {
                 int customVendorCode;
                 if(int.TryParse(guidNameOrVendorCode, out customVendorCode))
                 {
-                    productModels.Union(FindProductByVendorCode(products, customVendorCode));
+                    productModels = productModels.Union(FindProductByVendorCode(products, customVendorCode));
                 }
             }
 
@@ -178,7 +177,7 @@ namespace ShopEngine.Services
 
         public IEnumerable<ProductModel> FindProductByGuid(IEnumerable<ProductModel> products, Guid guid)
         {
-            return dbContext.Products
+            return products
                 .Where(product => product.Id == guid);
         }
 
