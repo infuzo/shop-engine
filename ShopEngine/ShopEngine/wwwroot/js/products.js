@@ -135,9 +135,17 @@ function createPagesNavigationBar(
 
 function subscribeSearchButton() {
 	document.getElementById(idSearchButton).onclick = () => onSearchButtonClick(null);
-	document.getElementById(idSearchInput).removeEventListener("keyup", onSearchButtonClick);
-	document.getElementById(idSearchInput).addEventListener("keyup", onSearchButtonClick);
-	//todo: focus and select all event
+
+	var searchInput = document.getElementById(idSearchInput);
+	searchInput.removeEventListener("keyup", onSearchButtonClick);
+	searchInput.addEventListener("keyup", onSearchButtonClick);
+
+	searchInput.removeEventListener("focus", onSearchInputFocus);
+	searchInput.addEventListener("focus", onSearchInputFocus);
+}
+
+function onSearchInputFocus(event) {
+	document.getElementById(idSearchInput).select();
 }
 
 function onSearchButtonClick(event) {
