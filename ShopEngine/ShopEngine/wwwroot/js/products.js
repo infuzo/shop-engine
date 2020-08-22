@@ -31,13 +31,15 @@ const idProductsListParent = "productsListParent";
 const idSearchInputField = "productSearchInput";
 const idSearchButton = "productSearchButton";
 const idSearchInput = "productSearchInput";
+const idClearSearchResultsButton = "clearSearchResultsButton";
 
 const textWaitingForProductsList = "Products list are loading. Please wait";
 const textEmptySearchRequest = "Search request is empty";
 
 var productsList = new Array();
-var cachedSearchRequest = String;
+var cachedSearchRequest = String("");
 var isSearchRequestInAction = false;
+var defaulSearchInputWidth = Number(-1);
 
 function loadProductsPageAndFillList(page = Number, fromCache = Boolean) {
 	setProductsListWaitingStatus(true);
@@ -87,6 +89,7 @@ function renderPageOfProductsList(
 
 	createPagesNavigationBar(page, totalPages, productsCount, onButtonChangePageClick);
 	subscribeSearchButton();
+	setClearSerchResultButtonVisibilty();
 
 	var productsListParent = document.getElementById(idProductsListParent);
 	removeAllChildren(productsListParent);
@@ -133,6 +136,20 @@ function createPagesNavigationBar(
 	pagesNavigation.appendChild(nextButton);
 }
 
+function setClearSerchResultButtonVisibilty() {
+	var searchInput = document.getElementById(idSearchInputField);
+	var clearButton = document.getElementById(idClearSearchResultsButton);
+
+	if (defaulSearchInputWidth < 0) {
+		defaulSearchInputWidth = searchInput.clientWidth;
+	}
+
+	var visible = cachedSearchRequest != null && cachedSearchRequest.length > 0;
+
+	searchInput.style.width = (visible ? defaulSearchInputWidth : defaulSearchInputWidth + clearButton.clientWidth) + "px";
+	clearButton.style.display = visible ? "block" : "none";
+}
+
 function subscribeSearchButton() {
 	document.getElementById(idSearchButton).onclick = () => onSearchButtonClick(null);
 
@@ -142,6 +159,9 @@ function subscribeSearchButton() {
 
 	searchInput.removeEventListener("focus", onSearchInputFocus);
 	searchInput.addEventListener("focus", onSearchInputFocus);
+
+	var clearSearchResultsButton = document.getElementById(idClearSearchResultsButton);
+	clearSearchResultsButton.onclick = onClearSearchResultsButtonClick;
 }
 
 function onSearchInputFocus(event) {
@@ -159,7 +179,6 @@ function onSearchButtonClick(event) {
 		return;
 	}
 
-	//TODO: reset search results button
 	var searchRequest = document.getElementById(idSearchInputField).value;
 	if (searchRequest.length == 0) {
 		alert(textEmptySearchRequest);
@@ -168,6 +187,16 @@ function onSearchButtonClick(event) {
 
 	cachedSearchRequest = searchRequest;
 	findProductsRequestByCached(1, true);
+}
+
+function onClearSearchResultsButtonClick(event) {
+	if (cachedSearchRequest == null || cachedSearchRequest.length == 0) {
+		return;
+	}
+
+	cachedSearchRequest = null;
+	document.getElementById(idSearchInputField).value = "";
+	loadProductsPageAndFillList(1, false);
 }
 
 function findProductsRequestByCached(page = Number, fromCache = Boolean) {

@@ -155,10 +155,12 @@ div.categoriesContainer {
 	margin-top: 1px;
 }
 .productsListSearchForm input {
-	width: 290px;
+	width: 200px;
 }
 .productsListSearchForm button {
 	width: 80px;
 	float: right;
 	margin-right: 0px;
+	margin-left: 5px;
+	display: inline-block;
 }
