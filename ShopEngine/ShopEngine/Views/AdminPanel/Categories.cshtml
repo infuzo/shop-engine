@@ -4,30 +4,30 @@
 }
 @model IEnumerable<ShopEngine.Models.CategoryModel>
 
-	<div class="categories">
-		<div class="bordered categoriesContainer">
-			<br /><strong style="margin: 5px 5px;">List of categories:</strong>
-			<div class="bordered" id="categoriesListParent"></div>
-			<button style="display: block; margin: 5px auto;" onclick="addCategory(event)">Add category</button>
-		</div> <div class="bordered categoriesContainer selectedCategoryForm" style="margin-left: 5px;">
-			<br />
-			<strong id="selectedCategoryHeader">HEADER_UNDEFINED_CONTENT</strong> <br /><br />
-			<label for="selectedCategoryName">Name: </label><input type="text" required="required" max="60" id="selectedCategoryName" /><br /><br />
-			<label for="selectedCategoryDescription">Description: </label><textarea required="required" maxlength="250" id="selectedCategoryDescription"></textarea><br /><br />
-			<label for="selectedCategorySubcatGuid">Subcategory guid: </label><input type="text" id="selectedCategorySubcatGuid" /><br />
-			<span><em>Paste guid of desired parent category here</em></span><br /><br /> <!--TODO: DropDownList-->
 
-			<label for="selectedCategoryGuid">GUID: </label><input type="text" id="selectedCategoryGuid" readonly="readonly" /><br /><br />
+<div class="bordered leftList">
+	<br /><strong style="margin: 5px 5px;">List of categories:</strong>
+	<button style="display: block; margin: 5px auto;" onclick="addCategory(event)">Add category</button>
+	<div class="bordered" id="listItemsParent"></div>
+</div>
+<div class="selectedItemContent selectedItemForm" style="margin-left: 5px;">
+	<br />
+	<strong id="selectedCategoryHeader">HEADER_UNDEFINED_CONTENT</strong> <br /><br />
+	<label for="selectedCategoryName">Name: </label><input type="text" required="required" max="60" id="selectedCategoryName" /><br /><br />
+	<label for="selectedCategoryDescription">Description: </label><textarea required="required" maxlength="250" id="selectedCategoryDescription"></textarea><br /><br />
+	<label for="selectedCategorySubcatGuid">Subcategory guid: </label><input type="text" id="selectedCategorySubcatGuid" /><br />
+	<span><em>Paste guid of desired parent category here</em></span><br /><br /> <!--TODO: DropDownList-->
 
-			<br />
-			<button style="display: none;" id="selectedCategoryAdd">UNDEFINED_ACTION_1</button> <button style="display: none;" id="selectedCategoryRemove">UNDEFINED_ACTION_2</button>
-		</div>
-	</div>
+	<label for="selectedCategoryGuid">GUID: </label><input type="text" id="selectedCategoryGuid" readonly="readonly" /><br /><br />
+
+	<br />
+	<button style="display: none;" id="selectedCategoryAdd">UNDEFINED_ACTION_1</button> <button style="display: none;" id="selectedCategoryRemove">UNDEFINED_ACTION_2</button>
+</div>
 
 <script>
 	const undefinedGuid = "00000000-0000-0000-0000-000000000000";
 
-	const idCategoriesListParent = "categoriesListParent";
+	const idCategoriesListParent = "listItemsParent";
 	const idSelectedCategoryHeader = "selectedCategoryHeader";
 	const idSelectedCategoryName = "selectedCategoryName";
 	const idSelectedCategoryDescription = "selectedCategoryDescription";
@@ -88,7 +88,7 @@
 	function removeCategoryFromList(category = Category) {
 		var elementIndex = categories.indexOf(category);
 		if (elementIndex != -1) {
-			categories.splice(elementIndex, 1); 
+			categories.splice(elementIndex, 1);
 		}
 	}
 

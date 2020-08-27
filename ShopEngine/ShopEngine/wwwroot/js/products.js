@@ -26,20 +26,20 @@
 	}
 }
 
-const idPagesNavigation = "pagesNavigation";
-const idProductsListParent = "productsListParent";
+const classPagesNavigation = "pagesNavigation";
+const idProductsListParent = "listItemsParent";
 const idSearchInputField = "productSearchInput";
 const idSearchButton = "productSearchButton";
 const idSearchInput = "productSearchInput";
 const idClearSearchResultsButton = "clearSearchResultsButton";
+const idClearSearchResultsButtonContainer = "clearSearchResultsButtonContainer";
 
 const textWaitingForProductsList = "Products list are loading. Please wait";
 const textEmptySearchRequest = "Search request is empty";
 
-var productsList = new Array();
+var productsList = new Array(Product);
 var cachedSearchRequest = String("");
 var isSearchRequestInAction = false;
-var defaulSearchInputWidth = Number(-1);
 
 function loadProductsPageAndFillList(page = Number, fromCache = Boolean) {
 	setProductsListWaitingStatus(true);
@@ -58,7 +58,7 @@ function loadProductsPageAndFillList(page = Number, fromCache = Boolean) {
 function initializeArrayAndPaginationFromJson(json = String, onButtonChangePageClick) {
 	var response = JSON.parse(json);
 
-	productsList = new Array();
+	productsList = new Array(Product);
 	for (product of response.products) {
 		productsList.push(new Product(
 			product.id,
@@ -97,7 +97,7 @@ function renderPageOfProductsList(
 	for (product of productsList) {
 		var newProductLink = document.createElement("a");
 		newProductLink.href = "#";
-		//todo: add event
+		newProductLink.onclick = () => showProductInfo(product);
 		newProductLink.innerText = `${product.Name} (${product.CategoriesChain})`;
 
 		productsListParent.appendChild(newProductLink);
@@ -113,7 +113,7 @@ function createPagesNavigationBar(
 	productsCount = Number,
 	onButtonChangePageClick) {
 
-	var pagesNavigation = document.getElementById(idPagesNavigation);
+	var pagesNavigation = document.getElementsByClassName(classPagesNavigation)[0];
 	removeAllChildren(pagesNavigation);
 
 	var previousButton = document.createElement("button");
@@ -137,17 +137,9 @@ function createPagesNavigationBar(
 }
 
 function setClearSerchResultButtonVisibilty() {
-	var searchInput = document.getElementById(idSearchInputField);
-	var clearButton = document.getElementById(idClearSearchResultsButton);
-
-	if (defaulSearchInputWidth < 0) {
-		defaulSearchInputWidth = searchInput.clientWidth;
-	}
-
 	var visible = cachedSearchRequest != null && cachedSearchRequest.length > 0;
 
-	searchInput.style.width = (visible ? defaulSearchInputWidth : defaulSearchInputWidth + clearButton.clientWidth) + "px";
-	clearButton.style.display = visible ? "block" : "none";
+	document.getElementById(idClearSearchResultsButtonContainer).style.display = visible ? "table-cell" : "none";
 }
 
 function subscribeSearchButton() {
@@ -199,6 +191,10 @@ function onClearSearchResultsButtonClick(event) {
 	loadProductsPageAndFillList(1, false);
 }
 
+function showProductInfo(product = Product) {
+	
+}
+
 function findProductsRequestByCached(page = Number, fromCache = Boolean) {
 	isSearchRequestInAction = true;
 
@@ -221,7 +217,7 @@ function setProductsListWaitingStatus(waiting = Boolean) {
 	var listOfProductsParent = document.getElementById(idProductsListParent);
 	removeAllChildren(listOfProductsParent);
 	if (waiting) {
-		removeAllChildren(document.getElementById(idPagesNavigation));
+		removeAllChildren(document.getElementsByClassName(classPagesNavigation)[0]);
 
 		let waitingCaption = document.createElement("span");
 		waitingCaption.innerText = textWaitingForProductsList;
