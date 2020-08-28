@@ -5,60 +5,45 @@
 @model int
 
 
-	<div class="leftList bordered">
-		@*TODO: partial view*@
-		<br /><strong style="margin: 5px 5px;">List of products:</strong>
-		<table class="productsListSearchForm">
-			<tr>
-				<td>
-					<input type="text" id="productSearchInput" placeholder="Enter the name, guid or vendor code" />
-				</td>
-				<td class="searchButtonContainer" id="clearSearchResultsButtonContainer">
-					<button id="clearSearchResultsButton">Clear</button>
-				</td>
-				<td class="searchButtonContainer">
-					<button id="productSearchButton">Search</button>
-				</td>
-			</tr>
-		</table>
-		<div class="bordered" id="listItemsParent"></div>
-		<div class="pagesNavigation"></div>
-		<button style="display: block; margin: 5px auto;" onclick="addCategory(event)">Add product</button>
-	@*
-	<div class="bordered categoriesContainer">
-		<br /><strong style="margin: 5px 5px;">List of products:</strong>
-		<div class="productsListSearchForm">
-			<input type="text" id="productSearchInput" placeholder="Enter the name, guid or vendor code" /><button id="productSearchButton">Search</button><button id="clearSearchResultsButton">Clear</button>
-		</div>
-		<div class="bordered" id="productsListParent"></div>
-		<div class="productsPagesNavigation" id="pagesNavigation"></div>
-		<button style="display: block; margin: 5px auto;" onclick="addCategory(event)">Add product</button>
-	</div> <div class="bordered categoriesContainer selectedCategoryForm" style="margin-left: 5px;">
-		<br />
-		<strong id="selectedProductName">HEADER_UNDEFINED_CONTENT</strong> <br /><br />
-		<label for="selectedProductName">Name: </label><input type="text" required="required" max="60" id="selectedProductName" /><br /><br />
-		<label for="selectedProductDescription">Description: </label><textarea required="required" maxlength="250" id="selectedProductDescription"></textarea><br /><br />
-		<label for="selectedCategoryGuid">Category guid: </label><input type="text" id="selectedCategoryGuid" /><br />
-		<span><em>Paste guid of desired category here</em></span><br /><br /> <!--TODO: DropDownList-->
-		<!--List for edit specifications-->
-		<label for="selectedProductPrice">Price: </label><input type="number" id="selectedProductPrice" /><br /><br />
-		<label for="selectedProductCategoriesChain">Categories chain: </label><input type="text" id="selectedProductCategoriesChain" readonly="readonly" /><br /><br />
-		<label for="selectedProductInStock">In stock: </label><input type="checkbox" id="selectedProductInStock" /><br /><br />
-		<!--List for edit icon urls-->
-		<label for="selectedProductIconUrl">Price: </label><input type="text" id="selectedProductIconUrl" /><br /><br />
-		<label for="selectedProductCustomVendorCode">Price: </label><input type="text" id="selectedProductCustomVendorCode" /><br /><br />
-
-
-
-		<label for="selectedProductGuid">GUID: </label><input type="text" id="selectedProductGuid" readonly="readonly" /><br /><br />
-
-		<br />
-		<button style="display: none;" id="selectedCategoryAdd">UNDEFINED_ACTION_1</button> <button style="display: none;" id="selectedCategoryRemove">UNDEFINED_ACTION_2</button>
-	</div>*@
+<div class="leftList bordered">
+	@*TODO: partial view*@
+	<br /><strong style="margin: 5px 5px;">List of products:</strong>
+	<table class="productsListSearchForm">
+		<tr>
+			<td>
+				<input type="text" id="productSearchInput" placeholder="Enter the name, guid or vendor code" />
+			</td>
+			<td class="searchButtonContainer" id="clearSearchResultsButtonContainer">
+				<button id="clearSearchResultsButton">Clear</button>
+			</td>
+			<td class="searchButtonContainer">
+				<button id="productSearchButton">Search</button>
+			</td>
+		</tr>
+	</table>
+	<div class="bordered" id="listItemsParent"></div>
+	<div class="pagesNavigation"></div>
+	<button style="display: block; margin: 5px auto;" onclick="addCategory(event)">Add product</button>
 </div>
+<div class="selectedItemContent selectedItemForm">
+	<br />
+	<strong id="selectedProductHeader">HEADER_UNDEFINED_CONTENT</strong> <br /><br />
+	<label for="selectedProductName">Name: </label><input type="text" required="required" max="60" id="selectedProductName" /><br /><br />
+	<label for="selectedProductDescription">Description: </label><textarea required="required" maxlength="250" id="selectedProductDescription"></textarea><br /><br />
+	<label for="selectedProductCategoryGuid">Category guid: </label><input type="text" id="selectedProductCategoryGuid" required="required" /><br />
+	<span><em>Paste guid of desired category here</em></span><br /><br /> <!--TODO: DropDownList-->
+	<!--List for edit specifications-->
+	<label for="selectedProductPrice">Price: </label><input type="number" id="selectedProductPrice" required="required"/><br /><br />
+	<label for="selectedProductCategoriesChain">Categories chain: </label><i id="selectedProductCategoriesChain"></i><br /><br />
+	<label for="selectedProductInStock">In stock: </label><input type="checkbox" id="selectedProductInStock" /><br /><br />
+	<!--List for edit icon urls-->
+	<label for="selectedProductIconUrl">Icon URL: </label><input type="text" id="selectedProductIconUrl" required="required"/><br /><br />
+	<label for="selectedProductCustomVendorCode">Custom vendor code: </label><input type="text" id="selectedProductCustomVendorCode" /><br /><br />
+</div>
+
 
 <script src="~/js/products.js"></script>
 
 <script>
-	loadProductsPageAndFillList(@Model, false);	
+loadProductsPageAndFillList(@Model, false);
 </script>

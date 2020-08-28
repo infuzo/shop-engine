@@ -37,6 +37,16 @@ const idClearSearchResultsButtonContainer = "clearSearchResultsButtonContainer";
 const textWaitingForProductsList = "Products list are loading. Please wait";
 const textEmptySearchRequest = "Search request is empty";
 
+const idSelectedProductHeader = "selectedProductHeader";
+const idSelectedProductName = "selectedProductName";
+const idSelectedProductDescription = "selectedProductDescription";
+const idSelectedProductCategoryGuid = "selectedProductCategoryGuid";
+const idSelectedProductPrice = "selectedProductPrice";
+const idSelectedProductCategoriesChain = "selectedProductCategoriesChain";
+const idSelectedProductInStock = "selectedProductInStock";
+const idSelectedProductIconUrl = "selectedProductIconUrl";
+const idSelectedProductCustomVendorCode = "selectedProductCustomVendorCode";
+
 var productsList = new Array(Product);
 var cachedSearchRequest = String("");
 var isSearchRequestInAction = false;
@@ -58,7 +68,7 @@ function loadProductsPageAndFillList(page = Number, fromCache = Boolean) {
 function initializeArrayAndPaginationFromJson(json = String, onButtonChangePageClick) {
 	var response = JSON.parse(json);
 
-	productsList = new Array(Product);
+	productsList = new Array();
 	for (product of response.products) {
 		productsList.push(new Product(
 			product.id,
@@ -74,6 +84,7 @@ function initializeArrayAndPaginationFromJson(json = String, onButtonChangePageC
 			product.customVendorCode
 		));
 	}
+
 	renderPageOfProductsList(
 		response.currentPage,
 		response.totalPagesCount,
@@ -95,16 +106,21 @@ function renderPageOfProductsList(
 	removeAllChildren(productsListParent);
 
 	for (product of productsList) {
-		var newProductLink = document.createElement("a");
-		newProductLink.href = "#";
-		newProductLink.onclick = () => showProductInfo(product);
-		newProductLink.innerText = `${product.Name} (${product.CategoriesChain})`;
-
-		productsListParent.appendChild(newProductLink);
-
-		var newBr = document.createElement("br");
-		productsListParent.appendChild(newBr);
+		createShowProductLink(product, productsListParent);
 	}
+}
+
+function createShowProductLink(product = Product, parent = HTMLElement) {
+	var newProductLink = document.createElement("a");
+	newProductLink.href = "#";
+	var productToShow = product;
+	newProductLink.onclick = () => showProductInfo(productToShow);
+	newProductLink.innerText = `${product.Name} (${product.CategoriesChain})`;
+
+	parent.appendChild(newProductLink);
+
+	var newBr = document.createElement("br");
+	parent.appendChild(newBr);
 }
 
 function createPagesNavigationBar(
@@ -178,6 +194,7 @@ function onSearchButtonClick(event) {
 	}
 
 	cachedSearchRequest = searchRequest;
+	setClearSerchResultButtonVisibilty();
 	findProductsRequestByCached(1, true);
 }
 
@@ -192,7 +209,41 @@ function onClearSearchResultsButtonClick(event) {
 }
 
 function showProductInfo(product = Product) {
-	
+	document.getElementById(idSelectedProductHeader).innerText = product.Name;
+	document.getElementById(idSelectedProductName).value = product.Name;
+	document.getElementById(idSelectedProductDescription).value = product.Description;
+	document.getElementById(idSelectedProductCategoryGuid).value = product.CategoryId;
+	document.getElementById(idSelectedProductPrice).value = product.Price;
+	document.getElementById(idSelectedProductCategoriesChain).innerText = product.CategoriesChain;
+	document.getElementById(idSelectedProductInStock).value = product.InStock;
+
+	var iconsArray = null;
+	try {
+		iconsArray = JSON.parse(product.ImagesUrlJson).urls;		
+	}
+	catch (e) {
+		console.error(e);
+	}
+
+	var firstIconUrl = "";
+	if (iconsArray != null && iconsArray.length > 0) {
+		firstIconUrl = iconsArray[0];
+	}
+
+	document.getElementById(idSelectedProductIconUrl).value = firstIconUrl; 
+	document.getElementById(idSelectedProductCustomVendorCode).value = product.CustomVendorCode;
+}
+
+function clearProductInfo() {
+	document.getElementById(idSelectedProductHeader).innerText = "HEADER_UNDEFINED_CONTENT";
+	document.getElementById(idSelectedProductName).value = "";
+	document.getElementById(idSelectedProductDescription).value = "";
+	document.getElementById(idSelectedProductCategoryGuid).value = "";
+	document.getElementById(idSelectedProductPrice).value = null;
+	document.getElementById(idSelectedProductCategoriesChain).innerText = "";
+	document.getElementById(idSelectedProductInStock).value = false;
+	document.getElementById(idSelectedProductIconUrl).value = ""; 
+	document.getElementById(idSelectedProductCustomVendorCode).value = "";
 }
 
 function findProductsRequestByCached(page = Number, fromCache = Boolean) {
