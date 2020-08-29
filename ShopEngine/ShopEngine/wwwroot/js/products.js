@@ -195,6 +195,7 @@ function onSearchButtonClick(event) {
 
 	cachedSearchRequest = searchRequest;
 	setClearSerchResultButtonVisibilty();
+	clearProductInfo();
 	findProductsRequestByCached(1, true);
 }
 
