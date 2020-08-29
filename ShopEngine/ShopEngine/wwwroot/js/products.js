@@ -215,7 +215,7 @@ function showProductInfo(product = Product) {
 	document.getElementById(idSelectedProductCategoryGuid).value = product.CategoryId;
 	document.getElementById(idSelectedProductPrice).value = product.Price;
 	document.getElementById(idSelectedProductCategoriesChain).innerText = product.CategoriesChain;
-	document.getElementById(idSelectedProductInStock).value = product.InStock;
+	document.getElementById(idSelectedProductInStock).checked = product.InStock;
 
 	var iconsArray = null;
 	try {
@@ -241,7 +241,7 @@ function clearProductInfo() {
 	document.getElementById(idSelectedProductCategoryGuid).value = "";
 	document.getElementById(idSelectedProductPrice).value = null;
 	document.getElementById(idSelectedProductCategoriesChain).innerText = "";
-	document.getElementById(idSelectedProductInStock).value = false;
+	document.getElementById(idSelectedProductInStock).checked = false;
 	document.getElementById(idSelectedProductIconUrl).value = ""; 
 	document.getElementById(idSelectedProductCustomVendorCode).value = "";
 }
