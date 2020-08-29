@@ -115,7 +115,7 @@ namespace ShopEngine.Services
 
         private async Task<String> GetCategoriesChainOfProduct(ProductModel product)
         {
-            string result = string.Empty;
+            var result = new StringBuilder();
 
             Guid? subCatId = product.CategoryId;
             while (subCatId != null)
@@ -123,12 +123,16 @@ namespace ShopEngine.Services
                 var currentCategory = await dbContext.Categories.FirstOrDefaultAsync(c => c.Id == subCatId.Value);
                 if (currentCategory != null)
                 {
-                    result = currentCategory.Name + (result.Length == 0 ? string.Empty : " - ") + result;
+                    result.Append(currentCategory.Name);
+                    if(currentCategory.SubCategoryGuid != null)
+                    {
+                        result.Append(" - ");
+                    }
                 }
                 subCatId = currentCategory.SubCategoryGuid;
             }
 
-            return result;
+            return result.ToString();
         }
 
         /// <summary>
