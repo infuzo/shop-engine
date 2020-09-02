@@ -3,32 +3,33 @@
 }
 @model SiteAboutModel
 
-<div class="centerForm bordered">
-	<form method="post" asp-action="SiteAbout" asp-controller="AdminPanel">
-		<div asp-validation-summary="ModelOnly"></div>
-		<input type="hidden" asp-for="Id" />
-		<div>
-			<label asp-for="Name">Site name:</label><input asp-for="Name" /><br />
-			<span asp-validation-for="Name"></span>
-		</div>
-		<div>
-			<label asp-for="Description">Short description:</label><textarea asp-for="Description"></textarea><br />
-			<span asp-validation-for="Description"></span>
-		</div>
-		<div>
-			<label>Current Logo:</label> @if (string.IsNullOrEmpty(Model?.LogoUrl))
-			{ <text>Undefined</text> }
-			else { <text><img src="@Model.LogoUrl" alt="Not found" width="100" /></text> }
-			<br />
-			<label asp-for="LogoUrl">Logo url:</label><input asp-for="LogoUrl" /><br />
-			<span asp-validation-for="LogoUrl"></span>
-		</div>
-		<div>
-			<label asp-for="ContactsInfo">Contacts:</label><textarea asp-for="ContactsInfo"></textarea><br />
-			<span asp-validation-for="ContactsInfo"></span>
-		</div>
-		<div>
-			<input type="submit" value="Save" />
-		</div>
-	</form>
-</div>
+	<div class="centerForm bordered">
+		<form method="post" asp-action="SiteAbout" asp-controller="AdminPanel" enctype="multipart/form-data">
+			<div asp-validation-summary="ModelOnly"></div>
+			<input type="hidden" asp-for="Id" />
+			<div>
+				<label asp-for="Name">Site name:</label><input asp-for="Name" /><br />
+				<span asp-validation-for="Name"></span>
+			</div>
+			<div>
+				<label asp-for="Description">Short description:</label><textarea asp-for="Description"></textarea><br />
+				<span asp-validation-for="Description"></span>
+			</div>
+			<div>
+				<label>Current Logo:</label> @if (string.IsNullOrEmpty(Model?.LogoUrl))
+				{<text>Undefined</text> }
+				else
+				{ <text><img src="@Model.LogoUrl" alt="Not found" width="100" /></text>			}
+				<input asp-for="LogoImage" type="file" accept=".png" />
+				<span asp-validation-for="LogoImage"></span>
+			</div>
+			<div>
+				<label asp-for="ContactsInfo">Contacts:</label><textarea asp-for="ContactsInfo"></textarea><br />
+				<span asp-validation-for="ContactsInfo"></span>
+			</div>
+			<div>
+				<input type="submit" value="Save" />
+			</div>
+		</form>
+		<br />
+	</div>

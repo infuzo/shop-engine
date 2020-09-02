@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ShopEngine.Models
 {
@@ -13,6 +15,8 @@ namespace ShopEngine.Models
         [Required]
         public string Description { get; set; }
         public string LogoUrl { get; set; }
+        [NotMapped]
+        public IFormFile LogoImage { get; set; }
         [Required]
         public string ContactsInfo { get; set; }
     }

@@ -37,6 +37,7 @@ namespace ShopEngine
                  .AddDefaultTokenProviders();
 
             services.AddTransient<IProductsService, ProductsService>();
+            services.AddTransient<IFileUploadService, FileUploadService>();
 
             services.AddControllersWithViews();
         }

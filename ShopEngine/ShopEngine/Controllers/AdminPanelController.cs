@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using ShopEngine.Models;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -13,6 +14,8 @@ namespace ShopEngine.Controllers
     [Authorize(Roles = Consts.AdminRoleName)]
     public class AdminPanelController : Controller
     {
+        public const string ModelErrorInvalidImageType = "Invalid logo image type. Need to use only PNG.";
+
         [Route("Account/Login")] //TODO: remove after adding common users auth
         [AllowAnonymous]
         [HttpGet]
@@ -82,6 +85,19 @@ namespace ShopEngine.Controllers
             {
                 return View(model);
             }
+
+            if(model.LogoImage != null)
+            {
+                if(model.LogoImage.ContentType != "image/png")
+                {
+                    ModelState.AddModelError(nameof(model.LogoImage), ModelErrorInvalidImageType);
+                    return View(model);
+                }
+
+                //todo: upload file
+            }
+
+            //TODO: check logo url
 
             var siteAboutsRowsCount = await dbContext.SiteAbouts.CountAsync();
             if (siteAboutsRowsCount == 0)
