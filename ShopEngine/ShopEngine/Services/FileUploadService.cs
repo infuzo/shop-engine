@@ -15,19 +15,20 @@ namespace ShopEngine.Services
 
         IWebHostEnvironment environment;
         ILoggerFactory loggerFactory;
-        HttpContext context;
 
         public FileUploadService(
             IWebHostEnvironment environment,
-            ILoggerFactory loggerFactory,
-            HttpContext context)
+            ILoggerFactory loggerFactory)
         {
             this.environment = environment;
             this.loggerFactory = loggerFactory;
-            this.context = context;
         }
 
-        public async Task<string> Upload(string directory, IFormFile formFile)
+        public async Task<string> Upload(
+            string directory, 
+            string nameWithExtension, 
+            IFormFile formFile,
+            HttpContext context)
         {
             if (string.IsNullOrEmpty(directory) || directory.Contains("\\") || directory.Contains("/"))
             {
@@ -41,7 +42,7 @@ namespace ShopEngine.Services
 
             try
             {
-                var path = Path.Combine(environment.WebRootPath, directory, formFile.Name);
+                var path = Path.Combine(environment.WebRootPath, directory, nameWithExtension);
 
                 using (var fileStream = new FileStream(path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
                 {
@@ -51,10 +52,10 @@ namespace ShopEngine.Services
             catch (Exception exception)
             {
                 loggerFactory.CreateLogger<FileUploadService>().LogError(exception.ToString());
-                throw new Exception();
+                throw exception;
             }
 
-            return $"{context.Request.Host.ToString()}/{directory}/{formFile.Name}";
+            return $"http://{context.Request.Host.ToString()}/{directory}/{nameWithExtension}";
         }
     }
 }

@@ -9,8 +9,12 @@ namespace ShopEngine.Services
     public interface IFileUploadService
     {
         /// <summary>
-        /// Returns full URL of new file.
+        /// Returns full URL of new file. Overwrites if file exists.
         /// </summary>
-        public Task<string> Upload(string directory, IFormFile formFile);
+        public Task<string> Upload(
+            string directory, 
+            string nameWithExtension, 
+            IFormFile formFile,
+            HttpContext context);
     }
 }

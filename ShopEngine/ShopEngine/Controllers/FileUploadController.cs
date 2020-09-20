@@ -19,13 +19,14 @@ namespace ShopEngine.Controllers
         [HttpPost]
         public async Task<IActionResult> Upload(
             string directory,
+            string nameWithExtension,
             IFormFile formFile,
             [FromServices] IFileUploadService fileUploadService)
         {
             string url = null;
             try
             {
-                url = await fileUploadService.Upload(directory, formFile);
+                url = await fileUploadService.Upload(directory, nameWithExtension, formFile, Request.HttpContext);
             }
             catch(ArgumentException exception)
             {

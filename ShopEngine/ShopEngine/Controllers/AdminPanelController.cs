@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using ShopEngine.Models;
+using ShopEngine.Services;
+using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -79,13 +81,16 @@ namespace ShopEngine.Controllers
         [HttpPost]
         public async Task<IActionResult> SiteAbout(
             SiteAboutModel model,
-            [FromServices] ShopEngineDbContext dbContext)
+            [FromServices] ShopEngineDbContext dbContext,
+            [FromServices] IFileUploadService fileUploadService,
+            [FromServices] IConfiguration configuration)
         {
             if(ModelState.ErrorCount > 0)
             {
                 return View(model);
             }
 
+            string newLogoUrl = null;
             if(model.LogoImage != null)
             {
                 if(model.LogoImage.ContentType != "image/png")
@@ -94,10 +99,24 @@ namespace ShopEngine.Controllers
                     return View(model);
                 }
 
-                //todo: upload file
+                try
+                {
+                    var directoryName = configuration.GetSection("Graphics:DirectoryName").Value;
+                    var fileName = configuration.GetSection("Graphics:SiteLogoFileName").Value;
+
+                    newLogoUrl = await fileUploadService.Upload(
+                        directoryName, fileName, model.LogoImage, Request.HttpContext);
+                }
+                catch(Exception exception)
+                {
+                    ModelState.AddModelError(nameof(model.LogoImage), exception.Message);
+                }
             }
 
-            //TODO: check logo url
+            if (!string.IsNullOrEmpty(newLogoUrl))
+            {
+                model.LogoUrl = newLogoUrl;
+            }
 
             var siteAboutsRowsCount = await dbContext.SiteAbouts.CountAsync();
             if (siteAboutsRowsCount == 0)
