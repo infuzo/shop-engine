@@ -33,15 +33,19 @@
 	<label for="selectedProductCategoryGuid">Category guid: </label><input type="text" id="selectedProductCategoryGuid" required="required" /><br />
 	<span><em>Paste guid of desired category here</em></span><br /><br /> <!--TODO: DropDownList-->
 	<!--List for edit specifications-->
-	<label for="selectedProductPrice">Price: </label><input type="number" id="selectedProductPrice" required="required"/><br /><br />
+	<label for="selectedProductPrice">Price: </label><input type="number" id="selectedProductPrice" required="required" /><br /><br />
 	<label for="selectedProductCategoriesChain">Categories chain: </label><i id="selectedProductCategoriesChain"></i><br /><br />
 	<label for="selectedProductInStock">In stock: </label><input type="checkbox" id="selectedProductInStock" /><br /><br />
 	<!--List for edit icon urls-->
-	<label for="selectedProductIconUrl">Icon URL: </label><input type="text" id="selectedProductIconUrl" required="required"/><br /><br />
+	<label for="selectedProductIconUrl">Icon URL: </label><input type="text" id="selectedProductIconUrl" required="required" /><br /><br />
+
+	<div id="productListImages"></div>
+
 	<label for="selectedProductCustomVendorCode">Custom vendor code: </label><input type="text" id="selectedProductCustomVendorCode" /><br /><br />
 </div>
 
 
+<script src="~/js/EditableListOfImagesView.js"></script>
 <script src="~/js/products.js"></script>
 
 <script>

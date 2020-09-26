@@ -45,14 +45,21 @@ const idSelectedProductPrice = "selectedProductPrice";
 const idSelectedProductCategoriesChain = "selectedProductCategoriesChain";
 const idSelectedProductInStock = "selectedProductInStock";
 const idSelectedProductIconUrl = "selectedProductIconUrl";
+const idListOfImages = "productListImages";
 const idSelectedProductCustomVendorCode = "selectedProductCustomVendorCode";
 
 var productsList = new Array(Product);
 var cachedSearchRequest = String("");
 var isSearchRequestInAction = false;
+var listOfImages = EditableListOfImagesView;
 
 function loadProductsPageAndFillList(page = Number, fromCache = Boolean) {
 	setProductsListWaitingStatus(true);
+
+	if (listOfImages == null || !listOfImages.Initialized) {
+		listOfImages = new EditableListOfImagesView(idListOfImages);
+		listOfImages.initialize();
+	}
 
 	getProductsOnPage(page, fromCache)
 		.then(content => {
@@ -231,8 +238,14 @@ function showProductInfo(product = Product) {
 		firstIconUrl = iconsArray[0];
 	}
 
+	listOfImages.updateImagesList(["http://localhost:5000/img/logo.png"], ["http://localhost:5000/img/logo.png"], ["http://localhost:5000/img/logo.png"], ["http://localhost:5000/img/logo.png"]);
+
 	document.getElementById(idSelectedProductIconUrl).value = firstIconUrl; 
 	document.getElementById(idSelectedProductCustomVendorCode).value = product.CustomVendorCode;
+}
+
+function addSelectedProductIconsArrayView() {
+	
 }
 
 function clearProductInfo() {
