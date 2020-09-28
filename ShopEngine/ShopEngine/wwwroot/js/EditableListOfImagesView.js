@@ -87,16 +87,21 @@
 		let closureElement = element;
 		image.onload = () => {
 			let newWidth = this.maxImageSize, newHeight = this.maxImageSize;
+			let newX = 0, newY = 0;
 			if (image.width > image.height) {
 				let factor = image.height / image.width;
 				newHeight = this.maxImageSize * factor;
+				newY = (this.maxImageSize * 0.5) - (newHeight * 0.5);
 			}
 			else {
 				let factor = image.width / image.height;
 				newWidth = this.maxImageSize * factor;
+				newX = (this.maxImageSize * 0.5) - (newWidth * 0.5);
 			}
 			closureElement.width = newWidth;
 			closureElement.height = newHeight;
+			closureElement.style.left = newX + "px";
+			closureElement.style.top = newY + "px";
 
 		};
 		image.src = imageUrl;
