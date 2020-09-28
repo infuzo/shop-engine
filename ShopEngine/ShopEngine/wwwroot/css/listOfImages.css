@@ -12,6 +12,8 @@
 .listOfImages img {
 	cursor: pointer;
 	position: absolute;
+
+	opacity: 0;
 }
 
 div.listOfImagesControllButtons {

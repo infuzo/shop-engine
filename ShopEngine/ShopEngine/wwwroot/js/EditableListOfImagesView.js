@@ -52,12 +52,14 @@
 			return;
 		}
 
-		for (let index = 0; index < imagesUrl.length; index++) {
+		this.currentImagesUrl = imagesUrl;
+
+		for (let index = 0; index < this.currentImagesUrl.length; index++) {
 			let imageParent = document.createElement("div");
 			imageParent.className = this.divImageParentClass;
 			this.divParent.appendChild(imageParent);
 
-			let url = imagesUrl[index];
+			let url = this.currentImagesUrl[index];
 
 			let newImage = document.createElement("img");
 			newImage.setAttribute("src", url);
@@ -72,9 +74,13 @@
 			buttonsParent.className = this.controllButtonsClass;
 			imageParent.appendChild(buttonsParent);
 
-			this.createButton("<", buttonsParent);
-			this.createButton("X", buttonsParent);
-			this.createButton(">", buttonsParent);
+			let closureIndex = index;
+
+			this.createButton("<", buttonsParent, index == 0,
+				() => this.onShiftElementLeft(closureIndex));
+			this.createButton("X", buttonsParent, false);
+			this.createButton(">", buttonsParent, index + 1 == this.currentImagesUrl.length,
+				() => this.onShiftElementRight(closureIndex));
 		}
 	}
 
@@ -102,17 +108,40 @@
 			closureElement.height = newHeight;
 			closureElement.style.left = newX + "px";
 			closureElement.style.top = newY + "px";
+			closureElement.style.opacity = 1;
 
 		};
 		image.src = imageUrl;
 	}
 
-	createButton(innerText = String, parent = HTMLDivElement) {
+	createButton(innerText = String, parent = HTMLDivElement, hidden = Boolean, onClick) {
 		let button = document.createElement("button");
 		button.setAttribute("type", "submit");
 		button.innerText = innerText;
-		
+		button.onclick = onClick;
+		button.hidden = hidden;
+
 		parent.appendChild(button);
 
+	}
+
+	onShiftElementLeft(elementIndex = Number) {
+		if (elementIndex == 0) { return; }
+
+		let temp = this.currentImagesUrl[elementIndex - 1];
+		this.currentImagesUrl[elementIndex - 1] = this.currentImagesUrl[elementIndex];
+		this.currentImagesUrl[elementIndex] = temp;
+
+		this.updateImagesList(this.currentImagesUrl);
+	}
+
+	onShiftElementRight(elementIndex = Number) {
+		if (elementIndex + 1 == this.currentImagesUrl) { return; }
+
+		let temp = this.currentImagesUrl[elementIndex + 1];
+		this.currentImagesUrl[elementIndex + 1] = this.currentImagesUrl[elementIndex];
+		this.currentImagesUrl[elementIndex] = temp;
+
+		this.updateImagesList(this.currentImagesUrl);
 	}
 }
