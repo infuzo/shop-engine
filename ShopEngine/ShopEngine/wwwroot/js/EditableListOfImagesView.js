@@ -10,6 +10,7 @@
 
 		this.listStyleClass = "listOfImages";
 		this.controllButtonsClass = this.listStyleClass + "ControllButtons";
+		this.divImageParentClass = this.listStyleClass + "ImageParent";
 
 		this.maxImageSize = 150;
 	}
@@ -53,12 +54,16 @@
 
 		for (let index = 0; index < imagesUrl.length; index++) {
 			let imageParent = document.createElement("div");
+			imageParent.className = this.divImageParentClass;
 			this.divParent.appendChild(imageParent);
 
 			let url = imagesUrl[index];
 
 			let newImage = document.createElement("img");
 			newImage.setAttribute("src", url);
+			newImage.onclick = () => {
+				window.open(url, "_blank");
+			};
 			imageParent.appendChild(newImage);
 
 			this.setImageSize(url, newImage);
@@ -68,7 +73,7 @@
 			imageParent.appendChild(buttonsParent);
 
 			this.createButton("<", buttonsParent);
-			this.createButton("-", buttonsParent);
+			this.createButton("X", buttonsParent);
 			this.createButton(">", buttonsParent);
 		}
 	}

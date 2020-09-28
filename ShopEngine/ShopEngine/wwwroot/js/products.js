@@ -238,7 +238,7 @@ function showProductInfo(product = Product) {
 		firstIconUrl = iconsArray[0];
 	}
 
-	listOfImages.updateImagesList(["http://localhost:5000/img/logo.png"], ["http://localhost:5000/img/logo.png"], ["http://localhost:5000/img/logo.png"], ["http://localhost:5000/img/logo.png"]);
+	listOfImages.updateImagesList(["http://localhost:5000/img/logo.png", "http://localhost:5000/img/logo.png", "http://localhost:5000/img/logo.png", "http://localhost:5000/img/logo.png"]);
 
 	document.getElementById(idSelectedProductIconUrl).value = firstIconUrl; 
 	document.getElementById(idSelectedProductCustomVendorCode).value = product.CustomVendorCode;
