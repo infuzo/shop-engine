@@ -13,6 +13,8 @@
 		this.divImageParentClass = this.listStyleClass + "ImageParent";
 
 		this.maxImageSize = 150;
+
+		this.confirmMessageText = "Do you want remove image from pictures list?";
 	}
 
 	initialize() {
@@ -78,7 +80,7 @@
 
 			this.createButton("<", buttonsParent, index == 0,
 				() => this.onShiftElementLeft(closureIndex));
-			this.createButton("X", buttonsParent, false);
+			this.createButton("X", buttonsParent, false, () => this.onDeleteElement(closureIndex));
 			this.createButton(">", buttonsParent, index + 1 == this.currentImagesUrl.length,
 				() => this.onShiftElementRight(closureIndex));
 		}
@@ -143,5 +145,16 @@
 		this.currentImagesUrl[elementIndex] = temp;
 
 		this.updateImagesList(this.currentImagesUrl);
+	}
+
+	onDeleteElement(elementIndex = Number) {
+		if (this.currentImagesUrl.length == 0 || elementIndex >= this.currentImagesUrl.length) {
+			return;
+		}
+
+		if (confirm(this.confirmMessageText)) {
+			this.currentImagesUrl.splice(elementIndex, 1);
+			this.updateImagesList(this.currentImagesUrl);
+		}
 	}
 }
