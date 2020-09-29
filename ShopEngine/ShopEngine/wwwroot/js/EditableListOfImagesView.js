@@ -11,10 +11,14 @@
 		this.listStyleClass = "listOfImages";
 		this.controllButtonsClass = this.listStyleClass + "ControllButtons";
 		this.divImageParentClass = this.listStyleClass + "ImageParent";
+		this.divAddNewImageClass = this.listStyleClass + "AddNewImage";
 
 		this.maxImageSize = 150;
 
 		this.confirmMessageText = "Do you want remove image from pictures list?";
+		this.labelAddNewImageText = "Add new image: ";
+
+		this.addNewImageButtonName = "newImage";
 	}
 
 	initialize() {
@@ -27,6 +31,7 @@
 
 		this.loadCss();
 		this.divParent.setAttribute("class", this.listStyleClass);
+		this.createAddNewImageDiv();
 
 		this.Initialized = true;
 	}
@@ -84,6 +89,26 @@
 			this.createButton(">", buttonsParent, index + 1 == this.currentImagesUrl.length,
 				() => this.onShiftElementRight(closureIndex));
 		}
+
+		this.createAddNewImageDiv();
+	}
+
+	createAddNewImageDiv() {
+		var newFileLabel = document.createElement("label");
+		newFileLabel.setAttribute("for", this.addNewImageButtonName);
+		newFileLabel.innerText = this.labelAddNewImageText;
+
+		var newFileInput = document.createElement("input");
+		newFileInput.type = "file";
+		newFileInput.name = this.addNewImageButtonName;
+
+		var addNewImageDiv = document.createElement("div");
+		addNewImageDiv.className = this.divAddNewImageClass;
+
+		addNewImageDiv.appendChild(newFileLabel);
+		addNewImageDiv.appendChild(newFileInput);
+		
+		this.divParent.appendChild(addNewImageDiv);
 	}
 
 	errorDivParentDoesntExist() {
