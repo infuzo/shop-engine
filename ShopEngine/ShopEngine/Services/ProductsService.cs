@@ -52,7 +52,7 @@ namespace ShopEngine.Services
                     if (products != null)
                     {
                         cacheProvider.Set(cacheIdAllProductsArray, products, new MemoryCacheEntryOptions()
-                            .SetAbsoluteExpiration(expiration));
+                            .SetAbsoluteExpiration(Expiration));
                     }
                 }
                 return products;
@@ -64,7 +64,7 @@ namespace ShopEngine.Services
             }
         }
 
-        private TimeSpan expiration
+        private TimeSpan Expiration
         {
             get
             {
@@ -113,7 +113,7 @@ namespace ShopEngine.Services
             return products;
         }
 
-        private async Task<String> GetCategoriesChainOfProduct(ProductModel product)
+        private async Task<string> GetCategoriesChainOfProduct(ProductModel product)
         {
             var result = new StringBuilder();
 
@@ -176,18 +176,22 @@ namespace ShopEngine.Services
 
         public IEnumerable<ProductModel> FindProductByGuid(IEnumerable<ProductModel> products, Guid guid)
         {
+            //todo: AsParallel
             return products
                 .Where(product => product.Id == guid);
         }
 
         public IEnumerable<ProductModel> FindProductByName(IEnumerable<ProductModel> products, string name)
         {
+            //todo: AsParallel
+            //todo: split name and query by spaces
             return products
                 .Where(product => product.Name.ToLower().Contains(name.ToLower()));
         }
 
         public IEnumerable<ProductModel> FindProductByVendorCode(IEnumerable<ProductModel> products, int vendorCode)
         {
+            //todo: AsParallel
             return products
                 .Where(product => product.CustomVendorCode != null && product.CustomVendorCode == vendorCode);
         }
