@@ -101,6 +101,8 @@
 		var newFileInput = document.createElement("input");
 		newFileInput.type = "file";
 		newFileInput.name = this.addNewImageButtonName;
+		newFileInput.setAttribute('multiple', '');
+		newFileInput.addEventListener('change', this.onNewImageInput);
 
 		var addNewImageDiv = document.createElement("div");
 		addNewImageDiv.className = this.divAddNewImageClass;
@@ -181,5 +183,9 @@
 			this.currentImagesUrl.splice(elementIndex, 1);
 			this.updateImagesList(this.currentImagesUrl);
 		}
+	}
+
+	onNewImageInput(input) {
+		console.log(input);
 	}
 }
