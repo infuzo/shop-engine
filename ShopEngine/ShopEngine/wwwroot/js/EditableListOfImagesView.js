@@ -21,6 +21,8 @@
 		this.addNewImageButtonName = "newImage";
 	}
 
+	fileInput;
+
 	initialize() {
 		this.divParent = document.getElementById(this.DivId);
 
@@ -62,35 +64,50 @@
 		this.currentImagesUrl = imagesUrl;
 
 		for (let index = 0; index < this.currentImagesUrl.length; index++) {
-			let imageParent = document.createElement("div");
-			imageParent.className = this.divImageParentClass;
-			this.divParent.appendChild(imageParent);
-
-			let url = this.currentImagesUrl[index];
-
-			let newImage = document.createElement("img");
-			newImage.setAttribute("src", url);
-			newImage.onclick = () => {
-				window.open(url, "_blank");
-			};
-			imageParent.appendChild(newImage);
-
-			this.setImageSize(url, newImage);
-
-			let buttonsParent = document.createElement("div");
-			buttonsParent.className = this.controllButtonsClass;
-			imageParent.appendChild(buttonsParent);
-
-			let closureIndex = index;
-
-			this.createButton("<", buttonsParent, index == 0,
-				() => this.onShiftElementLeft(closureIndex));
-			this.createButton("X", buttonsParent, false, () => this.onDeleteElement(closureIndex));
-			this.createButton(">", buttonsParent, index + 1 == this.currentImagesUrl.length,
-				() => this.onShiftElementRight(closureIndex));
+			this.createImageItem(index);
 		}
 
 		this.createAddNewImageDiv();
+	}
+
+	createImageItem(indexInUrls = Number) {
+		let imageParent = document.createElement("div");
+		imageParent.className = this.divImageParentClass;
+		this.divParent.appendChild(imageParent);
+
+		let url = this.currentImagesUrl[indexInUrls];
+
+		let newImage = document.createElement("img");
+		newImage.setAttribute("src", url);
+		newImage.onclick = () => {
+			window.open(url, "_blank");
+		};
+		imageParent.appendChild(newImage);
+
+		this.setImageSize(url, newImage);
+
+		let buttonsParent = document.createElement("div");
+		buttonsParent.className = this.controllButtonsClass;
+		imageParent.appendChild(buttonsParent);
+
+		let closureIndex = indexInUrls;
+
+		this.createItemButton("<", buttonsParent, indexInUrls == 0,
+			() => this.onShiftElementLeft(closureIndex));
+		this.createItemButton("X", buttonsParent, false, () => this.onDeleteElement(closureIndex));
+		this.createItemButton(">", buttonsParent, indexInUrls + 1 == this.currentImagesUrl.length,
+			() => this.onShiftElementRight(closureIndex));
+	}
+
+	createItemButton(innerText = String, parent = HTMLDivElement, hidden = Boolean, onClick) {
+		let button = document.createElement("button");
+		button.setAttribute("type", "submit");
+		button.innerText = innerText;
+		button.onclick = onClick;
+		button.hidden = hidden;
+
+		parent.appendChild(button);
+
 	}
 
 	createAddNewImageDiv() {
@@ -98,17 +115,17 @@
 		newFileLabel.setAttribute("for", this.addNewImageButtonName);
 		newFileLabel.innerText = this.labelAddNewImageText;
 
-		var newFileInput = document.createElement("input");
-		newFileInput.type = "file";
-		newFileInput.name = this.addNewImageButtonName;
-		newFileInput.setAttribute('multiple', '');
-		newFileInput.addEventListener('change', this.onNewImageInput);
+		this.fileInput = document.createElement("input");
+		this.fileInput.type = "file";
+		this.fileInput.name = this.addNewImageButtonName;
+		this.fileInput.setAttribute('multiple', '');
+		this.fileInput.addEventListener('change', (event) => this.onNewImageInput());
 
 		var addNewImageDiv = document.createElement("div");
 		addNewImageDiv.className = this.divAddNewImageClass;
 
 		addNewImageDiv.appendChild(newFileLabel);
-		addNewImageDiv.appendChild(newFileInput);
+		addNewImageDiv.appendChild(this.fileInput);
 		
 		this.divParent.appendChild(addNewImageDiv);
 	}
@@ -143,17 +160,6 @@
 		image.src = imageUrl;
 	}
 
-	createButton(innerText = String, parent = HTMLDivElement, hidden = Boolean, onClick) {
-		let button = document.createElement("button");
-		button.setAttribute("type", "submit");
-		button.innerText = innerText;
-		button.onclick = onClick;
-		button.hidden = hidden;
-
-		parent.appendChild(button);
-
-	}
-
 	onShiftElementLeft(elementIndex = Number) {
 		if (elementIndex == 0) { return; }
 
@@ -185,7 +191,7 @@
 		}
 	}
 
-	onNewImageInput(input) {
-		console.log(input);
+	onNewImageInput() {
+		console.log(this.fileInput.files.length);
 	}
 }
