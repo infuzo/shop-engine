@@ -33,7 +33,7 @@
 
 		this.loadCss();
 		this.divParent.setAttribute("class", this.listStyleClass);
-		this.createAddNewImageDiv();
+		this.createAddingNewImageDiv();
 
 		this.Initialized = true;
 	}
@@ -67,7 +67,7 @@
 			this.createImageItem(index);
 		}
 
-		this.createAddNewImageDiv();
+		this.createAddingNewImageDiv();
 	}
 
 	createImageItem(indexInUrls = Number) {
@@ -110,7 +110,7 @@
 
 	}
 
-	createAddNewImageDiv() {
+	createAddingNewImageDiv() {
 		var newFileLabel = document.createElement("label");
 		newFileLabel.setAttribute("for", this.addNewImageButtonName);
 		newFileLabel.innerText = this.labelAddNewImageText;
@@ -192,6 +192,6 @@
 	}
 
 	onNewImageInput() {
-		console.log(this.fileInput.files.length);
+		this.fileInput.files //todo: add in the list as raw files to upload when saving the product
 	}
 }
