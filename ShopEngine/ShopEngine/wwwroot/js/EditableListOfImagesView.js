@@ -192,6 +192,13 @@
 	}
 
 	onNewImageInput() {
-		this.fileInput.files //todo: add in the list as raw files to upload when saving the product
+		console.log(this.fileInput.files.length);
+
+		for (let index = 0; index < this.fileInput.files.length; index++) {
+			let file = this.fileInput.files[index];
+			this.currentImagesUrl.push(URL.createObjectURL(file));
+		}
+
+		this.updateImagesList(this.currentImagesUrl);
 	}
 }
