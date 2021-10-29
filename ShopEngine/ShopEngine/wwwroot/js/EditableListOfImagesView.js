@@ -3,6 +3,7 @@
 		divId = String
 	) {
 		this.DivId = divId;
+		this.AddOrSaveButtonId = addOrSaveButtonId;
 
 		this.Initialized = false;
 
@@ -192,13 +193,15 @@
 	}
 
 	onNewImageInput() {
-		console.log(this.fileInput.files.length);
-
 		for (let index = 0; index < this.fileInput.files.length; index++) {
 			let file = this.fileInput.files[index];
 			this.currentImagesUrl.push(URL.createObjectURL(file));
 		}
 
 		this.updateImagesList(this.currentImagesUrl);
+	}
+
+	uploadNewImages() {
+		//todo: detect and upload new images - as promise
 	}
 }
