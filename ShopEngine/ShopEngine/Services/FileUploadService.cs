@@ -9,8 +9,6 @@ namespace ShopEngine.Services
 {
     public class FileUploadService : IFileUploadService
     {
-        public const string ErrorEmptyDirectoryOrHasSubdirectory =
-            "Directory parameter mustn't contain subdirectories or be empty";
         public const string ErrorFormFileNull = "Uploaded file mustn't be null";
 
         IWebHostEnvironment environment;
@@ -30,11 +28,6 @@ namespace ShopEngine.Services
             IFormFile formFile,
             HttpContext context)
         {
-            if (string.IsNullOrEmpty(directory) || directory.Contains("\\") || directory.Contains("/"))
-            {
-                throw new ArgumentException(ErrorEmptyDirectoryOrHasSubdirectory);
-            }
-
             if (formFile == null)
             {
                 throw new ArgumentException(ErrorFormFileNull);

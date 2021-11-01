@@ -3,7 +3,6 @@
 		divId = String
 	) {
 		this.DivId = divId;
-		this.AddOrSaveButtonId = addOrSaveButtonId;
 
 		this.Initialized = false;
 
@@ -202,6 +201,11 @@
 	}
 
 	uploadNewImages() {
-		//todo: detect and upload new images - as promise
+		for (let url of this.currentImagesUrl) {
+			if (url.substr(0, 4) == 'blob') {
+				console.log("need to upload: " + url);
+			}
+		}
+		//todo: detect and upload new images - as promise. Detect and remove deleted images from the list
 	}
 }

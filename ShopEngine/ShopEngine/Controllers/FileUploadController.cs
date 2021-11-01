@@ -13,7 +13,7 @@ using ShopEngine.Services;
 namespace ShopEngine.Controllers
 {
     [Authorize(Roles = Consts.AdminRoleName)]
-    public class FileUploadController : Controller
+    public class FileUploadController : Controller //todo: replace to fileuploadservice and remove
     {
 
         [HttpPost]

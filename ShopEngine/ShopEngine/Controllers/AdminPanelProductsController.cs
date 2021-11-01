@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -6,15 +7,18 @@ using Microsoft.Extensions.Logging;
 using ShopEngine.Models;
 using ShopEngine.Services;
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace ShopEngine.Controllers
 {
     [Authorize(Roles = Consts.AdminRoleName)]
-    public class AdminPanelProductsConrtroller : Controller
+    public class AdminPanelProductsController : Controller
     {
         private const string noProductsAfterSearch = "There are no products by this search request.";
+
+        private const string productImagesDirectory = "img/productIcons";
 
         [Route("AdminPanel/Products")]
         public IActionResult Products(
@@ -66,6 +70,29 @@ namespace ShopEngine.Controllers
             {
                 return NotFound(exception.Message);
             }
+        }
+
+        [HttpPost]
+        [Route("AdminPanel/UploadImage")]
+        public async Task<IActionResult> UploadProductImage(
+            Guid productGuid,
+            IFormFile[] images)
+        {
+            var productDirectory = Path.Combine(productImagesDirectory, productGuid.ToString());
+            
+            try
+            {
+                foreach (var image in images) //todo check mime
+                {
+                    await 
+                }
+            }
+            catch
+            {
+                //todo remove already uploaded files
+            }
+
+            //todo: return array with json array of uploaded images urls
         }
     }
 }
