@@ -244,7 +244,7 @@ function showProductInfo(product = Product) {
 		"http://localhost:5000/img/testImages/icon2.png",
 		"http://localhost:5000/img/testImages/icon3.png"]);
 
-	document.getElementById(selectedProductAddOrSave).onclick = buttonProductAddOrSaveClick;
+	document.getElementById(selectedProductAddOrSave).onclick = event => buttonProductAddOrSaveClick(product);
 
 	document.getElementById(idSelectedProductIconUrl).value = firstIconUrl; 
 	document.getElementById(idSelectedProductCustomVendorCode).value = product.CustomVendorCode;
@@ -336,6 +336,6 @@ function removeAllChildren(element = HTMLElement) {
 	}
 }
 
-function buttonProductAddOrSaveClick(event) {
-	listOfImages.uploadNewImages();
+function buttonProductAddOrSaveClick(product = Product) {
+	listOfImages.uploadNewImages(product.Guid);
 }

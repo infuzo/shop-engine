@@ -200,12 +200,36 @@
 		this.updateImagesList(this.currentImagesUrl);
 	}
 
-	uploadNewImages() {
+	uploadNewImages(productGuid, onComplete, onFail) {
+		var filesToUpload = new Array(File);
+
 		for (let url of this.currentImagesUrl) {
-			if (url.substr(0, 4) == 'blob') {
+			if (url.substr(0, 4) == 'blob') { //todo: rewrite and manage files to upload
+				this.fileInput.files.find(f => UR
+
 				console.log("need to upload: " + url);
 			}
 		}
+		let request = new XMLHttpRequest();
+		request.open("POST", "/AdminPanel/UploadProductImages");
+		request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded; charset=utf-8');
+
+
+
+
+		request.onreadystatechange = () => {
+			if (request.readyState == 4) {
+				if (request.status == 200) {
+					onComplete();
+				}
+				else {
+					onFail();
+					alert(`$upload images fail\n${request.status} - ${request.responseText}`);
+				}
+			}
+		};
+
+		request.send();
 		//todo: detect and upload new images - as promise. Detect and remove deleted images from the list
 	}
 }

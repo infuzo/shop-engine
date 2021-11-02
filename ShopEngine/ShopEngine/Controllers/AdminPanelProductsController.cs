@@ -7,6 +7,8 @@ using Microsoft.Extensions.Logging;
 using ShopEngine.Models;
 using ShopEngine.Services;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -73,18 +75,24 @@ namespace ShopEngine.Controllers
         }
 
         [HttpPost]
-        [Route("AdminPanel/UploadImage")]
+        [Route("AdminPanel/UploadProductImages")]
         public async Task<IActionResult> UploadProductImage(
             Guid productGuid,
-            IFormFile[] images)
+            IFormFile[] images,
+            [FromServices] IFileUploadService fileUploadService)
         {
             var productDirectory = Path.Combine(productImagesDirectory, productGuid.ToString());
-            
+
+            var resultLists = new List<string>();
+
             try
             {
                 foreach (var image in images) //todo check mime
                 {
-                    await 
+                    var fileName = $"{Guid.NewGuid()}.{new FileInfo(image.FileName).Extension}";
+                    Debug.WriteLine($"Dir: {productDirectory}, name: {fileName}"); //todo: remove
+                    var url = await fileUploadService.Upload(productDirectory, fileName, image, HttpContext);
+                    resultLists.Add(url);
                 }
             }
             catch
@@ -92,7 +100,10 @@ namespace ShopEngine.Controllers
                 //todo remove already uploaded files
             }
 
-            //todo: return array with json array of uploaded images urls
+            return new JsonResult(new
+            {
+                UploadedImages = resultLists.ToArray()
+            });
         }
     }
 }
