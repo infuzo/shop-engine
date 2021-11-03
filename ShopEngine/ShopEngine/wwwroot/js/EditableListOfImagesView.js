@@ -22,6 +22,7 @@
 	}
 
 	fileInput;
+	filesToUpload = new Map();
 
 	initialize() {
 		this.divParent = document.getElementById(this.DivId);
@@ -163,21 +164,42 @@
 	onShiftElementLeft(elementIndex = Number) {
 		if (elementIndex == 0) { return; }
 
-		let temp = this.currentImagesUrl[elementIndex - 1];
-		this.currentImagesUrl[elementIndex - 1] = this.currentImagesUrl[elementIndex];
+		let newIndex = elementIndex - 1;
+		if (this.filesToUpload.has(elementIndex)) {
+			this.swapFilesToUpload(elementIndex, newIndex);
+		}
+
+		let temp = this.currentImagesUrl[newIndex];
+		this.currentImagesUrl[newIndex] = this.currentImagesUrl[elementIndex];
 		this.currentImagesUrl[elementIndex] = temp;
 
 		this.updateImagesList(this.currentImagesUrl);
 	}
 
 	onShiftElementRight(elementIndex = Number) {
-		if (elementIndex + 1 == this.currentImagesUrl) { return; }
+		let newIndex = elementIndex + 1;
+		if (newIndex == this.currentImagesUrl) { return; }
 
-		let temp = this.currentImagesUrl[elementIndex + 1];
-		this.currentImagesUrl[elementIndex + 1] = this.currentImagesUrl[elementIndex];
+		if (this.filesToUpload.has(elementIndex)) {
+			this.swapFilesToUpload(elementIndex, newIndex);
+		}
+
+		let temp = this.currentImagesUrl[newIndex];
+		this.currentImagesUrl[newIndex] = this.currentImagesUrl[elementIndex];
 		this.currentImagesUrl[elementIndex] = temp;
 
 		this.updateImagesList(this.currentImagesUrl);
+	}
+
+	swapFilesToUpload(oldIndex, newIndex) {
+		let oldIndexFile = this.filesToUpload.get(oldIndex);
+		if (this.filesToUpload.has(newIndex)) {
+			this.filesToUpload.set(oldIndex, this.filesToUpload.get(newIndex));
+		}
+		else {
+			this.filesToUpload.delete(oldIndex);
+		}
+		this.filesToUpload.set(newIndex, oldIndexFile);
 	}
 
 	onDeleteElement(elementIndex = Number) {
@@ -188,6 +210,10 @@
 		if (confirm(this.confirmMessageText)) {
 			this.currentImagesUrl.splice(elementIndex, 1);
 			this.updateImagesList(this.currentImagesUrl);
+
+			if (this.filesToUpload.has(elementIndex)) {
+				this.filesToUpload.delete(elementIndex);
+			}
 		}
 	}
 
@@ -195,32 +221,21 @@
 		for (let index = 0; index < this.fileInput.files.length; index++) {
 			let file = this.fileInput.files[index];
 			this.currentImagesUrl.push(URL.createObjectURL(file));
+			this.filesToUpload.set(this.currentImagesUrl.length - 1, file);
 		}
 
 		this.updateImagesList(this.currentImagesUrl);
 	}
 
 	uploadNewImages(productGuid, onComplete, onFail) {
-		var filesToUpload = new Array(File);
-
-		for (let url of this.currentImagesUrl) {
-			if (url.substr(0, 4) == 'blob') { //todo: rewrite and manage files to upload
-				this.fileInput.files.find(f => UR
-
-				console.log("need to upload: " + url);
-			}
-		}
 		let request = new XMLHttpRequest();
 		request.open("POST", "/AdminPanel/UploadProductImages");
 		request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded; charset=utf-8');
 
-
-
-
 		request.onreadystatechange = () => {
 			if (request.readyState == 4) {
 				if (request.status == 200) {
-					onComplete();
+					onComplete(request.responseText);
 				}
 				else {
 					onFail();
@@ -229,7 +244,11 @@
 			}
 		};
 
-		request.send();
+		let formData = new FormData();
+		formData.append('productGuid', productGuid);
+		formData.append('images', this.filesToUpload.values());
+
+		request.send(formData);
 		//todo: detect and upload new images - as promise. Detect and remove deleted images from the list
 	}
 }

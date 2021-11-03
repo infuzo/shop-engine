@@ -337,5 +337,13 @@ function removeAllChildren(element = HTMLElement) {
 }
 
 function buttonProductAddOrSaveClick(product = Product) {
-	listOfImages.uploadNewImages(product.Guid);
+	listOfImages.uploadNewImages(product.Guid, onSuccessImageLoad, onFailImageLoad);
+}
+
+function onSuccessImageLoad(result) {
+	console.log(result);
+}
+
+function onFailImageLoad() {
+
 }
