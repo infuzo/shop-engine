@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -36,9 +37,14 @@ namespace ShopEngine.Services
 
             try
             {
-                var path = Path.Combine(environment.WebRootPath, directory, nameWithExtension);
+                if (!Directory.Exists(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                }
 
-                using (var fileStream = new FileStream(path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
+                Debug.WriteLine(environment.WebRootPath);
+                var path = Path.Combine(environment.WebRootPath, directory, nameWithExtension);
+                using (var fileStream = new FileStream(path, FileMode.CreateNew))
                 {
                     await formFile.CopyToAsync(fileStream);
                 }

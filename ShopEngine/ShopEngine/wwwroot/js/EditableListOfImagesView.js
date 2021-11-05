@@ -230,7 +230,6 @@
 	uploadNewImages(productGuid, onComplete, onFail) {
 		let request = new XMLHttpRequest();
 		request.open("POST", "/AdminPanel/UploadProductImages");
-		request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded; charset=utf-8');
 
 		request.onreadystatechange = () => {
 			if (request.readyState == 4) {
@@ -246,7 +245,9 @@
 
 		let formData = new FormData();
 		formData.append('productGuid', productGuid);
-		formData.append('images', this.filesToUpload.values());
+		for (var file of this.filesToUpload.values()) {
+			formData.append('images', file);
+		}
 
 		request.send(formData);
 		//todo: detect and upload new images - as promise. Detect and remove deleted images from the list
