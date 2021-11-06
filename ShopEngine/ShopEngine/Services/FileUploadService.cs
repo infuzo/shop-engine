@@ -37,13 +37,14 @@ namespace ShopEngine.Services
 
             try
             {
-                if (!Directory.Exists(directory))
+                var directoryPath = Path.Combine(environment.WebRootPath, directory);
+                if (!Directory.Exists(directoryPath))
                 {
-                    Directory.CreateDirectory(directory);
+                    Directory.CreateDirectory(directoryPath);
                 }
 
                 Debug.WriteLine(environment.WebRootPath);
-                var path = Path.Combine(environment.WebRootPath, directory, nameWithExtension);
+                var path = Path.Combine(directoryPath, nameWithExtension);
                 using (var fileStream = new FileStream(path, FileMode.CreateNew))
                 {
                     await formFile.CopyToAsync(fileStream);
@@ -55,7 +56,8 @@ namespace ShopEngine.Services
                 throw exception;
             }
 
-            return $"http://{context.Request.Host.ToString()}/{directory}/{nameWithExtension}";
+            var protocol = context.Request.IsHttps ? "https" : "http";
+            return $"{protocol}://{context.Request.Host}/{directory}/{nameWithExtension}";
         }
     }
 }
