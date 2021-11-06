@@ -84,22 +84,24 @@ namespace ShopEngine.Controllers
             var productDirectory = Path.Combine(productImagesDirectory, productGuid.ToString());
 
             var resultLists = new List<string>();
-
-            Debug.WriteLine($"guid: {productGuid}"); //todo: remove
-            Debug.WriteLine($"images: {images.Length}"); //todo: remove
+            var uploadedImagesPaths = new List<string>();
             try
             {
                 foreach (var image in images) //todo check mime
                 {
                     var fileName = $"{Guid.NewGuid()}{new FileInfo(image.FileName).Extension}";
-                    Debug.WriteLine($"Dir: {productDirectory}, name: {fileName}"); //todo: remove
                     var url = await fileUploadService.Upload(productDirectory, fileName, image, HttpContext);
+                    uploadedImagesPaths.Add(fileName);
                     resultLists.Add(url);
                 }
             }
             catch
             {
-                //todo remove already uploaded files
+                foreach(var path in uploadedImagesPaths)
+                {
+                    await fileUploadService.Delete(Path.Combine(productDirectory, path));
+                }
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
             return new JsonResult(new
