@@ -37,6 +37,9 @@ const idClearSearchResultsButtonContainer = "clearSearchResultsButtonContainer";
 const textWaitingForProductsList = "Products list are loading. Please wait";
 const textEmptySearchRequest = "Search request is empty";
 
+const idNoSelectedContent = "noSelectedContent";
+const idSelectedItemContent = "selectedItemContent";
+
 const idSelectedProductHeader = "selectedProductHeader";
 const idSelectedProductName = "selectedProductName";
 const idSelectedProductDescription = "selectedProductDescription";
@@ -55,8 +58,10 @@ var cachedSearchRequest = String("");
 var isSearchRequestInAction = false;
 var listOfImages = EditableListOfImagesView;
 
+//todo: separate list logic as class
 function loadProductsPageAndFillList(page = Number, fromCache = Boolean) {
 	setProductsListWaitingStatus(true);
+	setSelectedContentVisibility(false);
 
 	if (listOfImages == null || !listOfImages.Initialized) {
 		listOfImages = new EditableListOfImagesView(idListOfImages);
@@ -218,7 +223,14 @@ function onClearSearchResultsButtonClick(event) {
 	loadProductsPageAndFillList(1, false);
 }
 
+function setSelectedContentVisibility(isVisible = Boolean) {
+	document.getElementById(idNoSelectedContent).style.display = isVisible ? 'none' : 'block';
+	document.getElementById(idSelectedItemContent).style.display = isVisible ? 'block' : 'none';
+}
+
 function showProductInfo(product = Product) {
+	setSelectedContentVisibility(true);
+
 	document.getElementById(idSelectedProductHeader).innerText = product.Name;
 	document.getElementById(idSelectedProductName).value = product.Name;
 	document.getElementById(idSelectedProductDescription).value = product.Description;
