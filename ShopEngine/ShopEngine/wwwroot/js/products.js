@@ -246,15 +246,15 @@ function showProductInfo(product = Product) {
 	catch (e) {
 		console.error(e);
 	}
-
+	//todo: clear previews image list
 	var firstIconUrl = "";
 	if (iconsArray != null && iconsArray.length > 0) {
 		firstIconUrl = iconsArray[0];
-	}
 
-	listOfImages.updateImagesList(["http://localhost:5000/img/testImages/icon1.jpg",
-		"http://localhost:5000/img/testImages/icon2.png",
-		"http://localhost:5000/img/testImages/icon3.png"]);
+		listOfImages.updateImagesList(iconsArray);
+	}
+	
+
 
 	document.getElementById(selectedProductAddOrSave).onclick = event => buttonProductAddOrSaveClick(product);
 
