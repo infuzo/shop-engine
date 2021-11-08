@@ -58,7 +58,9 @@
 			this.divParent.removeChild(this.divParent.firstChild);
 		}
 
+		//todo: view for empty list
 		if (imagesUrl == null) {
+			this.currentImagesUrl = Array(String);
 			return;
 		}
 

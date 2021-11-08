@@ -83,7 +83,7 @@ namespace ShopEngine.Controllers
         {
             var productDirectory = Path.Combine(productImagesDirectory, productGuid.ToString());
 
-            var resultLists = new List<string>();
+            var urls = new List<string>();
             var uploadedImagesPaths = new List<string>();
             try
             {
@@ -91,23 +91,24 @@ namespace ShopEngine.Controllers
                 {
                     var fileName = $"{Guid.NewGuid()}{new FileInfo(image.FileName).Extension}";
                     var url = await fileUploadService.Upload(productDirectory, fileName, image, HttpContext);
-                    uploadedImagesPaths.Add(fileName);
-                    resultLists.Add(url);
+                    uploadedImagesPaths.Add(Path.Combine(productDirectory, fileName).Replace("\\", "/"));
+                    urls.Add(url);
                 }
             }
             catch
             {
                 foreach(var path in uploadedImagesPaths)
                 {
-                    await fileUploadService.Delete(Path.Combine(productDirectory, path));
+                    await fileUploadService.Delete(path);
                 }
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
             return new JsonResult(new
             {
-                UploadedImages = resultLists.ToArray()
-            });
+                urls = urls,
+                relatives = uploadedImagesPaths
+            }) ;
         }
     }
 }

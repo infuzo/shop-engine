@@ -230,6 +230,7 @@ function setSelectedContentVisibility(isVisible = Boolean) {
 
 function showProductInfo(product = Product) {
 	setSelectedContentVisibility(true);
+	clearProductInfo();
 
 	document.getElementById(idSelectedProductHeader).innerText = product.Name;
 	document.getElementById(idSelectedProductName).value = product.Name;
@@ -239,6 +240,8 @@ function showProductInfo(product = Product) {
 	document.getElementById(idSelectedProductCategoriesChain).innerText = product.CategoriesChain;
 	document.getElementById(idSelectedProductInStock).checked = product.InStock;
 
+	console.log(product.imagesUrlJson);
+
 	var iconsArray = null;
 	try {
 		iconsArray = JSON.parse(product.ImagesUrlJson).urls;		
@@ -246,15 +249,16 @@ function showProductInfo(product = Product) {
 	catch (e) {
 		console.error(e);
 	}
-	//todo: clear previews image list
+
 	var firstIconUrl = "";
 	if (iconsArray != null && iconsArray.length > 0) {
 		firstIconUrl = iconsArray[0];
 
 		listOfImages.updateImagesList(iconsArray);
 	}
-	
-
+	else {
+		listOfImages.updateImagesList(null);
+	}
 
 	document.getElementById(selectedProductAddOrSave).onclick = event => buttonProductAddOrSaveClick(product);
 
