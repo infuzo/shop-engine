@@ -42,7 +42,6 @@ namespace ShopEngine.Services
                     Directory.CreateDirectory(directoryPath);
                 }
 
-                Debug.WriteLine(environment.WebRootPath);
                 var path = Path.Combine(directoryPath, nameWithExtension);
                 using (var fileStream = new FileStream(path, FileMode.CreateNew))
                 {

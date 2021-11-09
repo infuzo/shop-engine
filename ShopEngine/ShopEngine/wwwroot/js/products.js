@@ -240,8 +240,6 @@ function showProductInfo(product = Product) {
 	document.getElementById(idSelectedProductCategoriesChain).innerText = product.CategoriesChain;
 	document.getElementById(idSelectedProductInStock).checked = product.InStock;
 
-	console.log(product.imagesUrlJson);
-
 	var iconsArray = null;
 	try {
 		iconsArray = JSON.parse(product.ImagesUrlJson).urls;		
@@ -251,8 +249,15 @@ function showProductInfo(product = Product) {
 	}
 
 	var firstIconUrl = "";
+
+	var prefix = location.protocol + '//' + location.host + '/';
+
 	if (iconsArray != null && iconsArray.length > 0) {
 		firstIconUrl = iconsArray[0];
+
+		for (let index = 0; index < iconsArray.length; index++) {
+			iconsArray[index] = prefix + iconsArray[index];
+		}
 
 		listOfImages.updateImagesList(iconsArray);
 	}
