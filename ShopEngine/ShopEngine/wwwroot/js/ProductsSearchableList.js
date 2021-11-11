@@ -20,9 +20,9 @@
 	setProductsListWaitingStatus(waiting = Boolean) {
 
 		var listOfProductsParent = document.getElementById(this.idProductsListParent);
-		removeAllChildren(listOfProductsParent);
+		this.removeAllChildren(listOfProductsParent);
 		if (waiting) {
-			removeAllChildren(document.getElementsByClassName(this.classPagesNavigation)[0]);
+			this.removeAllChildren(document.getElementsByClassName(this.classPagesNavigation)[0]);
 
 			let waitingCaption = document.createElement("span");
 			waitingCaption.innerText = this.textWaitingForProductsList;
@@ -39,9 +39,10 @@
 	initializeArrayAndPaginationFromJson(json = String, onButtonChangePageClick) {
 		var response = JSON.parse(json);
 
-		productsList = new Array();
-		for (product of response.products) {
-			productsList.push(new Product(
+		this.productsList = new Array(Product);
+		this.productsList = [];
+		for (let product of response.products) {
+			this.productsList.push(new Product(
 				product.id,
 				product.categoryId,
 				product.name,
@@ -56,7 +57,7 @@
 			));
 		}
 
-		renderPageOfProductsList(
+		this.renderPageOfProductsList(
 			response.currentPage,
 			response.totalPagesCount,
 			response.totalProductsCount,
@@ -69,15 +70,15 @@
 		productsCount = Number,
 		onButtonChangePageClick) {
 
-		createPagesNavigationBar(page, totalPages, productsCount, onButtonChangePageClick);
-		subscribeSearchButton();
-		setClearSerchResultButtonVisibilty();
+		this.createPagesNavigationBar(page, totalPages, productsCount, onButtonChangePageClick);
+		this.subscribeSearchButton();
+		this.setClearSerchResultButtonVisibilty();
 
-		var productsListParent = document.getElementById(idProductsListParent);
-		removeAllChildren(productsListParent);
+		var productsListParent = document.getElementById(this.idProductsListParent);
+		this.removeAllChildren(productsListParent);
 
-		for (product of productsList) {
-			createShowProductLink(product, productsListParent);
+		for (let product of this.productsList) {
+			this.createShowProductLink(product, productsListParent);
 		}
 	}
 
@@ -100,8 +101,8 @@
 		productsCount = Number,
 		onButtonChangePageClick) {
 
-		var pagesNavigation = document.getElementsByClassName(classPagesNavigation)[0];
-		removeAllChildren(pagesNavigation);
+		var pagesNavigation = document.getElementsByClassName(this.classPagesNavigation)[0];
+		this.removeAllChildren(pagesNavigation);
 
 		var previousButton = document.createElement("button");
 		if (page > 1) {
@@ -112,7 +113,7 @@
 
 		var paginationInfo = document.createElement("span");
 		paginationInfo.innerHTML = "<b>" + page + " from " + totalPages + "</b>";
-		paginationInfo.innerHTML += " (" + productsList.length + " from " + productsCount + ")";
+		paginationInfo.innerHTML += " (" + this.productsList.length + " from " + productsCount + ")";
 		pagesNavigation.appendChild(paginationInfo);
 
 		var nextButton = document.createElement("button");
@@ -124,28 +125,28 @@
 	}
 
 	setClearSerchResultButtonVisibilty() {
-		var visible = cachedSearchRequest != null && cachedSearchRequest.length > 0;
+		var visible = this.cachedSearchRequest != null && this.cachedSearchRequest.length > 0;
 
-		document.getElementById(idClearSearchResultsButtonContainer).style.display = visible ? "table-cell" : "none";
+		document.getElementById(this.idClearSearchResultsButtonContainer).style.display = visible ? "table-cell" : "none";
 	}
 
 
 	subscribeSearchButton() {
-		document.getElementById(idSearchButton).onclick = () => onSearchButtonClick(null);
+		document.getElementById(this.idSearchButton).onclick = () => this.onSearchButtonClick(null);
 
-		var searchInput = document.getElementById(idSearchInput);
-		searchInput.removeEventListener("keyup", onSearchButtonClick);
-		searchInput.addEventListener("keyup", onSearchButtonClick);
+		var searchInput = document.getElementById(this.idSearchInput);
+		searchInput.removeEventListener("keyup", this.onSearchButtonClick);
+		searchInput.addEventListener("keyup", this.onSearchButtonClick);
 
-		searchInput.removeEventListener("focus", onSearchInputFocus);
-		searchInput.addEventListener("focus", onSearchInputFocus);
+		searchInput.removeEventListener("focus", this.onSearchInputFocus);
+		searchInput.addEventListener("focus", this.onSearchInputFocus);
 
-		var clearSearchResultsButton = document.getElementById(idClearSearchResultsButton);
-		clearSearchResultsButton.onclick = onClearSearchResultsButtonClick;
+		var clearSearchResultsButton = document.getElementById(this.idClearSearchResultsButton);
+		clearSearchResultsButton.onclick = this.onClearSearchResultsButtonClick;
 	}
 
 	onSearchInputFocus(event) {
-		document.getElementById(idSearchInput).select();
+		document.getElementById(this.idSearchInput).select();
 	}
 
 	onSearchButtonClick(event) {
@@ -155,45 +156,45 @@
 			}
 		}
 
-		if (isSearchRequestInAction) {
+		if (this.isSearchRequestInAction) {
 			return;
 		}
 
-		var searchRequest = document.getElementById(idSearchInputField).value;
+		var searchRequest = document.getElementById(this.idSearchInputField).value;
 		if (searchRequest.length == 0) {
-			alert(textEmptySearchRequest);
+			alert(this.textEmptySearchRequest);
 			return;
 		}
 
-		cachedSearchRequest = searchRequest;
-		setClearSerchResultButtonVisibilty();
+		this.cachedSearchRequest = searchRequest;
+		this.setClearSerchResultButtonVisibilty();
 		clearProductInfo();
-		findProductsRequestByCached(1, true);
+		this.findProductsRequestByCached(1, true);
 	}
 
 	onClearSearchResultsButtonClick(event) {
-		if (cachedSearchRequest == null || cachedSearchRequest.length == 0) {
+		if (this.cachedSearchRequest == null || this.cachedSearchRequest.length == 0) {
 			return;
 		}
 
-		cachedSearchRequest = null;
-		document.getElementById(idSearchInputField).value = "";
+		this.cachedSearchRequest = null;
+		document.getElementById(this.idSearchInputField).value = "";
 		loadProductsPageAndFillList(1, false);
 	}
 
 	findProductsRequestByCached(page = Number, fromCache = Boolean) {
-		isSearchRequestInAction = true;
+		this.isSearchRequestInAction = true;
 
-		setProductsListWaitingStatus(true);
-		findProducts(cachedSearchRequest, page, fromCache)
+		this.setProductsListWaitingStatus(true);
+		this.findProducts(this.cachedSearchRequest, page, fromCache)
 			.then(content => {
-				setProductsListWaitingStatus(false);
-				isSearchRequestInAction = false;
-				initializeArrayAndPaginationFromJson(content, page => findProductsRequestByCached(page, true));
+				this.setProductsListWaitingStatus(false);
+				this.isSearchRequestInAction = false;
+				this.initializeArrayAndPaginationFromJson(content, page => this.findProductsRequestByCached(page, true));
 			})
 			.catch(content => {
-				setProductsListWaitingStatus(false);
-				isSearchRequestInAction = false;
+				this.setProductsListWaitingStatus(false);
+				this.isSearchRequestInAction = false;
 				alert(content);
 			});
 	}

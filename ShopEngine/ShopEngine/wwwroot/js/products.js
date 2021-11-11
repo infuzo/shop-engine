@@ -59,7 +59,7 @@ function loadProductsPageAndFillList(page = Number, fromCache = Boolean) {
 	productsSearchableList.getProductsOnPage(page, fromCache)
 		.then(content => {
 			productsSearchableList.setProductsListWaitingStatus(false);
-			initializeArrayAndPaginationFromJson(content, page => loadProductsPageAndFillList(page, true));
+			productsSearchableList.initializeArrayAndPaginationFromJson(content, page => loadProductsPageAndFillList(page, true));
 		})
 		.catch(content => {
 			productsSearchableList.setProductsListWaitingStatus(false);
