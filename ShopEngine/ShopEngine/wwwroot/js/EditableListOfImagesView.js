@@ -49,6 +49,8 @@
 	}
 
 	updateImagesList(imagesUrl) {
+		console.log(imagesUrl);
+
 		if (this.divParent == null) {
 			errorDivParentDoesntExist();
 			return;
@@ -230,6 +232,9 @@
 	}
 
 	uploadNewImages(productGuid, onComplete, onFail) {
+		console.log(this.currentImagesUrl);
+
+		return;
 		let request = new XMLHttpRequest();
 		request.open("POST", "/AdminPanel/UploadProductImages");
 
@@ -252,6 +257,7 @@
 		}
 
 		request.send(formData);
+
 		//todo: detect and upload new images - as promise. Detect and remove deleted images from the list
 	}
 }
