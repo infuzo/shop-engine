@@ -146,7 +146,7 @@
 	}
 
 	onSearchInputFocus(event) {
-		document.getElementById(this.idSearchInput).select();
+		document.getElementById(productsSearchableList.idSearchInput).select();
 	}
 
 	onSearchButtonClick(event) {
@@ -156,29 +156,29 @@
 			}
 		}
 
-		if (this.isSearchRequestInAction) {
+		if (productsSearchableList.isSearchRequestInAction) {
 			return;
 		}
 
-		var searchRequest = document.getElementById(this.idSearchInputField).value;
+		var searchRequest = document.getElementById(productsSearchableList.idSearchInputField).value;
 		if (searchRequest.length == 0) {
-			alert(this.textEmptySearchRequest);
+			alert(productsSearchableList.textEmptySearchRequest);
 			return;
 		}
 
-		this.cachedSearchRequest = searchRequest;
-		this.setClearSerchResultButtonVisibilty();
+		productsSearchableList.cachedSearchRequest = searchRequest;
+		productsSearchableList.setClearSerchResultButtonVisibilty();
 		clearProductInfo();
-		this.findProductsRequestByCached(1, true);
+		productsSearchableList.findProductsRequestByCached(1, true);
 	}
 
 	onClearSearchResultsButtonClick(event) {
-		if (this.cachedSearchRequest == null || this.cachedSearchRequest.length == 0) {
+		if (productsSearchableList.cachedSearchRequest == null || productsSearchableList.cachedSearchRequest.length == 0) {
 			return;
 		}
 
-		this.cachedSearchRequest = null;
-		document.getElementById(this.idSearchInputField).value = "";
+		productsSearchableList.cachedSearchRequest = null;
+		document.getElementById(productsSearchableList.idSearchInputField).value = "";
 		loadProductsPageAndFillList(1, false);
 	}
 
