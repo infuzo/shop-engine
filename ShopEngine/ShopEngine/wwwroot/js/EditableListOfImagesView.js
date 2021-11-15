@@ -49,8 +49,6 @@
 	}
 
 	updateImagesList(imagesUrl) {
-		console.log(imagesUrl);
-
 		if (this.divParent == null) {
 			errorDivParentDoesntExist();
 			return;
@@ -84,9 +82,7 @@
 
 		let newImage = document.createElement("img");
 		newImage.setAttribute("src", url);
-		newImage.onclick = () => {
-			window.open(url, "_blank");
-		};
+		newImage.onclick = () => this.openImageByIndex(indexInUrls);
 		imageParent.appendChild(newImage);
 
 		this.setImageSize(url, newImage);
@@ -102,6 +98,10 @@
 		this.createItemButton("X", buttonsParent, false, () => this.onDeleteElement(closureIndex));
 		this.createItemButton(">", buttonsParent, indexInUrls + 1 == this.currentImagesUrl.length,
 			() => this.onShiftElementRight(closureIndex));
+	}
+
+	openImageByIndex(index = Number) {
+		window.open(this.currentImagesUrl[index], "_blank");
 	}
 
 	createItemButton(innerText = String, parent = HTMLDivElement, hidden = Boolean, onClick) {
@@ -232,16 +232,15 @@
 	}
 
 	uploadNewImages(productGuid, onComplete, onFail) {
-		console.log(this.currentImagesUrl);
+		this.setAddNewImageVisibility(false);
 
-		return;
 		let request = new XMLHttpRequest();
 		request.open("POST", "/AdminPanel/UploadProductImages");
 
 		request.onreadystatechange = () => {
 			if (request.readyState == 4) {
 				if (request.status == 200) {
-					onComplete(request.responseText);
+					this.onUploadingImageComplete(request.responseText);
 				}
 				else {
 					onFail();
@@ -259,5 +258,32 @@
 		request.send(formData);
 
 		//todo: detect and upload new images - as promise. Detect and remove deleted images from the list
+	}
+
+	onUploadingImageComplete(response) {
+		this.setAddNewImageVisibility(true);
+
+		var json = JSON.parse(response);
+
+		let responceCounter = 0;
+		for (let index = 0; index < this.currentImagesUrl.length; index++) {
+			if (this.filesToUpload.has(index)) {
+				this.currentImagesUrl[index] = json.urls[responceCounter];
+				responceCounter++;
+			}
+		}
+
+		console.log(this.currentImagesUrl);
+		this.filesToUpload.clear();
+	}
+
+	onUploadingImageFail(responce) {
+		this.setAddNewImageVisibility(true);
+	}
+
+	setAddNewImageVisibility(isVisibile = Boolean) {
+		document.getElementsByClassName(this.divAddNewImageClass)[0].style.display =
+			isVisibile ? "block" : "none";
+		
 	}
 }

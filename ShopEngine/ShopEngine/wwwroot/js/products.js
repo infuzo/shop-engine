@@ -133,6 +133,8 @@ function buttonProductAddOrSaveClick(product = Product) {
 
 function onSuccessImageLoad(result) {
 	console.log(result);
+
+
 }
 
 function onFailImageLoad() {
