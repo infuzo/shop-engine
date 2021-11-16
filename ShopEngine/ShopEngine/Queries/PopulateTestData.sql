@@ -84,9 +84,9 @@ VALUES
 	(N'Everest Home 4070', '{}', 11699, 1, @ComputersGuid, N'{}', 0),
 	(N'ARTLINE Gaming X39 v33', '{}', 21399, 1, @ComputersGuid, N'{}', 0),
 	(N'Artline Home H25 v15', '{}', 5199, 1, @ComputersGuid, N'{}', 0),
-	(N'ÃÓÌÓ·ÎÓÍ HP AiO 20-c412ur', '{}', 7499, 1, @ComputersGuid, N'{}', 0),
+	(N'—õ–æ–Ω–æ–±–ª–æ–∫ HP AiO 20-c412ur', '{}', 7499, 1, @ComputersGuid, N'{}', 0),
 	(N'Dell OptiPlex 3060 SFF', '{}', 10299, 1, @ComputersGuid, N'{}', 0),
-	(N'ÃÓÌÓ·ÎÓÍ HP AiO 20-c401ur White', '{}', 7099, 1, @ComputersGuid, N'{}', 0),
+	(N'—õ–æ–Ω–æ–±–ª–æ–∫ HP AiO 20-c401ur White', '{}', 7099, 1, @ComputersGuid, N'{}', 0),
 	(N'ARTLINE Gaming X48 v09', '{}', 15999, 0, @ComputersGuid, N'{}', 0),
 	(N'Acer Aspire C24-865 (DQ.BBTME.005) Silver', '{}', 15999, 0, @ComputersGuid, N'{}', 0),
 	(N'Artline Business B27 (B27v29)', '{}', 7842, 0, @ComputersGuid, N'{}', 0),
@@ -246,8 +246,8 @@ SET @TowersGuid = dbo.GetCategoryGuidByName(N'Towers');
 
 INSERT INTO dbo.Products(Name, SpecificationsJson, Price, InStock, CategoryId, ImagesUrlJson, PreviewImageIndex)
 VALUES
-	(N'Crown CMC-605 450 ¬Ú Black', N'{}', 825, 1, @TowersGuid, N'{}', 0),
-	(N'—rown CMC-410 400 ¬Ú Black', N'{}', 659, 1, @TowersGuid, N'{}', 0),
+	(N'Crown CMC-605 450 Black', N'{}', 825, 1, @TowersGuid, N'{}', 0),
+	(N'Crown CMC-410 400 Black', N'{}', 659, 1, @TowersGuid, N'{}', 0),
 	(N'DeepCool Wave V2', N'{}', 749, 1, @TowersGuid, N'{}', 0),
 	(N'DeepCool Matrexx 30 Black', N'{}', 888, 1, @TowersGuid, N'{}', 0),
 	(N'DeepCool Smarter LED Black', N'{}', 771, 1, @TowersGuid, N'{}', 0),
@@ -259,7 +259,7 @@ VALUES
 	(N'GameMax ET-205-NP', N'{}', 369, 1, @TowersGuid, N'{}', 0),
 	(N'Gamemax ET-209-NP', N'{}', 369, 1, @TowersGuid, N'{}', 0),
 	(N'Chieftec CI-01B-OP', N'{}', 1128, 1, @TowersGuid, N'{}', 0),
-	(N'Fractal Design Meshify C ñ TG White', N'{}', 2603, 1, @TowersGuid, N'{}', 0),
+	(N'Fractal Design Meshify C –¶ TG White', N'{}', 2603, 1, @TowersGuid, N'{}', 0),
 	(N'Fractal Design Define R5 Titanium', N'{}', 3246, 1, @TowersGuid, N'{}', 0);
 GO
 
@@ -269,13 +269,13 @@ SET @DesktopsGuid = dbo.GetCategoryGuidByName(N'Desktops');
 INSERT INTO dbo.Products(Name, SpecificationsJson, Price, InStock, CategoryId, ImagesUrlJson, PreviewImageIndex)
 VALUES
 	(N'GameMax ST-610W', N'{}', 769, 1, @DesktopsGuid, N'{}', 0),
-	(N'GameMax ST-607 300 ¬Ú', N'{}', 718, 1, @DesktopsGuid, N'{}', 0),
+	(N'GameMax ST-607 300', N'{}', 718, 1, @DesktopsGuid, N'{}', 0),
 	(N'GameMax ST-610G', N'{}', 718, 0, @DesktopsGuid, N'{}', 0),
 	(N'Cougar QBX Black', N'{}', 1699, 1, @DesktopsGuid, N'{}', 0),
-	(N'LogicPower LP S607 BK 400 ¬Ú', N'{}', 873, 1, @DesktopsGuid, N'{}', 0),
-	(N'LogicPower LP S620 400 ¬Ú', N'{}', 744, 1, @DesktopsGuid, N'{}', 0),
-	(N'LogicPower LP S602 BS 400 ¬Ú', N'{}', 895, 1, @DesktopsGuid, N'{}', 0),
-	(N'LogicPower LP S605 BK 400 ¬Ú', N'{}', 873, 0, @DesktopsGuid, N'{}', 0),
+	(N'LogicPower LP S607 BK 400', N'{}', 873, 1, @DesktopsGuid, N'{}', 0),
+	(N'LogicPower LP S620 400', N'{}', 744, 1, @DesktopsGuid, N'{}', 0),
+	(N'LogicPower LP S602 BS 400', N'{}', 895, 1, @DesktopsGuid, N'{}', 0),
+	(N'LogicPower LP S605 BK 400', N'{}', 873, 0, @DesktopsGuid, N'{}', 0),
 	(N'Cooler Master Elite 120', N'{}', 1268, 0, @DesktopsGuid, N'{}', 0),
 	(N'Cougar QBX', N'{}', 1890, 1, @DesktopsGuid, N'{}', 0),
 	(N'FRACTAL DESIGN Node 202 + Integra SFX 450W PSU', N'{}', 4182, 1, @DesktopsGuid, N'{}', 0),
@@ -296,7 +296,7 @@ VALUES
 	(N'HyperX Alloy FPS Pro Cherry MX Red USB', N'{}', 1999, 0, @KeyboardsGuid, N'{}', 0),
 	(N'Logitech G512 RGB Mechanical Gaming GX Blue Switch USB Carbon', N'{}', 5999, 1, @KeyboardsGuid, N'{}', 0),
 	(N'Logitech K120 USB RUS OEM', N'{}', 299, 1, @KeyboardsGuid, N'{}', 0),
-	(N'A4Tech KD-126-2 Ò ·ÂÎÓÈ ÔÓ‰Ò‚ÂÚÍÓÈ USB', N'{}', 539, 1, @KeyboardsGuid, N'{}', 0),
+	(N'A4Tech KD-126-2 C –±–µ–ª–æ–π –ø–æ–¥—Å–≤–µ—Ç–∫–æ–π USB', N'{}', 539, 1, @KeyboardsGuid, N'{}', 0),
 	(N'Logitech K270', N'{}', 699, 1, @KeyboardsGuid, N'{}', 0),
 	(N'Aula Fireshock V5 Mechanical Wired Keyboard EN/RU/UA', N'{}', 1299, 1, @KeyboardsGuid, N'{}', 0),
 	(N'Logitech K280e USB', N'{}', 549, 0, @KeyboardsGuid, N'{}', 0),
@@ -374,26 +374,26 @@ VALUES
 	(N'SAMSUNG ME81KRW-2/BW', N'{}', 2499, 1, @MicrowavesGuid, N'{}', 0);
 GO
 
-DECLARE @Vacuum—leanersGuid UNIQUEIDENTIFIER;
-SET @Vacuum—leanersGuid = dbo.GetCategoryGuidByName(N'Vacuum Cleaners');
+DECLARE @VacuumCleanersGuid UNIQUEIDENTIFIER;
+SET @VacuumCleanersGuid = dbo.GetCategoryGuidByName(N'Vacuum Cleaners');
 
 INSERT INTO dbo.Products(Name, SpecificationsJson, Price, InStock, CategoryId, ImagesUrlJson, PreviewImageIndex)
 VALUES
-	(N'ROWENTA Compact Power Cyclonic Home & Car RO3798EA', N'{}', 2899, 1, @Vacuum—leanersGuid, N'{}', 0),
-	(N'BOSCH BGC05AAA1', N'{}', 1999, 1, @Vacuum—leanersGuid, N'{}', 0),
-	(N'SAMSUNG POWERstick PRO VS80N8014KW/EV', N'{}', 9999, 1, @Vacuum—leanersGuid, N'{}', 0),
-	(N'ROWENTA X-Trem Power Cyclonic Facelift RO7283EA', N'{}', 4999, 1, @Vacuum—leanersGuid, N'{}', 0),
-	(N'PHILIPS SpeedPro FC6722/01', N'{}', 4999, 1, @Vacuum—leanersGuid, N'{}', 0),
-	(N'ELECTROLUX EER7ANIMAL', N'{}', 5999, 0, @Vacuum—leanersGuid, N'{}', 0),
-	(N'SAMSUNG VCC8836V36/SBW', N'{}', 2999, 0, @Vacuum—leanersGuid, N'{}', 0),
-	(N'BOSCH BWD 41740', N'{}', 5999, 1, @Vacuum—leanersGuid, N'{}', 0),
-	(N'ROWENTA X-Trem Power Cyclonic Home&Car RO6963EA 4AAAA Ecomotor', N'{}', 4799, 1, @Vacuum—leanersGuid, N'{}', 0),
-	(N'ROWENTA Air Force Flex 560 RH9471WO', N'{}', 9999, 1, @Vacuum—leanersGuid, N'{}', 0),
-	(N'ROWENTA Swift Power Cyclonic RO2932EA', N'{}', 1999, 0, @Vacuum—leanersGuid, N'{}', 0),
-	(N'BOSCH BGS2UCHAMP', N'{}', 4999, 1, @Vacuum—leanersGuid, N'{}', 0),
-	(N'PHILIPS SpeedPro Max Aqua FC6904/01', N'{}', 15999, 0, @Vacuum—leanersGuid, N'{}', 0),
-	(N'ROWENTA RO2957EA', N'{}', 2199, 1, @Vacuum—leanersGuid, N'{}', 0),
-	(N'ELECTROLUX ESC63EB', N'{}', 2999, 0, @Vacuum—leanersGuid, N'{}', 0);
+	(N'ROWENTA Compact Power Cyclonic Home & Car RO3798EA', N'{}', 2899, 1, @VacuumCleanersGuid, N'{}', 0),
+	(N'BOSCH BGC05AAA1', N'{}', 1999, 1, @VacuumCleanersGuid, N'{}', 0),
+	(N'SAMSUNG POWERstick PRO VS80N8014KW/EV', N'{}', 9999, 1, @VacuumCleanersGuid, N'{}', 0),
+	(N'ROWENTA X-Trem Power Cyclonic Facelift RO7283EA', N'{}', 4999, 1, @VacuumCleanersGuid, N'{}', 0),
+	(N'PHILIPS SpeedPro FC6722/01', N'{}', 4999, 1, @VacuumCleanersGuid, N'{}', 0),
+	(N'ELECTROLUX EER7ANIMAL', N'{}', 5999, 0, @VacuumCleanersGuid, N'{}', 0),
+	(N'SAMSUNG VCC8836V36/SBW', N'{}', 2999, 0, @VacuumCleanersGuid, N'{}', 0),
+	(N'BOSCH BWD 41740', N'{}', 5999, 1, @VacuumCleanersGuid, N'{}', 0),
+	(N'ROWENTA X-Trem Power Cyclonic Home&Car RO6963EA 4AAAA Ecomotor', N'{}', 4799, 1, @VacuumCleanersGuid, N'{}', 0),
+	(N'ROWENTA Air Force Flex 560 RH9471WO', N'{}', 9999, 1, @VacuumCleanersGuid, N'{}', 0),
+	(N'ROWENTA Swift Power Cyclonic RO2932EA', N'{}', 1999, 0, @VacuumCleanersGuid, N'{}', 0),
+	(N'BOSCH BGS2UCHAMP', N'{}', 4999, 1, @VacuumCleanersGuid, N'{}', 0),
+	(N'PHILIPS SpeedPro Max Aqua FC6904/01', N'{}', 15999, 0, @VacuumCleanersGuid, N'{}', 0),
+	(N'ROWENTA RO2957EA', N'{}', 2199, 1, @VacuumCleanersGuid, N'{}', 0),
+	(N'ELECTROLUX ESC63EB', N'{}', 2999, 0, @VacuumCleanersGuid, N'{}', 0);
 GO
 
 DROP FUNCTION dbo.GetCategoryGuidByName;

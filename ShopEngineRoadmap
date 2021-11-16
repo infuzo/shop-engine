@@ -1,8 +1,21 @@
+!!!Add indication of product guid
+
 Итерация 1
 Админ-панель:
 	+ Изменение названия, описания, логотипа сайта, контактная информация
 	+ Значения для e-mail уведомлений
 	+ Добавление\изменение\удаление категорий
+	
+	Products tab:
+		+ Find products by name, guid or vendor code
+		+ Reusable controller for list of preview images - adding, removing, uploading images
+		Set main product preview from list of previews or unique by uploading
+		Saving of all edited product fields
+		Add read-only guid field for selected product
+		Add new product
+		Remove products
+		Emphasis at products which have missing categories (category was deleted earlier for example)
+	
 	Добавление\изменение\удаление\+поиск товаров (товары для удалённых категорий)
 	Управление заказами: просмотр, изменение статуса (новый, комплектуется, скоплектован и отправлен, не принят заказчиком, завершён, отменен на этапе комплектации)
 	Уведомление по e-mail при новом заказе или изменения статуса заказа

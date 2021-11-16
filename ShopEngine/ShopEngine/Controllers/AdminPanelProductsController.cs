@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -6,15 +7,20 @@ using Microsoft.Extensions.Logging;
 using ShopEngine.Models;
 using ShopEngine.Services;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace ShopEngine.Controllers
 {
     [Authorize(Roles = Consts.AdminRoleName)]
-    public class AdminPanelProductsConrtroller : Controller
+    public class AdminPanelProductsController : Controller
     {
         private const string noProductsAfterSearch = "There are no products by this search request.";
+
+        private const string productImagesDirectory = "img/productIcons";
 
         [Route("AdminPanel/Products")]
         public IActionResult Products(
@@ -66,6 +72,43 @@ namespace ShopEngine.Controllers
             {
                 return NotFound(exception.Message);
             }
+        }
+
+        [HttpPost]
+        [Route("AdminPanel/UploadProductImages")]
+        public async Task<IActionResult> UploadProductImage(
+            Guid productGuid,
+            IFormFile[] images,
+            [FromServices] IFileUploadService fileUploadService)
+        {
+            var productDirectory = Path.Combine(productImagesDirectory, productGuid.ToString());
+
+            var urls = new List<string>();
+            var uploadedImagesPaths = new List<string>();
+            try
+            {
+                foreach (var image in images) //todo check mime
+                {
+                    var fileName = $"{Guid.NewGuid()}{new FileInfo(image.FileName).Extension}";
+                    var url = await fileUploadService.Upload(productDirectory, fileName, image, HttpContext);
+                    uploadedImagesPaths.Add(Path.Combine(productDirectory, fileName).Replace("\\", "/"));
+                    urls.Add(url);
+                }
+            }
+            catch
+            {
+                foreach(var path in uploadedImagesPaths)
+                {
+                    await fileUploadService.Delete(path);
+                }
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+            return new JsonResult(new
+            {
+                urls = urls,
+                relatives = uploadedImagesPaths
+            }) ;
         }
     }
 }

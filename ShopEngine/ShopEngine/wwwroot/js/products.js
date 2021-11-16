@@ -26,16 +26,8 @@
 	}
 }
 
-const classPagesNavigation = "pagesNavigation";
-const idProductsListParent = "listItemsParent";
-const idSearchInputField = "productSearchInput";
-const idSearchButton = "productSearchButton";
-const idSearchInput = "productSearchInput";
-const idClearSearchResultsButton = "clearSearchResultsButton";
-const idClearSearchResultsButtonContainer = "clearSearchResultsButtonContainer";
-
-const textWaitingForProductsList = "Products list are loading. Please wait";
-const textEmptySearchRequest = "Search request is empty";
+const idNoSelectedContent = "noSelectedContent";
+const idSelectedItemContent = "selectedItemContent";
 
 const idSelectedProductHeader = "selectedProductHeader";
 const idSelectedProductName = "selectedProductName";
@@ -45,171 +37,45 @@ const idSelectedProductPrice = "selectedProductPrice";
 const idSelectedProductCategoriesChain = "selectedProductCategoriesChain";
 const idSelectedProductInStock = "selectedProductInStock";
 const idSelectedProductIconUrl = "selectedProductIconUrl";
+const idListOfImages = "productListImages";
 const idSelectedProductCustomVendorCode = "selectedProductCustomVendorCode";
 
-var productsList = new Array(Product);
-var cachedSearchRequest = String("");
-var isSearchRequestInAction = false;
+const selectedProductAddOrSaveId = 'selectedProductAddOrSave';
+const selectedProductRemoveId = 'selectedProductRemove';
+
+let listOfImages = EditableListOfImagesView;
+let productsSearchableList = new ProductsSearchableList();
 
 function loadProductsPageAndFillList(page = Number, fromCache = Boolean) {
-	setProductsListWaitingStatus(true);
+	productsSearchableList.setProductsListWaitingStatus(true);
 
-	getProductsOnPage(page, fromCache)
+	setSelectedContentVisibility(false);
+
+	if (listOfImages == null || !listOfImages.Initialized) {
+		listOfImages = new EditableListOfImagesView(idListOfImages);
+		listOfImages.initialize();
+	}
+
+	productsSearchableList.getProductsOnPage(page, fromCache)
 		.then(content => {
-			setProductsListWaitingStatus(false);
-			initializeArrayAndPaginationFromJson(content, page => loadProductsPageAndFillList(page, true));
+			productsSearchableList.setProductsListWaitingStatus(false);
+			productsSearchableList.initializeArrayAndPaginationFromJson(content, page => loadProductsPageAndFillList(page, true));
 		})
 		.catch(content => {
-			setProductsListWaitingStatus(false);
+			productsSearchableList.setProductsListWaitingStatus(false);
 			alert(content);
 		});
 }
 
-function initializeArrayAndPaginationFromJson(json = String, onButtonChangePageClick) {
-	var response = JSON.parse(json);
-
-	productsList = new Array();
-	for (product of response.products) {
-		productsList.push(new Product(
-			product.id,
-			product.categoryId,
-			product.name,
-			product.description,
-			product.specificationsJson,
-			product.price,
-			product.categoriesChain,
-			product.inStock,
-			product.imagesUrlJson,
-			product.previewImageIndex,
-			product.customVendorCode
-		));
-	}
-
-	renderPageOfProductsList(
-		response.currentPage,
-		response.totalPagesCount,
-		response.totalProductsCount,
-		onButtonChangePageClick);
-}
-
-function renderPageOfProductsList(
-	page = Number,
-	totalPages = Number,
-	productsCount = Number,
-	onButtonChangePageClick) {
-
-	createPagesNavigationBar(page, totalPages, productsCount, onButtonChangePageClick);
-	subscribeSearchButton();
-	setClearSerchResultButtonVisibilty();
-
-	var productsListParent = document.getElementById(idProductsListParent);
-	removeAllChildren(productsListParent);
-
-	for (product of productsList) {
-		createShowProductLink(product, productsListParent);
-	}
-}
-
-function createShowProductLink(product = Product, parent = HTMLElement) {
-	var newProductLink = document.createElement("a");
-	newProductLink.href = "#";
-	var productToShow = product;
-	newProductLink.onclick = () => showProductInfo(productToShow);
-	newProductLink.innerText = `${product.Name} (${product.CategoriesChain})`;
-
-	parent.appendChild(newProductLink);
-
-	var newBr = document.createElement("br");
-	parent.appendChild(newBr);
-}
-
-function createPagesNavigationBar(
-	page = Number,
-	totalPages = Number,
-	productsCount = Number,
-	onButtonChangePageClick) {
-
-	var pagesNavigation = document.getElementsByClassName(classPagesNavigation)[0];
-	removeAllChildren(pagesNavigation);
-
-	var previousButton = document.createElement("button");
-	if (page > 1) {
-		previousButton.onclick = () => onButtonChangePageClick(page - 1);
-	}
-	previousButton.innerText = "< Previous";
-	pagesNavigation.appendChild(previousButton);
-
-	var paginationInfo = document.createElement("span");
-	paginationInfo.innerHTML = "<b>" + page + " from " + totalPages + "</b>";
-	paginationInfo.innerHTML += " (" + productsList.length + " from " + productsCount + ")";
-	pagesNavigation.appendChild(paginationInfo);
-
-	var nextButton = document.createElement("button");
-	if (page < totalPages) {
-		nextButton.onclick = () => onButtonChangePageClick(page + 1);
-	}
-	nextButton.innerText = "Next >";
-	pagesNavigation.appendChild(nextButton);
-}
-
-function setClearSerchResultButtonVisibilty() {
-	var visible = cachedSearchRequest != null && cachedSearchRequest.length > 0;
-
-	document.getElementById(idClearSearchResultsButtonContainer).style.display = visible ? "table-cell" : "none";
-}
-
-function subscribeSearchButton() {
-	document.getElementById(idSearchButton).onclick = () => onSearchButtonClick(null);
-
-	var searchInput = document.getElementById(idSearchInput);
-	searchInput.removeEventListener("keyup", onSearchButtonClick);
-	searchInput.addEventListener("keyup", onSearchButtonClick);
-
-	searchInput.removeEventListener("focus", onSearchInputFocus);
-	searchInput.addEventListener("focus", onSearchInputFocus);
-
-	var clearSearchResultsButton = document.getElementById(idClearSearchResultsButton);
-	clearSearchResultsButton.onclick = onClearSearchResultsButtonClick;
-}
-
-function onSearchInputFocus(event) {
-	document.getElementById(idSearchInput).select();
-}
-
-function onSearchButtonClick(event) {
-	if (event != null) {
-		if (event.keyCode != 13 || event.key != "Enter") {
-			return;
-		}
-	}
-
-	if (isSearchRequestInAction) {
-		return;
-	}
-
-	var searchRequest = document.getElementById(idSearchInputField).value;
-	if (searchRequest.length == 0) {
-		alert(textEmptySearchRequest);
-		return;
-	}
-
-	cachedSearchRequest = searchRequest;
-	setClearSerchResultButtonVisibilty();
-	clearProductInfo();
-	findProductsRequestByCached(1, true);
-}
-
-function onClearSearchResultsButtonClick(event) {
-	if (cachedSearchRequest == null || cachedSearchRequest.length == 0) {
-		return;
-	}
-
-	cachedSearchRequest = null;
-	document.getElementById(idSearchInputField).value = "";
-	loadProductsPageAndFillList(1, false);
+function setSelectedContentVisibility(isVisible = Boolean) {
+	document.getElementById(idNoSelectedContent).style.display = isVisible ? 'none' : 'block';
+	document.getElementById(idSelectedItemContent).style.display = isVisible ? 'block' : 'none';
 }
 
 function showProductInfo(product = Product) {
+	setSelectedContentVisibility(true);
+	clearProductInfo();
+
 	document.getElementById(idSelectedProductHeader).innerText = product.Name;
 	document.getElementById(idSelectedProductName).value = product.Name;
 	document.getElementById(idSelectedProductDescription).value = product.Description;
@@ -227,9 +93,29 @@ function showProductInfo(product = Product) {
 	}
 
 	var firstIconUrl = "";
+
+	var prefix = location.protocol + '//' + location.host + '/';
+
 	if (iconsArray != null && iconsArray.length > 0) {
 		firstIconUrl = iconsArray[0];
+
+		for (let index = 0; index < iconsArray.length; index++) {
+			iconsArray[index] = prefix + iconsArray[index];
+		}
+
+		listOfImages.updateImagesList(iconsArray);
 	}
+	else {
+		listOfImages.updateImagesList(null);
+	}
+
+	let addOrSaveButton = document.getElementById(selectedProductAddOrSaveId);
+	addOrSaveButton.onclick = event => buttonProductAddOrSaveClick(product);
+	addOrSaveButton.innerText = "Save"; //todo: text for add new product
+
+	let removeButton = document.getElementById(selectedProductRemoveId);
+	removeButton.onclick = event => buttonProductRemoveClick(product);
+	removeButton.innerText = "Remove";
 
 	document.getElementById(idSelectedProductIconUrl).value = firstIconUrl; 
 	document.getElementById(idSelectedProductCustomVendorCode).value = product.CustomVendorCode;
@@ -247,76 +133,26 @@ function clearProductInfo() {
 	document.getElementById(idSelectedProductCustomVendorCode).value = "";
 }
 
-function findProductsRequestByCached(page = Number, fromCache = Boolean) {
-	isSearchRequestInAction = true;
-
-	setProductsListWaitingStatus(true);
-	findProducts(cachedSearchRequest, page, fromCache)
-		.then(content => {
-			setProductsListWaitingStatus(false);
-			isSearchRequestInAction = false;
-			initializeArrayAndPaginationFromJson(content, page => findProductsRequestByCached(page, true));
-		})
-		.catch(content => {
-			setProductsListWaitingStatus(false);
-			isSearchRequestInAction = false;
-			alert(content);
-		});
+function buttonProductAddOrSaveClick(product = Product) {
+	setActionButtonsVisibility(false);
+	listOfImages.uploadNewImages(product.Guid, onSuccessImageLoad, onFailImageLoad);
 }
 
-function setProductsListWaitingStatus(waiting = Boolean) {
-
-	var listOfProductsParent = document.getElementById(idProductsListParent);
-	removeAllChildren(listOfProductsParent);
-	if (waiting) {
-		removeAllChildren(document.getElementsByClassName(classPagesNavigation)[0]);
-
-		let waitingCaption = document.createElement("span");
-		waitingCaption.innerText = textWaitingForProductsList;
-		listOfProductsParent.appendChild(waitingCaption);
-	}
+function buttonProductRemoveClick(product = Product) {
+	//todo: implement
 }
 
-function getProductsOnPage(pageNumber = Number, fromCache = Boolean) {
-	return new Promise(function (succeed, fail) {
-		let request = new XMLHttpRequest();
-		request.open("GET", "/AdminPanel/GetProductsPage?page=" + pageNumber + "&fromCache=" + fromCache, true);
-		request.addEventListener("load", function () {
-			if (request.status == 200) {
-				succeed(request.response);
-			}
-			else {
-				fail(new Error("Status code: " + request.status + "; Message: " + request.response));
-			}
-		});
-		request.addEventListener("error", function () {
-			fail(new Error("NetworkError"));
-		});
-		request.send();
-	});
+function setActionButtonsVisibility(isVisible = Boolean) {
+	document.getElementById(selectedProductAddOrSaveId).style.display = isVisible ? "inline-block" : "none";
+	document.getElementById(selectedProductRemoveId).style.display = isVisible ? "inline-block" : "none";
 }
 
-function findProducts(guidNameOrVendorCode = String, page = Number, fromCache = Boolean) {
-	return new Promise(function (succeed, fail) {
-		let request = new XMLHttpRequest();
-		request.open("GET", "/AdminPanel/FindProducts?guidNameOrVendorCode=" + guidNameOrVendorCode + "&page=" + page + "&findInProductsCache=" + fromCache, true);
-		request.addEventListener("load", function () {
-			if (request.status == 200) {
-				succeed(request.response);
-			}
-			else {
-				fail(new Error("Status code: " + request.status + "; Message: " + request.response));
-			}
-		});
-		request.addEventListener("error", function () {
-			fail(new Error("NetworkError"));
-		});
-		request.send();
-	});
+function onSuccessImageLoad() {
+	setActionButtonsVisibility(true);
+	//todo: send product on server with edited list of images
 }
 
-function removeAllChildren(element = HTMLElement) {
-	while (element.firstChild != null) {
-		element.removeChild(element.firstChild);
-	}
+function onFailImageLoad(result) {
+	setActionButtonsVisibility(true);
+	console.log(result);
 }

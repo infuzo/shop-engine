@@ -9,6 +9,9 @@ namespace ShopEngine.Models
         public DbSet<CategoryModel> Categories { get; set; }
         public DbSet<ProductModel> Products { get; set; }
 
-        public ShopEngineDbContext(DbContextOptions<ShopEngineDbContext> options) : base(options) { }
+        public ShopEngineDbContext(DbContextOptions<ShopEngineDbContext> options) : base(options) 
+        {
+            Database.EnsureCreated();
+        }
     }
 }

@@ -8,6 +8,8 @@ namespace ShopEngine.Services
 {
     public interface IFileUploadService
     {
+        Task Delete(string path);
+
         /// <summary>
         /// Returns full URL of new file. Overwrites if file exists.
         /// </summary>
