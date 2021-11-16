@@ -40,14 +40,14 @@ const idSelectedProductIconUrl = "selectedProductIconUrl";
 const idListOfImages = "productListImages";
 const idSelectedProductCustomVendorCode = "selectedProductCustomVendorCode";
 
-const selectedProductAddOrSave = 'selectedProductAddOrSave';
+const selectedProductAddOrSaveId = 'selectedProductAddOrSave';
+const selectedProductRemoveId = 'selectedProductRemove';
 
 let listOfImages = EditableListOfImagesView;
 let productsSearchableList = new ProductsSearchableList();
 
 function loadProductsPageAndFillList(page = Number, fromCache = Boolean) {
 	productsSearchableList.setProductsListWaitingStatus(true);
-
 
 	setSelectedContentVisibility(false);
 
@@ -109,7 +109,13 @@ function showProductInfo(product = Product) {
 		listOfImages.updateImagesList(null);
 	}
 
-	document.getElementById(selectedProductAddOrSave).onclick = event => buttonProductAddOrSaveClick(product);
+	let addOrSaveButton = document.getElementById(selectedProductAddOrSaveId);
+	addOrSaveButton.onclick = event => buttonProductAddOrSaveClick(product);
+	addOrSaveButton.innerText = "Save"; //todo: text for add new product
+
+	let removeButton = document.getElementById(selectedProductRemoveId);
+	removeButton.onclick = event => buttonProductRemoveClick(product);
+	removeButton.innerText = "Remove";
 
 	document.getElementById(idSelectedProductIconUrl).value = firstIconUrl; 
 	document.getElementById(idSelectedProductCustomVendorCode).value = product.CustomVendorCode;
@@ -128,15 +134,25 @@ function clearProductInfo() {
 }
 
 function buttonProductAddOrSaveClick(product = Product) {
+	setActionButtonsVisibility(false);
 	listOfImages.uploadNewImages(product.Guid, onSuccessImageLoad, onFailImageLoad);
 }
 
-function onSuccessImageLoad(result) {
-	console.log(result);
-
-
+function buttonProductRemoveClick(product = Product) {
+	//todo: implement
 }
 
-function onFailImageLoad() {
+function setActionButtonsVisibility(isVisible = Boolean) {
+	document.getElementById(selectedProductAddOrSaveId).style.display = isVisible ? "inline-block" : "none";
+	document.getElementById(selectedProductRemoveId).style.display = isVisible ? "inline-block" : "none";
+}
 
+function onSuccessImageLoad() {
+	setActionButtonsVisibility(true);
+	//todo: send product on server with edited list of images
+}
+
+function onFailImageLoad(result) {
+	setActionButtonsVisibility(true);
+	console.log(result);
 }

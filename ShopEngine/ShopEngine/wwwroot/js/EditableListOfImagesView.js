@@ -59,16 +59,16 @@
 			this.divParent.removeChild(this.divParent.firstChild);
 		}
 
-		//todo: view for empty list
 		if (imagesUrl == null) {
 			this.currentImagesUrl = Array(String);
-			return;
+			this.currentImagesUrl = [];
 		}
+		else {
+			this.currentImagesUrl = imagesUrl;
 
-		this.currentImagesUrl = imagesUrl;
-
-		for (let index = 0; index < this.currentImagesUrl.length; index++) {
-			this.createImageItem(index);
+			for (let index = 0; index < this.currentImagesUrl.length; index++) {
+				this.createImageItem(index);
+			}
 		}
 
 		this.createAddingNewImageDiv();
@@ -246,9 +246,11 @@
 			if (request.readyState == 4) {
 				if (request.status == 200) {
 					this.onUploadingImageComplete(request.responseText);
+					onComplete();
 				}
 				else {
-					onFail();
+					this.onUploadingImageFail();
+					onFail(request.responseText);
 					alert(`$upload images fail\n${request.status} - ${request.responseText}`);
 				}
 			}
@@ -261,8 +263,6 @@
 		}
 
 		request.send(formData);
-
-		//todo: detect and upload new images - as promise. Detect and remove deleted images from the list
 	}
 
 	onUploadingImageComplete(response) {
@@ -278,11 +278,10 @@
 			}
 		}
 
-		console.log(this.currentImagesUrl);
 		this.filesToUpload.clear();
 	}
 
-	onUploadingImageFail(responce) {
+	onUploadingImageFail() {
 		this.setAddNewImageVisibility(true);
 	}
 
@@ -290,6 +289,5 @@
 		this.isAbleToChangeArray = isVisibile;
 		document.getElementsByClassName(this.divAddNewImageClass)[0].style.display =
 			isVisibile ? "block" : "none";
-		
 	}
 }
