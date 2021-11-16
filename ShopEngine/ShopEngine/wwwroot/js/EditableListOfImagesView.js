@@ -23,6 +23,7 @@
 
 	fileInput;
 	filesToUpload = new Map();
+	isAbleToChangeArray = true;
 
 	initialize() {
 		this.divParent = document.getElementById(this.DivId);
@@ -166,7 +167,7 @@
 	}
 
 	onShiftElementLeft(elementIndex = Number) {
-		if (elementIndex == 0) { return; }
+		if (elementIndex == 0 || !this.isAbleToChangeArray) { return; }
 
 		let newIndex = elementIndex - 1;
 		if (this.filesToUpload.has(elementIndex)) {
@@ -181,6 +182,10 @@
 	}
 
 	onShiftElementRight(elementIndex = Number) {
+		if (!this.isAbleToChangeArray) {
+			return;
+		}
+
 		let newIndex = elementIndex + 1;
 		if (newIndex == this.currentImagesUrl) { return; }
 
@@ -195,19 +200,8 @@
 		this.updateImagesList(this.currentImagesUrl);
 	}
 
-	swapFilesToUpload(oldIndex, newIndex) {
-		let oldIndexFile = this.filesToUpload.get(oldIndex);
-		if (this.filesToUpload.has(newIndex)) {
-			this.filesToUpload.set(oldIndex, this.filesToUpload.get(newIndex));
-		}
-		else {
-			this.filesToUpload.delete(oldIndex);
-		}
-		this.filesToUpload.set(newIndex, oldIndexFile);
-	}
-
 	onDeleteElement(elementIndex = Number) {
-		if (this.currentImagesUrl.length == 0 || elementIndex >= this.currentImagesUrl.length) {
+		if (this.currentImagesUrl.length == 0 || elementIndex >= this.currentImagesUrl.length || !this.isAbleToChangeArray) {
 			return;
 		}
 
@@ -219,6 +213,17 @@
 				this.filesToUpload.delete(elementIndex);
 			}
 		}
+	}
+
+	swapFilesToUpload(oldIndex, newIndex) {
+		let oldIndexFile = this.filesToUpload.get(oldIndex);
+		if (this.filesToUpload.has(newIndex)) {
+			this.filesToUpload.set(oldIndex, this.filesToUpload.get(newIndex));
+		}
+		else {
+			this.filesToUpload.delete(oldIndex);
+		}
+		this.filesToUpload.set(newIndex, oldIndexFile);
 	}
 
 	onNewImageInput() {
@@ -282,6 +287,7 @@
 	}
 
 	setAddNewImageVisibility(isVisibile = Boolean) {
+		this.isAbleToChangeArray = isVisibile;
 		document.getElementsByClassName(this.divAddNewImageClass)[0].style.display =
 			isVisibile ? "block" : "none";
 		
