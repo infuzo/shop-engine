@@ -9,6 +9,13 @@
 	margin-right: 5px;
 }
 
+listOfImagesImageParent input {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	z-index: 1;
+}
+
 .listOfImages img {
 	cursor: pointer;
 	position: absolute;

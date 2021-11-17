@@ -99,6 +99,8 @@
 		this.createItemButton("X", buttonsParent, false, () => this.onDeleteElement(closureIndex));
 		this.createItemButton(">", buttonsParent, indexInUrls + 1 == this.currentImagesUrl.length,
 			() => this.onShiftElementRight(closureIndex));
+
+		this.createPreviewImageCheckbox(imageParent, false);
 	}
 
 	openImageByIndex(index = Number) {
@@ -113,7 +115,16 @@
 		button.hidden = hidden;
 
 		parent.appendChild(button);
+	}
 
+	createPreviewImageCheckbox(parent = HTMLDivElement, checked = Boolean) {
+		let checkbox = document.createElement("input");
+		checkbox.setAttribute("type", "checkbox");
+		if (checked) {
+			checkbox.setAttribute("checked", "checked");
+		}
+
+		parent.appendChild(checkbox);
 	}
 
 	createAddingNewImageDiv() {
