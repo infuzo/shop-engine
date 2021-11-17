@@ -29,6 +29,7 @@
 const idNoSelectedContent = "noSelectedContent";
 const idSelectedItemContent = "selectedItemContent";
 
+const idSelectedProductGuid = "selectedProductGuid";
 const idSelectedProductHeader = "selectedProductHeader";
 const idSelectedProductName = "selectedProductName";
 const idSelectedProductDescription = "selectedProductDescription";
@@ -76,6 +77,7 @@ function showProductInfo(product = Product) {
 	setSelectedContentVisibility(true);
 	clearProductInfo();
 
+	document.getElementById(idSelectedProductGuid).value = product.Guid;
 	document.getElementById(idSelectedProductHeader).innerText = product.Name;
 	document.getElementById(idSelectedProductName).value = product.Name;
 	document.getElementById(idSelectedProductDescription).value = product.Description;
