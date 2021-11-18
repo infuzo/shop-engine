@@ -105,7 +105,7 @@ function showProductInfo(product = Product) {
 			iconsArray[index] = prefix + iconsArray[index];
 		}
 
-		listOfImages.updateImagesList(iconsArray);
+		listOfImages.updateImagesList(iconsArray, product.PreviewImageIndex);
 	}
 	else {
 		listOfImages.updateImagesList(null);

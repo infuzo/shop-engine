@@ -24,6 +24,8 @@
 	fileInput;
 	filesToUpload = new Map();
 	isAbleToChangeArray = true;
+	previewImageIndex = 0;
+	currentPreviewImageCheckboxes = new Array(HTMLInputElement);
 
 	initialize() {
 		this.divParent = document.getElementById(this.DivId);
@@ -49,7 +51,7 @@
 		head.appendChild(link);
 	}
 
-	updateImagesList(imagesUrl) {
+	updateImagesList(imagesUrl, currentPreviewIndex) {
 		if (this.divParent == null) {
 			errorDivParentDoesntExist();
 			return;
@@ -59,6 +61,7 @@
 			this.divParent.removeChild(this.divParent.firstChild);
 		}
 
+		this.currentPreviewImageCheckboxes = [];
 		if (imagesUrl == null) {
 			this.currentImagesUrl = Array(String);
 			this.currentImagesUrl = [];
@@ -72,6 +75,9 @@
 		}
 
 		this.createAddingNewImageDiv();
+
+		this.previewImageIndex = currentPreviewIndex;
+		this.updateCurrentPreviewImageCheckbox(); //todo: add saving of current checked image after shifting or adding new images
 	}
 
 	createImageItem(indexInUrls = Number) {
@@ -100,7 +106,7 @@
 		this.createItemButton(">", buttonsParent, indexInUrls + 1 == this.currentImagesUrl.length,
 			() => this.onShiftElementRight(closureIndex));
 
-		this.createPreviewImageCheckbox(imageParent, false);
+		this.currentPreviewImageCheckboxes[indexInUrls] = this.createPreviewImageCheckbox(imageParent, indexInUrls);
 	}
 
 	openImageByIndex(index = Number) {
@@ -117,14 +123,26 @@
 		parent.appendChild(button);
 	}
 
-	createPreviewImageCheckbox(parent = HTMLDivElement, checked = Boolean) {
+	createPreviewImageCheckbox(parent = HTMLDivElement, index = Number) {
 		let checkbox = document.createElement("input");
 		checkbox.setAttribute("type", "checkbox");
-		if (checked) {
-			checkbox.setAttribute("checked", "checked");
+
+		checkbox.onchange = (event) => {
+			this.previewImageIndex = index;
+			this.updateCurrentPreviewImageCheckbox();
+			console.log(this.previewImageIndex);
 		}
 
 		parent.appendChild(checkbox);
+
+		return checkbox;
+	}
+
+	updateCurrentPreviewImageCheckbox() {
+		for (let index = 0; index < this.currentPreviewImageCheckboxes.length; index++) {
+			let checkbox = this.currentPreviewImageCheckboxes[index];
+			checkbox.checked = index == this.previewImageIndex;
+		}
 	}
 
 	createAddingNewImageDiv() {
