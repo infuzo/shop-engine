@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using ShopEngine.Helpers;
 using ShopEngine.Models;
 using ShopEngine.Services;
 using System;
@@ -109,6 +110,32 @@ namespace ShopEngine.Controllers
                 urls = urls,
                 relatives = uploadedImagesPaths
             }) ;
+        }
+
+        [HttpPost]
+        [Route("AdminPanel/EditProduct")]
+        public async Task<IActionResult> EditProduct(
+            ProductModel model,
+            [FromServices] ShopEngineDbContext dbContext,
+            [FromServices] ILoggerFactory loggerFactory)
+        {
+            if (ModelState.ErrorCount > 0)
+            {
+                return StatusCode(500, ModelErrorHelper.GetModelErrors(ModelState));
+            }
+
+            try
+            {
+                dbContext.Products.Update(model);
+                await dbContext.SaveChangesAsync();
+            }
+            catch (Exception exception)
+            {
+                loggerFactory.CreateLogger("AdminPanel").LogError(exception.ToString());
+                return StatusCode(500);
+            }
+
+            return Ok();
         }
     }
 }
