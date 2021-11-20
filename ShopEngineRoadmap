@@ -9,7 +9,7 @@
 	Products tab:
 		+ Find products by name, guid or vendor code
 		+ Reusable controller for list of preview images - adding, removing, uploading images
-		Set main product preview from list of previews or unique by uploading
+		+ Set main product preview from list of previews or unique by uploading
 		Saving of all edited product fields
 		+ Add read-only guid field for selected product
 		Add new product

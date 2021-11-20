@@ -76,6 +76,10 @@
 
 		this.createAddingNewImageDiv();
 
+		if (currentPreviewIndex == undefined || currentPreviewIndex < 0 || currentPreviewIndex >= this.currentImagesUrl.length) {
+			currentPreviewIndex = 0;
+		}
+
 		this.previewImageIndex = currentPreviewIndex;
 		this.updateCurrentPreviewImageCheckbox(); //todo: add saving of current checked image after shifting or adding new images
 	}
@@ -130,7 +134,6 @@
 		checkbox.onchange = (event) => {
 			this.previewImageIndex = index;
 			this.updateCurrentPreviewImageCheckbox();
-			console.log(this.previewImageIndex);
 		}
 
 		parent.appendChild(checkbox);
@@ -207,7 +210,7 @@
 		this.currentImagesUrl[newIndex] = this.currentImagesUrl[elementIndex];
 		this.currentImagesUrl[elementIndex] = temp;
 
-		this.updateImagesList(this.currentImagesUrl);
+		this.updateImagesList(this.currentImagesUrl, this.previewImageIndex - 1);
 	}
 
 	onShiftElementRight(elementIndex = Number) {
@@ -226,7 +229,7 @@
 		this.currentImagesUrl[newIndex] = this.currentImagesUrl[elementIndex];
 		this.currentImagesUrl[elementIndex] = temp;
 
-		this.updateImagesList(this.currentImagesUrl);
+		this.updateImagesList(this.currentImagesUrl, this.previewImageIndex + 1);
 	}
 
 	onDeleteElement(elementIndex = Number) {
@@ -236,7 +239,10 @@
 
 		if (confirm(this.confirmMessageText)) {
 			this.currentImagesUrl.splice(elementIndex, 1);
-			this.updateImagesList(this.currentImagesUrl);
+
+			let newPreviewIndex = elementIndex > 0 ? elementIndex - 1 : 0;
+
+			this.updateImagesList(this.currentImagesUrl, newPreviewIndex);
 
 			if (this.filesToUpload.has(elementIndex)) {
 				this.filesToUpload.delete(elementIndex);
