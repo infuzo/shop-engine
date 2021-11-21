@@ -19,6 +19,8 @@
 		this.labelAddNewImageText = "Add new image: ";
 
 		this.addNewImageButtonName = "newImage";
+
+		this.currentImagesUrl = [];
 	}
 
 	fileInput;
@@ -81,7 +83,7 @@
 		}
 
 		this.previewImageIndex = currentPreviewIndex;
-		this.updateCurrentPreviewImageCheckbox(); //todo: add saving of current checked image after shifting or adding new images
+		this.updateCurrentPreviewImageCheckbox(); 
 	}
 
 	createImageItem(indexInUrls = Number) {
@@ -272,6 +274,12 @@
 	}
 
 	uploadNewImages(productGuid, onComplete, onFail) {
+
+		if (this.filesToUpload.size == 0) {
+			onComplete();
+			return;
+		}
+
 		this.setAddNewImageVisibility(false);
 
 		let request = new XMLHttpRequest();

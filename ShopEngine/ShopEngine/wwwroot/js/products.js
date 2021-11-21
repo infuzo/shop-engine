@@ -24,6 +24,25 @@
 		this.PreviewImageIndex = previewImageIndex;
 		this.CustomVendorCode = customVendorCode;
 	}
+
+	imagesUrlArray = [];
+
+	getFormData() {
+
+		let imagesJson = {
+			urls: this.imagesUrlArray
+		};
+
+		return "Id=" + encodeURIComponent(this.Guid) +
+			"&CategoryId=" + encodeURIComponent(this.CategoryId) +
+			"&Name=" + encodeURIComponent(this.Name) +
+			"&Description=" + encodeURIComponent(this.Description) +
+			"&Price=" + this.Price +
+			"&InStock=" + this.InStock +
+			"&ImagesUrlJson=" + JSON.stringify(imagesJson) +
+			"&PreviewImageIndex=" + this.PreviewImageIndex +
+			"&CustomVendorCode=" + this.CustomVendorCode;
+	}
 }
 
 const idNoSelectedContent = "noSelectedContent";
@@ -46,6 +65,7 @@ const selectedProductRemoveId = 'selectedProductRemove';
 
 let listOfImages = EditableListOfImagesView;
 let productsSearchableList = new ProductsSearchableList();
+let selectedProductId = String;
 
 function loadProductsPageAndFillList(page = Number, fromCache = Boolean) {
 	productsSearchableList.setProductsListWaitingStatus(true);
@@ -76,6 +96,8 @@ function setSelectedContentVisibility(isVisible = Boolean) {
 function showProductInfo(product = Product) {
 	setSelectedContentVisibility(true);
 	clearProductInfo();
+
+	selectedProductId = product.Guid;
 
 	document.getElementById(idSelectedProductGuid).value = product.Guid;
 	document.getElementById(idSelectedProductHeader).innerText = product.Name;
@@ -150,8 +172,25 @@ function setActionButtonsVisibility(isVisible = Boolean) {
 }
 
 function onSuccessImageLoad() {
-	setActionButtonsVisibility(true);
 	//todo: send product on server with edited list of images
+
+	let product = new Product(
+		selectedProductId,
+		document.getElementById(idSelectedProductCategoryGuid).value,
+		document.getElementById(idSelectedProductName).value,
+		document.getElementById(idSelectedProductDescription).value,
+		"{}", //todo: implement list of specifiactions
+		document.getElementById(idSelectedProductPrice).value,
+		"",
+		document.getElementById(idSelectedProductInStock).checked,
+		"{}",
+		listOfImages.previewImageIndex,
+		document.getElementById(idSelectedProductCustomVendorCode).value);
+	product.imagesUrlArray = listOfImages.currentImagesUrl;
+
+	console.log(product.getFormData());
+
+	setActionButtonsVisibility(true);
 }
 
 function onFailImageLoad(result) {
