@@ -37,6 +37,7 @@
 			"&CategoryId=" + encodeURIComponent(this.CategoryId) +
 			"&Name=" + encodeURIComponent(this.Name) +
 			"&Description=" + encodeURIComponent(this.Description) +
+			"&SpecificationsJson=" + encodeURIComponent(this.Specifications) +
 			"&Price=" + this.Price +
 			"&InStock=" + this.InStock +
 			"&ImagesUrlJson=" + JSON.stringify(imagesJson) +
@@ -65,7 +66,6 @@ const selectedProductRemoveId = 'selectedProductRemove';
 
 let listOfImages = EditableListOfImagesView;
 let productsSearchableList = new ProductsSearchableList();
-let selectedProductId = String;
 
 function loadProductsPageAndFillList(page = Number, fromCache = Boolean) {
 	productsSearchableList.setProductsListWaitingStatus(true);
@@ -159,7 +159,7 @@ function clearProductInfo() {
 
 function buttonProductAddOrSaveClick(product = Product) {
 	setActionButtonsVisibility(false);
-	listOfImages.uploadNewImages(product.Guid, onSuccessImageLoad, onFailImageLoad);
+	listOfImages.uploadNewImages(product.Guid, () => editSelectedProduct(product.Guid), onFailImageLoad);
 }
 
 function buttonProductRemoveClick(product = Product) {
@@ -171,11 +171,13 @@ function setActionButtonsVisibility(isVisible = Boolean) {
 	document.getElementById(selectedProductRemoveId).style.display = isVisible ? "inline-block" : "none";
 }
 
-function onSuccessImageLoad() {
-	//todo: send product on server with edited list of images
+function editSelectedProduct(selectedProductGuid = String) {
+	sendProductFormData("/AdminPanel/EditProduct", getProductFromInput(selectedProductGuid));
+}
 
+function getProductFromInput(productGuid = String) {
 	let product = new Product(
-		selectedProductId,
+		productGuid,
 		document.getElementById(idSelectedProductCategoryGuid).value,
 		document.getElementById(idSelectedProductName).value,
 		document.getElementById(idSelectedProductDescription).value,
@@ -187,10 +189,29 @@ function onSuccessImageLoad() {
 		listOfImages.previewImageIndex,
 		document.getElementById(idSelectedProductCustomVendorCode).value);
 	product.imagesUrlArray = listOfImages.currentImagesUrl;
+	return product;
+}
 
-	console.log(product.getFormData());
+function sendProductFormData(requestUrl = String, product = Product) {
+	let request = new XMLHttpRequest();
+	request.open("POST", requestUrl);
+	request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded; charset=utf-8');
 
-	setActionButtonsVisibility(true);
+	request.onreadystatechange = () => {
+		if (request.readyState == 4) {
+			if (request.status == 200) {
+				setActionButtonsVisibility(true);
+				console.log("update selected product");
+				//todo: update product
+			}
+			else {
+				setActionButtonsVisibility(true);
+				alert(`${request.status} - ${request.responseText}`);
+			}
+		}
+	};
+
+	request.send(product.getFormData());
 }
 
 function onFailImageLoad(result) {
