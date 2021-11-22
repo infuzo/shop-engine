@@ -201,8 +201,7 @@ function sendProductFormData(requestUrl = String, product = Product) {
 		if (request.readyState == 4) {
 			if (request.status == 200) {
 				setActionButtonsVisibility(true);
-				console.log("update selected product");
-				//todo: update product
+				productsSearchableList.updateProductInList(product);
 			}
 			else {
 				setActionButtonsVisibility(true);

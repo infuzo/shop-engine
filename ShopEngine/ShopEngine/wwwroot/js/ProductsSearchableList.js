@@ -77,16 +77,16 @@
 		var productsListParent = document.getElementById(this.idProductsListParent);
 		this.removeAllChildren(productsListParent);
 
-		for (let product of this.productsList) {
-			this.createShowProductLink(product, productsListParent);
+		for (let index = 0; index < this.productsList.length; index++) {
+			this.createShowProductLink(index, productsListParent);
 		}
 	}
 
-	createShowProductLink(product = Product, parent = HTMLElement) {
+	createShowProductLink(productIndex = Number, parent = HTMLElement) {
+		let product = this.productsList[productIndex];
 		var newProductLink = document.createElement("a");
 		newProductLink.href = "#";
-		var productToShow = product;
-		newProductLink.onclick = () => showProductInfo(productToShow);
+		newProductLink.onclick = () => showProductInfo(product);
 		newProductLink.innerText = `${product.Name} (${product.CategoriesChain})`;
 
 		parent.appendChild(newProductLink);
@@ -129,7 +129,6 @@
 
 		document.getElementById(this.idClearSearchResultsButtonContainer).style.display = visible ? "table-cell" : "none";
 	}
-
 
 	subscribeSearchButton() {
 		document.getElementById(this.idSearchButton).onclick = () => this.onSearchButtonClick(null);
@@ -235,5 +234,12 @@
 			});
 			request.send();
 		});
+	}
+
+	updateProductInList(product = Product) {
+		let productIndex = this.productsList.findIndex(p => p.Guid == product.Guid);
+		if (productIndex != -1) {
+			this.productsList[productIndex] = product;
+		}
 	}
 }
