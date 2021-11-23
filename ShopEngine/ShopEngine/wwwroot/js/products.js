@@ -67,7 +67,7 @@ const selectedProductRemoveId = 'selectedProductRemove';
 let listOfImages = EditableListOfImagesView;
 let productsSearchableList = new ProductsSearchableList();
 
-function loadProductsPageAndFillList(page = Number, fromCache = Boolean) {
+function loadProductsPageAndFillList(page = Number, fromCache = Boolean, onComplete) {
 	productsSearchableList.setProductsListWaitingStatus(true);
 
 	setSelectedContentVisibility(false);
@@ -81,6 +81,9 @@ function loadProductsPageAndFillList(page = Number, fromCache = Boolean) {
 		.then(content => {
 			productsSearchableList.setProductsListWaitingStatus(false);
 			productsSearchableList.initializeArrayAndPaginationFromJson(content, page => loadProductsPageAndFillList(page, true));
+			if (onComplete != undefined) {
+				onComplete();
+			}
 		})
 		.catch(content => {
 			productsSearchableList.setProductsListWaitingStatus(false);
@@ -188,7 +191,7 @@ function getProductFromInput(productGuid = String) {
 		"{}",
 		listOfImages.previewImageIndex,
 		document.getElementById(idSelectedProductCustomVendorCode).value);
-	product.imagesUrlArray = listOfImages.currentImagesUrl;
+	product.imagesUrlArray = listOfImages.currentImagesUrl;;
 	return product;
 }
 
@@ -200,8 +203,13 @@ function sendProductFormData(requestUrl = String, product = Product) {
 	request.onreadystatechange = () => {
 		if (request.readyState == 4) {
 			if (request.status == 200) {
-				setActionButtonsVisibility(true);
-				productsSearchableList.updateProductInList(product);
+				loadProductsPageAndFillList(
+					productsSearchableList.currentPage,
+					false,
+					() => {
+						showProductInfo(product); //todo: get from json responce
+						setActionButtonsVisibility(true);
+					});				
 			}
 			else {
 				setActionButtonsVisibility(true);

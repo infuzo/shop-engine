@@ -126,16 +126,15 @@ namespace ShopEngine.Controllers
 
             try
             {
-                dbContext.Products.Update(model);
+                var result = dbContext.Products.Update(model);
                 await dbContext.SaveChangesAsync();
+                return Json(result.Entity);
             }
             catch (Exception exception)
             {
                 loggerFactory.CreateLogger("AdminPanel").LogError(exception.ToString());
                 return StatusCode(500);
             }
-
-            return Ok();
         }
     }
 }

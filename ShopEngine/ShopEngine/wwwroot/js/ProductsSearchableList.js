@@ -17,6 +17,8 @@
 		this.isSearchRequestInAction = false;
 	}
 
+	currentPage = Number;
+
 	setProductsListWaitingStatus(waiting = Boolean) {
 
 		var listOfProductsParent = document.getElementById(this.idProductsListParent);
@@ -69,6 +71,8 @@
 		totalPages = Number,
 		productsCount = Number,
 		onButtonChangePageClick) {
+
+		this.currentPage = page;
 
 		this.createPagesNavigationBar(page, totalPages, productsCount, onButtonChangePageClick);
 		this.subscribeSearchButton();
@@ -234,12 +238,5 @@
 			});
 			request.send();
 		});
-	}
-
-	updateProductInList(product = Product) {
-		let productIndex = this.productsList.findIndex(p => p.Guid == product.Guid);
-		if (productIndex != -1) {
-			this.productsList[productIndex] = product;
-		}
 	}
 }
