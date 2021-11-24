@@ -44,19 +44,9 @@
 		this.productsList = new Array(Product);
 		this.productsList = [];
 		for (let product of response.products) {
-			this.productsList.push(new Product(
-				product.id,
-				product.categoryId,
-				product.name,
-				product.description,
-				product.specificationsJson,
-				product.price,
-				product.categoriesChain,
-				product.inStock,
-				product.imagesUrlJson,
-				product.previewImageIndex,
-				product.customVendorCode
-			));
+			var newProduct = new Product();
+			newProduct.initializeFromJson(product);
+			this.productsList.push(newProduct);
 		}
 
 		this.renderPageOfProductsList(

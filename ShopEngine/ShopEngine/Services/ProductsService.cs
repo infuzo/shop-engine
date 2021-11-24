@@ -113,7 +113,7 @@ namespace ShopEngine.Services
             return products;
         }
 
-        private async Task<string> GetCategoriesChainOfProduct(ProductModel product)
+        public async Task<string> GetCategoriesChainOfProduct(ProductModel product)
         {
             var result = new StringBuilder();
 

@@ -117,7 +117,8 @@ namespace ShopEngine.Controllers
         public async Task<IActionResult> EditProduct(
             ProductModel model,
             [FromServices] ShopEngineDbContext dbContext,
-            [FromServices] ILoggerFactory loggerFactory)
+            [FromServices] ILoggerFactory loggerFactory,
+            [FromServices] IProductsService productsService)
         {
             if (ModelState.ErrorCount > 0)
             {
@@ -128,6 +129,7 @@ namespace ShopEngine.Controllers
             {
                 var result = dbContext.Products.Update(model);
                 await dbContext.SaveChangesAsync();
+                result.Entity.CategoriesChain = await productsService.GetCategoriesChainOfProduct(result.Entity);
                 return Json(result.Entity);
             }
             catch (Exception exception)

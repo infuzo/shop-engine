@@ -44,6 +44,20 @@
 			"&PreviewImageIndex=" + this.PreviewImageIndex +
 			"&CustomVendorCode=" + this.CustomVendorCode;
 	}
+
+	initializeFromJson(productJson) {
+		this.Guid = productJson.id;
+		this.CategoryId = productJson.categoryId;
+		this.Name = productJson.name;
+		this.Description = productJson.description;
+		this.Specifications = productJson.specificationsJson;
+		this.Price = productJson.price;
+		this.CategoriesChain = productJson.categoriesChain;
+		this.InStock = productJson.inStock;
+		this.ImagesUrlJson = productJson.imagesUrlJson;
+		this.PreviewImageIndex = productJson.previewImageIndex;
+		this.CustomVendorCode = productJson.customVendorCode;
+	}
 }
 
 const idNoSelectedContent = "noSelectedContent";
@@ -63,6 +77,8 @@ const idSelectedProductCustomVendorCode = "selectedProductCustomVendorCode";
 
 const selectedProductAddOrSaveId = 'selectedProductAddOrSave';
 const selectedProductRemoveId = 'selectedProductRemove';
+
+const startRelativeUrl = '/img';
 
 let listOfImages = EditableListOfImagesView;
 let productsSearchableList = new ProductsSearchableList();
@@ -191,7 +207,7 @@ function getProductFromInput(productGuid = String) {
 		"{}",
 		listOfImages.previewImageIndex,
 		document.getElementById(idSelectedProductCustomVendorCode).value);
-	product.imagesUrlArray = listOfImages.currentImagesUrl;;
+	product.imagesUrlArray = listOfImages.getRelativeUrls(startRelativeUrl);
 	return product;
 }
 
@@ -207,7 +223,9 @@ function sendProductFormData(requestUrl = String, product = Product) {
 					productsSearchableList.currentPage,
 					false,
 					() => {
-						showProductInfo(product); //todo: get from json responce
+						var product = new Product();
+						product.initializeFromJson(JSON.parse(request.responseText));
+						showProductInfo(product);
 						setActionButtonsVisibility(true);
 					});				
 			}
