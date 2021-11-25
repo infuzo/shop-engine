@@ -71,12 +71,15 @@ const idSelectedProductCategoryGuid = "selectedProductCategoryGuid";
 const idSelectedProductPrice = "selectedProductPrice";
 const idSelectedProductCategoriesChain = "selectedProductCategoriesChain";
 const idSelectedProductInStock = "selectedProductInStock";
-const idSelectedProductIconUrl = "selectedProductIconUrl";
 const idListOfImages = "productListImages";
 const idSelectedProductCustomVendorCode = "selectedProductCustomVendorCode";
 
 const selectedProductAddOrSaveId = 'selectedProductAddOrSave';
 const selectedProductRemoveId = 'selectedProductRemove';
+
+const textSaveProduct = 'Save';
+const textAddProduct = 'Add';
+const textDeleteProduct = 'Delete';
 
 const startRelativeUrl = '/img';
 
@@ -112,7 +115,7 @@ function setSelectedContentVisibility(isVisible = Boolean) {
 	document.getElementById(idSelectedItemContent).style.display = isVisible ? 'block' : 'none';
 }
 
-function showProductInfo(product = Product) {
+function showProductInfo(product = Product, isNew = Boolean) {
 	setSelectedContentVisibility(true);
 	clearProductInfo();
 
@@ -135,12 +138,9 @@ function showProductInfo(product = Product) {
 		console.error(e);
 	}
 
-	var firstIconUrl = "";
-
 	var prefix = location.protocol + '//' + location.host + '/';
 
 	if (iconsArray != null && iconsArray.length > 0) {
-		firstIconUrl = iconsArray[0];
 
 		for (let index = 0; index < iconsArray.length; index++) {
 			iconsArray[index] = prefix + iconsArray[index];
@@ -154,13 +154,20 @@ function showProductInfo(product = Product) {
 
 	let addOrSaveButton = document.getElementById(selectedProductAddOrSaveId);
 	addOrSaveButton.onclick = event => buttonProductAddOrSaveClick(product);
-	addOrSaveButton.innerText = "Save"; //todo: text for add new product
+	addOrSaveButton.innerText = isNew ? textAddProduct : textSaveProduct;
 
 	let removeButton = document.getElementById(selectedProductRemoveId);
-	removeButton.onclick = event => buttonProductRemoveClick(product);
-	removeButton.innerText = "Remove";
 
-	document.getElementById(idSelectedProductIconUrl).value = firstIconUrl; 
+	if (isNew) {
+		removeButton.style.display = 'none';
+	}
+	else {
+		removeButton.style.display = 'inline-block';
+		removeButton.onclick = event => buttonProductRemoveClick(product);
+		removeButton.innerText = "Remove";
+	}
+	
+
 	document.getElementById(idSelectedProductCustomVendorCode).value = product.CustomVendorCode;
 }
 
@@ -172,7 +179,6 @@ function clearProductInfo() {
 	document.getElementById(idSelectedProductPrice).value = null;
 	document.getElementById(idSelectedProductCategoriesChain).innerText = "";
 	document.getElementById(idSelectedProductInStock).checked = false;
-	document.getElementById(idSelectedProductIconUrl).value = ""; 
 	document.getElementById(idSelectedProductCustomVendorCode).value = "";
 }
 
@@ -225,7 +231,7 @@ function sendProductFormData(requestUrl = String, product = Product) {
 					() => {
 						var product = new Product();
 						product.initializeFromJson(JSON.parse(request.responseText));
-						showProductInfo(product);
+						showProductInfo(product, false);
 						setActionButtonsVisibility(true);
 					});				
 			}

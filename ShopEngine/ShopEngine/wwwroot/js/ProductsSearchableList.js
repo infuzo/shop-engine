@@ -80,7 +80,7 @@
 		let product = this.productsList[productIndex];
 		var newProductLink = document.createElement("a");
 		newProductLink.href = "#";
-		newProductLink.onclick = () => showProductInfo(product);
+		newProductLink.onclick = () => showProductInfo(product, false);
 		newProductLink.innerText = `${product.Name} (${product.CategoriesChain})`;
 
 		parent.appendChild(newProductLink);
