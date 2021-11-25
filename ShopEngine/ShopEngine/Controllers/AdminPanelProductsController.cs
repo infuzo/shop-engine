@@ -138,5 +138,30 @@ namespace ShopEngine.Controllers
                 return StatusCode(500);
             }
         }
+
+        [HttpPost]
+        [Route("AdminPanel/AddProduct")]
+        public async Task<IActionResult> AddProduct(
+            ProductModel model,
+            [FromServices] ShopEngineDbContext dbContext,
+            [FromServices] ILoggerFactory loggerFactory)
+        {
+            if (ModelState.ErrorCount > 0)
+            {
+                return StatusCode(500, ModelErrorHelper.GetModelErrors(ModelState));
+            }
+
+            try
+            {
+                var result = await dbContext.Products.AddAsync(model);
+                await dbContext.SaveChangesAsync();
+                return Json(result.Entity);
+            }
+            catch (Exception exception)
+            {
+                loggerFactory.CreateLogger("AdminPanel").LogError(exception.ToString());
+                return StatusCode(500);
+            }
+        }
     }
 }

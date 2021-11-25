@@ -80,6 +80,7 @@ const selectedProductRemoveId = 'selectedProductRemove';
 const textSaveProduct = 'Save';
 const textAddProduct = 'Add';
 const textDeleteProduct = 'Delete';
+const textAddingNewProduct = 'Adding the new product';
 
 const startRelativeUrl = '/img';
 
@@ -115,6 +116,23 @@ function setSelectedContentVisibility(isVisible = Boolean) {
 	document.getElementById(idSelectedItemContent).style.display = isVisible ? 'block' : 'none';
 }
 
+function addProduct() {
+	let product = new Product(
+		'',
+		'',
+		'',
+		'',
+		'0',
+		'',
+		'true',
+		'{}',
+		0,
+		0,
+		0
+	);
+	showProductInfo(product, true);
+}
+
 function showProductInfo(product = Product, isNew = Boolean) {
 	setSelectedContentVisibility(true);
 	clearProductInfo();
@@ -122,7 +140,7 @@ function showProductInfo(product = Product, isNew = Boolean) {
 	selectedProductId = product.Guid;
 
 	document.getElementById(idSelectedProductGuid).value = product.Guid;
-	document.getElementById(idSelectedProductHeader).innerText = product.Name;
+	document.getElementById(idSelectedProductHeader).innerText = isNew ? textAddingNewProduct : product.Name;
 	document.getElementById(idSelectedProductName).value = product.Name;
 	document.getElementById(idSelectedProductDescription).value = product.Description;
 	document.getElementById(idSelectedProductCategoryGuid).value = product.CategoryId;
@@ -153,7 +171,12 @@ function showProductInfo(product = Product, isNew = Boolean) {
 	}
 
 	let addOrSaveButton = document.getElementById(selectedProductAddOrSaveId);
-	addOrSaveButton.onclick = event => buttonProductAddOrSaveClick(product);
+	if (isNew) {
+		addOrSaveButton.onclick = event => buttonAddProductClick(product);
+	}
+	else {
+		addOrSaveButton.onclick = event => buttonSaveProductClick(product);
+	}
 	addOrSaveButton.innerText = isNew ? textAddProduct : textSaveProduct;
 
 	let removeButton = document.getElementById(selectedProductRemoveId);
@@ -164,10 +187,9 @@ function showProductInfo(product = Product, isNew = Boolean) {
 	else {
 		removeButton.style.display = 'inline-block';
 		removeButton.onclick = event => buttonProductRemoveClick(product);
-		removeButton.innerText = "Remove";
+		removeButton.innerText = textDeleteProduct;
 	}
 	
-
 	document.getElementById(idSelectedProductCustomVendorCode).value = product.CustomVendorCode;
 }
 
@@ -182,9 +204,15 @@ function clearProductInfo() {
 	document.getElementById(idSelectedProductCustomVendorCode).value = "";
 }
 
-function buttonProductAddOrSaveClick(product = Product) {
+function buttonSaveProductClick(product = Product) {
 	setActionButtonsVisibility(false);
 	listOfImages.uploadNewImages(product.Guid, () => editSelectedProduct(product.Guid), onFailImageLoad);
+}
+
+function buttonAddProductClick(product = Product) {
+	setActionButtonsVisibility(false);
+	editSelectedProduct("/AdminPanel/AddProduct", getProductFromInput(''));
+	//todo: save images
 }
 
 function buttonProductRemoveClick(product = Product) {
@@ -217,7 +245,7 @@ function getProductFromInput(productGuid = String) {
 	return product;
 }
 
-function sendProductFormData(requestUrl = String, product = Product) {
+function sendProductFormData(requestUrl = String, product = Product, onComplete) {
 	let request = new XMLHttpRequest();
 	request.open("POST", requestUrl);
 	request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded; charset=utf-8');
@@ -233,6 +261,10 @@ function sendProductFormData(requestUrl = String, product = Product) {
 						product.initializeFromJson(JSON.parse(request.responseText));
 						showProductInfo(product, false);
 						setActionButtonsVisibility(true);
+
+						if (onComplete != undefined) {
+							onComplete();
+						}
 					});				
 			}
 			else {
