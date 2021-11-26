@@ -1,5 +1,21 @@
 ﻿class Product {
-	constructor(
+	constructor() {
+		this.Guid = undefinedGuid;
+		this.CategoryId = undefinedGuid;
+		this.Name = '';
+		this.Description = '';
+		this.Specifications = '{}';
+		this.Price = 0;
+		this.CategoriesChain = '';
+		this.InStock = true;
+		this.ImagesUrlJson = '{}';
+		this.PreviewImageIndex = 0;
+		this.CustomVendorCode = null;
+	}
+
+	imagesUrlArray = [];
+
+	initialize(
 		guid = String,
 		categoryId = String,
 		name = String,
@@ -24,8 +40,6 @@
 		this.PreviewImageIndex = previewImageIndex;
 		this.CustomVendorCode = customVendorCode;
 	}
-
-	imagesUrlArray = [];
 
 	getFormData() {
 
@@ -117,19 +131,8 @@ function setSelectedContentVisibility(isVisible = Boolean) {
 }
 
 function addProduct() {
-	let product = new Product(
-		'',
-		'',
-		'',
-		'',
-		'0',
-		'',
-		'true',
-		'{}',
-		0,
-		0,
-		0
-	);
+	let product = new Product();
+	console.log(undefinedGuid);
 	showProductInfo(product, true);
 }
 
@@ -139,7 +142,16 @@ function showProductInfo(product = Product, isNew = Boolean) {
 
 	selectedProductId = product.Guid;
 
-	document.getElementById(idSelectedProductGuid).value = product.Guid;
+	var productGuidElement = document.getElementById(idSelectedProductGuid);
+
+	if (isNew) {
+		productGuidElement.style.display = 'none';
+	}
+	else {
+		productGuidElement.style.display = 'inline-block';
+		productGuidElement.value = product.Guid;
+	}
+
 	document.getElementById(idSelectedProductHeader).innerText = isNew ? textAddingNewProduct : product.Name;
 	document.getElementById(idSelectedProductName).value = product.Name;
 	document.getElementById(idSelectedProductDescription).value = product.Description;
@@ -189,7 +201,7 @@ function showProductInfo(product = Product, isNew = Boolean) {
 		removeButton.onclick = event => buttonProductRemoveClick(product);
 		removeButton.innerText = textDeleteProduct;
 	}
-	
+
 	document.getElementById(idSelectedProductCustomVendorCode).value = product.CustomVendorCode;
 }
 
@@ -229,7 +241,8 @@ function editSelectedProduct(selectedProductGuid = String) {
 }
 
 function getProductFromInput(productGuid = String) {
-	let product = new Product(
+	let product = new Product();
+	product.initialize(
 		productGuid,
 		document.getElementById(idSelectedProductCategoryGuid).value,
 		document.getElementById(idSelectedProductName).value,

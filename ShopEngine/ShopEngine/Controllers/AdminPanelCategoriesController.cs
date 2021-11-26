@@ -50,7 +50,7 @@ namespace ShopEngine.Controllers
             }
             catch (Exception exception)
             {
-                loggerFactory.CreateLogger("AdminPanel").LogError(exception.ToString());
+                loggerFactory.CreateLogger<AdminPanelController>().LogError(exception.ToString());
                 return StatusCode(500);
             }
 
@@ -112,7 +112,7 @@ namespace ShopEngine.Controllers
             }
             catch (Exception exception)
             {
-                loggerFactory.CreateLogger("AdminPanel").LogError(exception.ToString());
+                loggerFactory.CreateLogger<AdminPanelController>().LogError(exception.ToString());
                 return StatusCode(500);
             }
 

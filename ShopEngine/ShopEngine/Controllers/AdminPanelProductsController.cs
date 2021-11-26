@@ -134,7 +134,7 @@ namespace ShopEngine.Controllers
             }
             catch (Exception exception)
             {
-                loggerFactory.CreateLogger("AdminPanel").LogError(exception.ToString());
+                loggerFactory.CreateLogger<AdminPanelController>().LogError(exception.ToString());
                 return StatusCode(500);
             }
         }
@@ -148,7 +148,10 @@ namespace ShopEngine.Controllers
         {
             if (ModelState.ErrorCount > 0)
             {
-                return StatusCode(500, ModelErrorHelper.GetModelErrors(ModelState));
+                var errors = ModelErrorHelper.GetModelErrors(ModelState);
+                loggerFactory.CreateLogger<AdminPanelController>().LogError(errors);
+
+                return StatusCode(500, errors);
             }
 
             try
@@ -159,7 +162,7 @@ namespace ShopEngine.Controllers
             }
             catch (Exception exception)
             {
-                loggerFactory.CreateLogger("AdminPanel").LogError(exception.ToString());
+                loggerFactory.CreateLogger<AdminPanelController>().LogError(exception.ToString());
                 return StatusCode(500);
             }
         }
