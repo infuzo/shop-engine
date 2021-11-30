@@ -101,6 +101,9 @@ const startRelativeUrl = '/img';
 let listOfImages = EditableListOfImagesView;
 let productsSearchableList = new ProductsSearchableList();
 
+let wasFirstActionButtonVisible = true;
+let wasSecondActionButtonVisible = true;
+
 function loadProductsPageAndFillList(page = Number, fromCache = Boolean, onComplete) {
 	productsSearchableList.setProductsListWaitingStatus(true);
 
@@ -223,8 +226,15 @@ function buttonSaveProductClick(product = Product) {
 
 function buttonAddProductClick(product = Product) {
 	setActionButtonsVisibility(false);
-	editSelectedProduct("/AdminPanel/AddProduct", getProductFromInput(''));
-	//todo: save images
+	sendProductFormData(
+		"/AdminPanel/AddProduct",
+		getProductFromInput(undefinedGuid),
+		newProduct => {
+			//todo: save images
+			console.log("time to save images");
+		}
+	);
+	
 }
 
 function buttonProductRemoveClick(product = Product) {
@@ -232,8 +242,22 @@ function buttonProductRemoveClick(product = Product) {
 }
 
 function setActionButtonsVisibility(isVisible = Boolean) {
-	document.getElementById(selectedProductAddOrSaveId).style.display = isVisible ? "inline-block" : "none";
-	document.getElementById(selectedProductRemoveId).style.display = isVisible ? "inline-block" : "none";
+	let firstAction = document.getElementById(selectedProductAddOrSaveId);
+	let secondAction = document.getElementById(selectedProductRemoveId);
+
+	if (isVisible) {
+		firstAction.style.display = wasFirstActionButtonVisible ? "inline-block" : "none";
+		secondAction.style.display = wasSecondActionButtonVisible ? "inline-block" : "none";
+	}
+	else {
+		wasFirstActionButtonVisible = firstAction.style.display != "none";
+		wasSecondActionButtonVisible = secondAction.style.display != "none";
+
+		firstAction.style.display = "none";
+		secondAction.style.display = "none";
+	}
+
+	
 }
 
 function editSelectedProduct(selectedProductGuid = String) {
@@ -276,7 +300,7 @@ function sendProductFormData(requestUrl = String, product = Product, onComplete)
 						setActionButtonsVisibility(true);
 
 						if (onComplete != undefined) {
-							onComplete();
+							onComplete(product);
 						}
 					});				
 			}
