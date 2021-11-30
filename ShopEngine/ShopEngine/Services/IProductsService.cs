@@ -18,5 +18,6 @@ namespace ShopEngine.Services
         int PageSize { get; }
         ProductsViewModel GetProductsViewModelOnPage(int page, IEnumerable<ProductModel> allProducts);
         Task<string> GetCategoriesChainOfProduct(ProductModel product);
+        Task<bool> IsCategoryValid(ProductModel productModel);
     }
 }

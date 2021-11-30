@@ -222,6 +222,11 @@ namespace ShopEngine.Services
             };
         }
 
+        public async Task<bool> IsCategoryValid(ProductModel productModel)
+        {
+            return await dbContext.Categories.AnyAsync(c => c.Id == productModel.Id);
+        }
+
         //TODO: add get by category sorted by alphabets with pagination
     }
 }

@@ -14,6 +14,7 @@
 		+ Add read-only guid field for selected product
 		Add new product
 		Remove products
+		Categories drop down instead of text box
 		Emphasis at products which have missing categories (category was deleted earlier for example)
 	
 	Добавление\изменение\удаление\+поиск товаров (товары для удалённых категорий)

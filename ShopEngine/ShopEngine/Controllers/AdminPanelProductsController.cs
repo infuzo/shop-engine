@@ -20,6 +20,7 @@ namespace ShopEngine.Controllers
     public class AdminPanelProductsController : Controller
     {
         private const string noProductsAfterSearch = "There are no products by this search request.";
+        private const string invalidCategoryOfProduct = "Category doesn't exits";
 
         private const string productImagesDirectory = "img/productIcons";
 
@@ -125,6 +126,11 @@ namespace ShopEngine.Controllers
                 return StatusCode(500, ModelErrorHelper.GetModelErrors(ModelState));
             }
 
+            if(!await productsService.IsCategoryValid(model))
+            {
+                return StatusCode(500, invalidCategoryOfProduct);
+            }
+
             try
             {
                 var result = dbContext.Products.Update(model);
@@ -144,7 +150,8 @@ namespace ShopEngine.Controllers
         public async Task<IActionResult> AddProduct(
             ProductModel model,
             [FromServices] ShopEngineDbContext dbContext,
-            [FromServices] ILoggerFactory loggerFactory)
+            [FromServices] ILoggerFactory loggerFactory,
+            [FromServices] IProductsService productsService)
         {
             if (ModelState.ErrorCount > 0)
             {
@@ -152,6 +159,11 @@ namespace ShopEngine.Controllers
                 loggerFactory.CreateLogger<AdminPanelController>().LogError(errors);
 
                 return StatusCode(500, errors);
+            }
+
+            if (!await productsService.IsCategoryValid(model))
+            {
+                return StatusCode(500, invalidCategoryOfProduct);
             }
 
             try
