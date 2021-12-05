@@ -1,9 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -19,6 +15,9 @@ namespace ShopEngine
 {
     public class Startup
     {
+        private static readonly IList<CultureInfo> supportedCultures = new CultureInfo[] { new CultureInfo("en-US") };
+        private static readonly RequestCulture defaultRequestCulture = new RequestCulture("en-US");
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -62,7 +61,12 @@ namespace ShopEngine
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseLocalization();
+            app.UseRequestLocalization(new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = defaultRequestCulture,
+                SupportedCultures = supportedCultures,
+                SupportedUICultures = supportedCultures
+            });
 
             app.UseEndpoints(endpoints =>
             {
