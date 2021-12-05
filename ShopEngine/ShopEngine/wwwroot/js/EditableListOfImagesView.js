@@ -274,7 +274,6 @@
 	}
 
 	uploadNewImages(productGuid, onComplete, onFail) {
-
 		if (this.filesToUpload.size == 0) {
 			onComplete();
 			return;

@@ -95,6 +95,7 @@ const textSaveProduct = 'Save';
 const textAddProduct = 'Add';
 const textDeleteProduct = 'Delete';
 const textAddingNewProduct = 'Adding the new product';
+const textNewProductImagesFail = 'Error - Creation of product was successful, but there were errors when uploading of images.';
 
 const startRelativeUrl = '/img';
 
@@ -135,7 +136,6 @@ function setSelectedContentVisibility(isVisible = Boolean) {
 
 function addProduct() {
 	let product = new Product();
-	console.log(undefinedGuid);
 	showProductInfo(product, true);
 }
 
@@ -226,15 +226,32 @@ function buttonSaveProductClick(product = Product) {
 
 function buttonAddProductClick(product = Product) {
 	setActionButtonsVisibility(false);
+	newProductListOfImages = listOfImages.filesToUpload;
 	sendProductFormData(
 		"/AdminPanel/AddProduct",
 		getProductFromInput(undefinedGuid),
 		newProduct => {
-			//todo: save images
-			console.log("time to save images");
+			listOfImages.uploadNewImages(
+				newProduct.Guid,
+				() => {
+					newProduct.imagesUrlArray = listOfImages.getRelativeUrls(startRelativeUrl);
+					onNewProductImagesComplete(newProduct);
+				},
+				response => onNewProductImagesFails(newProduct, response));
 		}
 	);
-	
+}
+
+function onNewProductImagesComplete(product = Product) {
+	showProductInfo(product, false);
+	setActionButtonsVisibility(true);
+}
+
+function onNewProductImagesFails(product = Product, response) {
+	showProductInfo(product, false);
+	setActionButtonsVisibility(true);
+	alert(textNewProductImagesFail);
+	console.log(response);
 }
 
 function buttonProductRemoveClick(product = Product) {
@@ -256,12 +273,17 @@ function setActionButtonsVisibility(isVisible = Boolean) {
 		firstAction.style.display = "none";
 		secondAction.style.display = "none";
 	}
-
-	
 }
 
 function editSelectedProduct(selectedProductGuid = String) {
-	sendProductFormData("/AdminPanel/EditProduct", getProductFromInput(selectedProductGuid));
+	sendProductFormData(
+		"/AdminPanel/EditProduct",
+		getProductFromInput(selectedProductGuid),
+		product => {
+			showProductInfo(product, false);
+			setActionButtonsVisibility(true);
+		}
+	);
 }
 
 function getProductFromInput(productGuid = String) {
@@ -296,8 +318,6 @@ function sendProductFormData(requestUrl = String, product = Product, onComplete)
 					() => {
 						var product = new Product();
 						product.initializeFromJson(JSON.parse(request.responseText));
-						showProductInfo(product, false);
-						setActionButtonsVisibility(true);
 
 						if (onComplete != undefined) {
 							onComplete(product);
