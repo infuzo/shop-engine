@@ -42,10 +42,7 @@
 	}
 
 	getFormData() {
-
-		let imagesJson = {
-			urls: this.imagesUrlArray
-		};
+		this.updateImagesUrlJson();
 
 		return "Id=" + encodeURIComponent(this.Guid) +
 			"&CategoryId=" + encodeURIComponent(this.CategoryId) +
@@ -54,7 +51,7 @@
 			"&SpecificationsJson=" + encodeURIComponent(this.Specifications) +
 			"&Price=" + this.Price +
 			"&InStock=" + this.InStock +
-			"&ImagesUrlJson=" + JSON.stringify(imagesJson) +
+			"&ImagesUrlJson=" + this.ImagesUrlJson +
 			"&PreviewImageIndex=" + this.PreviewImageIndex +
 			"&CustomVendorCode=" + this.CustomVendorCode;
 	}
@@ -71,6 +68,14 @@
 		this.ImagesUrlJson = productJson.imagesUrlJson;
 		this.PreviewImageIndex = productJson.previewImageIndex;
 		this.CustomVendorCode = productJson.customVendorCode;
+	}
+
+	updateImagesUrlJson() {
+		let imagesJson = {
+			urls: this.imagesUrlArray
+		};
+
+		this.ImagesUrlJson = JSON.stringify(imagesJson);
 	}
 }
 
@@ -98,6 +103,8 @@ const textAddingNewProduct = 'Adding the new product';
 const textNewProductImagesFail = 'Error - Creation of product was successful, but there were errors when uploading of images.';
 
 const startRelativeUrl = '/img';
+const urlAddProduct = '/AdminPanel/AddProduct';
+const urlEditProduct = '/AdminPanel/EditProduct';
 
 let listOfImages = EditableListOfImagesView;
 let productsSearchableList = new ProductsSearchableList();
@@ -227,14 +234,19 @@ function buttonSaveProductClick(product = Product) {
 function buttonAddProductClick(product = Product) {
 	setActionButtonsVisibility(false);
 	newProductListOfImages = listOfImages.filesToUpload;
+
+	let productFromInput = getProductFromInput(undefinedGuid);
+	productFromInput.imagesUrlArray = [];
+
 	sendProductFormData(
-		"/AdminPanel/AddProduct",
-		getProductFromInput(undefinedGuid),
+		urlAddProduct,
+		productFromInput,
 		newProduct => {
 			listOfImages.uploadNewImages(
 				newProduct.Guid,
 				() => {
 					newProduct.imagesUrlArray = listOfImages.getRelativeUrls(startRelativeUrl);
+					newProduct.updateImagesUrlJson();
 					onNewProductImagesComplete(newProduct);
 				},
 				response => onNewProductImagesFails(newProduct, response));
@@ -244,7 +256,13 @@ function buttonAddProductClick(product = Product) {
 
 function onNewProductImagesComplete(product = Product) {
 	showProductInfo(product, false);
-	setActionButtonsVisibility(true);
+	sendProductFormData(
+		urlEditProduct,
+		product,
+		finalProduct => {
+			showProductInfo(finalProduct, false);
+			setActionButtonsVisibility(true);
+		});
 }
 
 function onNewProductImagesFails(product = Product, response) {
@@ -277,7 +295,7 @@ function setActionButtonsVisibility(isVisible = Boolean) {
 
 function editSelectedProduct(selectedProductGuid = String) {
 	sendProductFormData(
-		"/AdminPanel/EditProduct",
+		urlEditProduct,
 		getProductFromInput(selectedProductGuid),
 		product => {
 			showProductInfo(product, false);
