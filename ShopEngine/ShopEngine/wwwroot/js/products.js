@@ -43,8 +43,7 @@
 
 	getFormData() {
 		this.updateImagesUrlJson();
-
-		return "Id=" + encodeURIComponent(this.Guid) +
+		var result = "Id=" + encodeURIComponent(this.Guid) +
 			"&CategoryId=" + encodeURIComponent(this.CategoryId) +
 			"&Name=" + encodeURIComponent(this.Name) +
 			"&Description=" + encodeURIComponent(this.Description) +
@@ -52,8 +51,11 @@
 			"&Price=" + this.Price +
 			"&InStock=" + this.InStock +
 			"&ImagesUrlJson=" + this.ImagesUrlJson +
-			"&PreviewImageIndex=" + this.PreviewImageIndex +
-			"&CustomVendorCode=" + this.CustomVendorCode;
+			"&PreviewImageIndex=" + this.PreviewImageIndex;
+		if (this.CustomVendorCode != null) {
+			result += "&CustomVendorCode=" + this.CustomVendorCode;
+		}
+		return result;
 	}
 
 	initializeFromJson(productJson) {
@@ -237,25 +239,34 @@ function buttonAddProductClick(product = Product) {
 
 	let productFromInput = getProductFromInput(undefinedGuid);
 	productFromInput.imagesUrlArray = [];
+	console.log(productFromInput.CustomVendorCode);
 
 	sendProductFormData(
 		urlAddProduct,
 		productFromInput,
 		newProduct => {
-			listOfImages.uploadNewImages(
-				newProduct.Guid,
-				() => {
-					newProduct.imagesUrlArray = listOfImages.getRelativeUrls(startRelativeUrl);
-					newProduct.updateImagesUrlJson();
-					onNewProductImagesComplete(newProduct);
-				},
-				response => onNewProductImagesFails(newProduct, response));
+			console.log(newProduct.CustomVendorCode);
+
+			if (listOfImages.filesToUpload.size > 0) {
+				listOfImages.uploadNewImages(
+					newProduct.Guid,
+					() => {
+						newProduct.imagesUrlArray = listOfImages.getRelativeUrls(startRelativeUrl);
+						newProduct.updateImagesUrlJson();
+						onNewProductImagesComplete(newProduct);
+					},
+					response => onNewProductImagesFails(newProduct, response));
+			}
+			else {
+				showProductInfo(newProduct, false);
+				setActionButtonsVisibility(true);
+			}
+			
 		}
 	);
 }
 
 function onNewProductImagesComplete(product = Product) {
-	showProductInfo(product, false);
 	sendProductFormData(
 		urlEditProduct,
 		product,

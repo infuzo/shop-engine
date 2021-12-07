@@ -123,7 +123,9 @@ namespace ShopEngine.Controllers
         {
             if (ModelState.ErrorCount > 0)
             {
-                return StatusCode(500, ModelErrorHelper.GetModelErrors(ModelState));
+                var modelErrors = ModelErrorHelper.GetModelErrors(ModelState);
+                loggerFactory.CreateLogger<AdminPanelController>().LogError(modelErrors);
+                return StatusCode(500, modelErrors);
             }
 
             if(!await productsService.IsCategoryValid(model))
