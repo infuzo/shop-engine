@@ -239,7 +239,6 @@ function buttonAddProductClick(product = Product) {
 
 	let productFromInput = getProductFromInput(undefinedGuid);
 	productFromInput.imagesUrlArray = [];
-	console.log(productFromInput.CustomVendorCode);
 
 	sendProductFormData(
 		urlAddProduct,

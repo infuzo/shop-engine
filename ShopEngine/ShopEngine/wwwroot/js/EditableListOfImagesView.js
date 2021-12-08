@@ -327,7 +327,6 @@
 		var relatives = [];
 		for (let index = 0; index < this.currentImagesUrl.length; index++) {
 			let url = this.currentImagesUrl[index];
-			console.log(url);
 			relatives[index] = url.substring(url.indexOf(relativeUrlStart));
 		}
 		return relatives;
