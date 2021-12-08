@@ -119,7 +119,7 @@ namespace ShopEngine.Controllers
             ProductModel model,
             [FromServices] ShopEngineDbContext dbContext,
             [FromServices] ILoggerFactory loggerFactory,
-            [FromServices] IProductsService productsService)
+            [FromServices] ICategoriesService categoriesService)
         {
             if (ModelState.ErrorCount > 0)
             {
@@ -128,7 +128,7 @@ namespace ShopEngine.Controllers
                 return StatusCode(500, modelErrors);
             }
 
-            if(!await productsService.IsCategoryValid(model))
+            if(!await categoriesService.IsCategoryValid(model, false))
             {
                 return StatusCode(500, invalidCategoryOfProduct);
             }
@@ -137,7 +137,7 @@ namespace ShopEngine.Controllers
             {
                 var result = dbContext.Products.Update(model);
                 await dbContext.SaveChangesAsync();
-                result.Entity.CategoriesChain = await productsService.GetCategoriesChainOfProduct(result.Entity);
+                result.Entity.CategoriesChain = await categoriesService.GetCategoriesChainOfProduct(result.Entity, false);
                 return Json(result.Entity);
             }
             catch (Exception exception)
@@ -153,7 +153,7 @@ namespace ShopEngine.Controllers
             ProductModel model,
             [FromServices] ShopEngineDbContext dbContext,
             [FromServices] ILoggerFactory loggerFactory,
-            [FromServices] IProductsService productsService)
+            [FromServices] ICategoriesService categoriesService)
         {
             if (ModelState.ErrorCount > 0)
             {
@@ -163,7 +163,7 @@ namespace ShopEngine.Controllers
                 return StatusCode(500, errors);
             }
 
-            if (!await productsService.IsCategoryValid(model))
+            if (!await categoriesService.IsCategoryValid(model, false))
             {
                 return StatusCode(500, invalidCategoryOfProduct);
             }

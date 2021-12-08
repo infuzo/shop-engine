@@ -6,10 +6,6 @@ using System.Threading.Tasks;
 
 using ShopEngine.Models;
 using Microsoft.Extensions.Logging;
-using System.Text;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using System.Threading;
 using ShopEngine.Helpers;
 
 namespace ShopEngine.Controllers

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace ShopEngine.Services
 {
-    public class CategoriesService
+    public class CategoriesService : ICategoriesService
     {
         private const string cacheIdCategories = "categories";
         private const int defaultExpirationInMinutesIfAbsenceInConf = 10;
