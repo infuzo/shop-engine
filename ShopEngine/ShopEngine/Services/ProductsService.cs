@@ -113,28 +113,6 @@ namespace ShopEngine.Services
             return products;
         }
 
-        public async Task<string> GetCategoriesChainOfProduct(ProductModel product)
-        {
-            var result = new StringBuilder();
-
-            Guid? subCatId = product.CategoryId;
-            while (subCatId != null)
-            {
-                var currentCategory = await dbContext.Categories.FirstOrDefaultAsync(c => c.Id == subCatId.Value);
-                if (currentCategory != null)
-                {
-                    result.Append(currentCategory.Name);
-                    if(currentCategory.SubCategoryGuid != null)
-                    {
-                        result.Append(" - ");
-                    }
-                }
-                subCatId = currentCategory.SubCategoryGuid;
-            }
-
-            return result.ToString();
-        }
-
         public IEnumerable<ProductModel> FindProducts(
             string guidNameOrVendorCode,
             bool findInProductsCache)
@@ -220,11 +198,6 @@ namespace ShopEngine.Services
                 CurrentPage = page,
                 TotalPagesCount = totalPagesCount
             };
-        }
-
-        public async Task<bool> IsCategoryValid(ProductModel productModel)
-        {
-            return await dbContext.Categories.AnyAsync(c => c.Id == productModel.CategoryId);
         }
 
         //TODO: add get by category sorted by alphabets with pagination

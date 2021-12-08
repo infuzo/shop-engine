@@ -39,6 +39,7 @@ namespace ShopEngine
 
             services.AddTransient<IProductsService, ProductsService>();
             services.AddTransient<IFileUploadService, FileUploadService>();
+            services.AddTransient<ICategoriesService, CategoriesService>();
 
             services.AddControllersWithViews();
         }
