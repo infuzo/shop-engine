@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using ShopEngine.Models;
 using Microsoft.Extensions.Logging;
 using ShopEngine.Helpers;
+using ShopEngine.Services;
 
 namespace ShopEngine.Controllers
 {
@@ -20,6 +21,18 @@ namespace ShopEngine.Controllers
             var allCategories = await dbContext.Categories.ToArrayAsync();
 
             return View("~/Views/AdminPanel/Categories.cshtml", allCategories);
+        }
+
+        [Route("AdminPanel/GetAllCategories")]
+        [HttpGet]
+        public async Task<IActionResult> GetAllCategories(
+            bool fromCache,
+            [FromServices] ICategoriesService categoriesService)
+        {
+            return new JsonResult(new
+            {
+                categories = await categoriesService.GetCategoriesAsync(fromCache)
+            });
         }
 
         [Route("AdminPanel/AddCategory")]
