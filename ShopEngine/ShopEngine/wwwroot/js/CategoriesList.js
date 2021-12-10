@@ -1,4 +1,5 @@
 ﻿let categories = null;
+let loadedCategoriesList = null;
 
 function addCategoriesDropDown(fromCache = Boolean) {
 	loadCategories(fromCache);
@@ -25,14 +26,31 @@ function loadCategories(fromCache = Boolean) {
 }
 
 function onLoadCategoriesComplete(responce) {
-	var list = JSON.parse(responce).categories;
-	if (list != null) {
-		for (category of list) {
-			console.log(category);
+	loadedCategoriesList = JSON.parse(responce).categories;
+	categories = [];
+	if (loadedCategoriesList != null) {
+		var parentCategories = loadedCategoriesList.filter(c => c.subCategoryGuid == null);
+		loadedCategoriesList = loadedCategoriesList.filter(c => c.subCategoryGuid != null);
+
+		for (category of parentCategories) {
+			processCategory(category);
 		}
+
+		console.log(categories);
+		loadedCategoriesList = null;
 	}
 	else {
 		console.error("Can't initialize list of categories");
+	}
+}
+
+function processCategory(nowCategory) {
+	categories.push(nowCategory);
+	loadedCategoriesList = loadedCategoriesList.filter(c => c.id != nowCategory.id);
+
+	var children = loadedCategoriesList.filter(c => c.subCategoryGuid == nowCategory.id);
+	for (child of children) {
+		processCategory(child);
 	}
 }
 
