@@ -168,7 +168,7 @@ function showProductInfo(product = Product, isNew = Boolean) {
 	document.getElementById(idSelectedProductName).value = product.Name;
 	document.getElementById(idSelectedProductDescription).value = product.Description;
 	document.getElementById(idSelectedProductCategoryGuid).value = product.CategoryId; //todo: replace
-	loadCategories(true);
+	createSelectElement(productGuidElement.parentElement);
 	document.getElementById(idSelectedProductPrice).value = product.Price;
 	document.getElementById(idSelectedProductCategoriesChain).innerText = product.CategoriesChain;
 	document.getElementById(idSelectedProductInStock).checked = product.InStock;

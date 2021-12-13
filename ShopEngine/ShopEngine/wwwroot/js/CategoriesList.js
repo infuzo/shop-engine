@@ -1,11 +1,33 @@
 ﻿let categories = null;
 let loadedCategoriesList = null;
 
-function addCategoriesDropDown(fromCache = Boolean) {
-	loadCategories(fromCache);
+let currentCategoryIndex = Number(null);
+let selectElement;
+
+function getSelectedCategoryId() {
+	if (categories == null || currentCategoryIndex == null) {
+		console.error("Categories list wasn't initialized");
+		return null;
+	}
+
+	return categories[currentCategoryIndex].id;
 }
 
-function loadCategories(fromCache = Boolean) {
+function selectCategoryById(guid = String) {
+	if (categories == null || currentCategoryIndex == null) {
+		console.error("Categories list wasn't initialized");
+	}
+
+	let index = categories.findIndex(c => c.id == guid);
+	if (index >= 0) {
+		currentCategoryIndex = index;
+	}
+	else {
+		console.error("Can't find category with id " + guid);
+	}
+}
+
+function loadCategories(fromCache = Boolean, onComplete) {
 	if (categories == null) {
 		let request = new XMLHttpRequest();
 		request.open("GET", "/AdminPanel/GetAllCategories?fromCache=" + fromCache);
@@ -14,6 +36,7 @@ function loadCategories(fromCache = Boolean) {
 			if (request.readyState == 4) {
 				if (request.status == 200) {
 					onLoadCategoriesComplete(request.responseText);
+					onComplete();
 				}
 				else {
 					onLoadCategoriesFailed(request.responseText);
@@ -33,7 +56,7 @@ function onLoadCategoriesComplete(responce) {
 		loadedCategoriesList = loadedCategoriesList.filter(c => c.subCategoryGuid != null);
 
 		for (category of parentCategories) {
-			processCategory(category);
+			processCategory(category, 0);
 		}
 
 		console.log(categories);
@@ -44,16 +67,40 @@ function onLoadCategoriesComplete(responce) {
 	}
 }
 
-function processCategory(nowCategory) {
+function processCategory(nowCategory, nestingCounter = Number) {
+	nowCategory.nestingCounter = nestingCounter;
 	categories.push(nowCategory);
 	loadedCategoriesList = loadedCategoriesList.filter(c => c.id != nowCategory.id);
 
 	var children = loadedCategoriesList.filter(c => c.subCategoryGuid == nowCategory.id);
+	nestingCounter++;
 	for (child of children) {
-		processCategory(child);
+		processCategory(child, nestingCounter);
 	}
 }
 
 function onLoadCategoriesFailed(responce) {
 	console.error('Loading of categories error\n' + responce);
+}
+
+function createSelectElement(htmlParent) {
+	if (categories == null) {
+		console.error("Can't create select element without loaded list of categories");
+		return;
+	}
+
+	if (selectElement != null) {
+		selectElement.remove();
+	}
+
+	selectElement = document.createElement("select");
+	selectElement.setAttribute("size", "1");
+	for (category of categories) {
+		let prefix = '';
+
+		let option = new Option(prefix + category.name);
+		selectElement.add(option);
+	}
+
+	htmlParent.appendChild(selectElement);
 }

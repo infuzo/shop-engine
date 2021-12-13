@@ -58,5 +58,5 @@
 <script src="~/js/products.js"></script>
 
 <script>
-loadProductsPageAndFillList(@Model, false);
+	loadCategories(false, () => loadProductsPageAndFillList(@Model, false));
 </script>
