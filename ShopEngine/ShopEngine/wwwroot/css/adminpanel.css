@@ -118,7 +118,7 @@ div.selectedItemContent {
 	width: 140px;
 	display: inline-block;
 }
-.selectedItemForm input[type=text], textarea {
+.selectedItemForm input[type=text], textarea, select {
 	width: 400px;
 	display: inline-block;
 }
@@ -169,4 +169,7 @@ div.selectedItemContent {
 }
 .searchButtonContainer {
 	width: 80px;
+}
+#selectedProductCategoryContainer {
+	display: inline-block;
 }

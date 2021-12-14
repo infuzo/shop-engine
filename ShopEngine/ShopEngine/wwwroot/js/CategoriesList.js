@@ -97,6 +97,12 @@ function createSelectElement(htmlParent) {
 	selectElement.setAttribute("size", "1");
 	for (category of categories) {
 		let prefix = '';
+		for (let counter = 0; counter < category.nestingCounter; counter++) {
+			prefix += '-';
+		}
+		if (category.nestingCounter > 0) {
+			prefix += ' ';
+		}
 
 		let option = new Option(prefix + category.name);
 		selectElement.add(option);
