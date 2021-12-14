@@ -88,7 +88,6 @@ const idSelectedProductGuid = "selectedProductGuid";
 const idSelectedProductHeader = "selectedProductHeader";
 const idSelectedProductName = "selectedProductName";
 const idSelectedProductDescription = "selectedProductDescription";
-const idSelectedProductCategoryGuid = "selectedProductCategoryGuid";
 const idSelectedProductPrice = "selectedProductPrice";
 const idSelectedProductCategoriesChain = "selectedProductCategoriesChain";
 const idSelectedProductInStock = "selectedProductInStock";
@@ -168,8 +167,8 @@ function showProductInfo(product = Product, isNew = Boolean) {
 	document.getElementById(idSelectedProductHeader).innerText = isNew ? textAddingNewProduct : product.Name;
 	document.getElementById(idSelectedProductName).value = product.Name;
 	document.getElementById(idSelectedProductDescription).value = product.Description;
-	document.getElementById(idSelectedProductCategoryGuid).value = product.CategoryId; //todo: replace
 	createSelectElement(document.getElementById(idSelectedProductCategoryContainer));
+	selectCategoryById(product.CategoryId);
 	document.getElementById(idSelectedProductPrice).value = product.Price;
 	document.getElementById(idSelectedProductCategoriesChain).innerText = product.CategoriesChain;
 	document.getElementById(idSelectedProductInStock).checked = product.InStock;
@@ -223,7 +222,7 @@ function clearProductInfo() {
 	document.getElementById(idSelectedProductHeader).innerText = "HEADER_UNDEFINED_CONTENT";
 	document.getElementById(idSelectedProductName).value = "";
 	document.getElementById(idSelectedProductDescription).value = "";
-	document.getElementById(idSelectedProductCategoryGuid).value = "";
+	selectCategoryById(null);
 	document.getElementById(idSelectedProductPrice).value = null;
 	document.getElementById(idSelectedProductCategoriesChain).innerText = "";
 	document.getElementById(idSelectedProductInStock).checked = false;
@@ -246,8 +245,6 @@ function buttonAddProductClick(product = Product) {
 		urlAddProduct,
 		productFromInput,
 		newProduct => {
-			console.log(newProduct.CustomVendorCode);
-
 			if (listOfImages.filesToUpload.size > 0) {
 				listOfImages.uploadNewImages(
 					newProduct.Guid,
@@ -320,7 +317,7 @@ function getProductFromInput(productGuid = String) {
 	let product = new Product();
 	product.initialize(
 		productGuid,
-		document.getElementById(idSelectedProductCategoryGuid).value,
+		getSelectedCategoryId(),
 		document.getElementById(idSelectedProductName).value,
 		document.getElementById(idSelectedProductDescription).value,
 		"{}", //todo: implement list of specifiactions

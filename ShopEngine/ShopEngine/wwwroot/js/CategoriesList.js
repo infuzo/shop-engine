@@ -2,7 +2,7 @@
 let loadedCategoriesList = null;
 
 let currentCategoryIndex = Number(null);
-let selectElement;
+let selectElement = null;
 
 function getSelectedCategoryId() {
 	if (categories == null || currentCategoryIndex == null) {
@@ -14,13 +14,15 @@ function getSelectedCategoryId() {
 }
 
 function selectCategoryById(guid = String) {
-	if (categories == null || currentCategoryIndex == null) {
+	if (categories == null || currentCategoryIndex == null || selectElement == null) {
 		console.error("Categories list wasn't initialized");
+		return;
 	}
 
-	let index = categories.findIndex(c => c.id == guid);
+	let index = guid == null ? 0 : categories.findIndex(c => c.id == guid);
 	if (index >= 0) {
 		currentCategoryIndex = index;
+		selectElement.options.selectedIndex = index;
 	}
 	else {
 		console.error("Can't find category with id " + guid);
@@ -59,7 +61,6 @@ function onLoadCategoriesComplete(responce) {
 			processCategory(category, 0);
 		}
 
-		console.log(categories);
 		loadedCategoriesList = null;
 	}
 	else {
