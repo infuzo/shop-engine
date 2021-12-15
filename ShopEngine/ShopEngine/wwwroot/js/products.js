@@ -2,7 +2,7 @@
 	constructor() {
 		this.Guid = undefinedGuid;
 		this.CategoryId = undefinedGuid;
-		this.Name = '';
+		this.Name = ''; 
 		this.Description = '';
 		this.Specifications = '{}';
 		this.Price = 0;
@@ -89,7 +89,6 @@ const idSelectedProductHeader = "selectedProductHeader";
 const idSelectedProductName = "selectedProductName";
 const idSelectedProductDescription = "selectedProductDescription";
 const idSelectedProductPrice = "selectedProductPrice";
-const idSelectedProductCategoriesChain = "selectedProductCategoriesChain";
 const idSelectedProductInStock = "selectedProductInStock";
 const idListOfImages = "productListImages";
 const idSelectedProductCustomVendorCode = "selectedProductCustomVendorCode";
@@ -170,7 +169,6 @@ function showProductInfo(product = Product, isNew = Boolean) {
 	createSelectElement(document.getElementById(idSelectedProductCategoryContainer));
 	selectCategoryById(product.CategoryId);
 	document.getElementById(idSelectedProductPrice).value = product.Price;
-	document.getElementById(idSelectedProductCategoriesChain).innerText = product.CategoriesChain;
 	document.getElementById(idSelectedProductInStock).checked = product.InStock;
 
 	var iconsArray = null;
@@ -224,7 +222,6 @@ function clearProductInfo() {
 	document.getElementById(idSelectedProductDescription).value = "";
 	selectCategoryById(null);
 	document.getElementById(idSelectedProductPrice).value = null;
-	document.getElementById(idSelectedProductCategoriesChain).innerText = "";
 	document.getElementById(idSelectedProductInStock).checked = false;
 	document.getElementById(idSelectedProductCustomVendorCode).value = "";
 }

@@ -103,9 +103,9 @@ namespace ShopEngine.Services
 
         private async Task<IEnumerable<ProductModel>> GetAllProductsSortedByAlphabetFromDatabase()
         {
-            var products = dbContext.Products
-                .ToArray()
-                .OrderBy(p => p.Name)
+            var products = await dbContext.Products
+                .ToArrayAsync();
+            products = products.OrderBy(p => p.Name)
                 .ToArray();
 
             bool categoriesFromCache = false;
