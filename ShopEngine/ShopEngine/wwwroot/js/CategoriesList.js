@@ -1,27 +1,25 @@
 ﻿let categories = null;
 let loadedCategoriesList = null;
 
-let currentCategoryIndex = Number(null);
 let selectElement = null;
 
 function getSelectedCategoryId() {
-	if (categories == null || currentCategoryIndex == null) {
+	if (categories == null || selectElement == null) {
 		console.error("Categories list wasn't initialized");
 		return null;
 	}
 
-	return categories[currentCategoryIndex].id;
+	return categories[selectElement.selectedIndex].id;
 }
 
 function selectCategoryById(guid = String) {
-	if (categories == null || currentCategoryIndex == null || selectElement == null) {
+	if (categories == null || selectElement == null) {
 		console.error("Categories list wasn't initialized");
 		return;
 	}
 
 	let index = guid == null ? 0 : categories.findIndex(c => c.id == guid);
 	if (index >= 0) {
-		currentCategoryIndex = index;
 		selectElement.options.selectedIndex = index;
 	}
 	else {
