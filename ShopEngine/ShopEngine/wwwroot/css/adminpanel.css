@@ -170,6 +170,6 @@ div.selectedItemContent {
 .searchButtonContainer {
 	width: 80px;
 }
-#selectedProductCategoryContainer {
+#selectedProductCategoryContainer, #selectedCategorySubcategoryContainter {
 	display: inline-block;
 }

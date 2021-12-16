@@ -1,45 +1,60 @@
-﻿let categories = null;
+﻿let categoriesForCategoriesList = null;
 let loadedCategoriesList = null;
 
-let selectElement = null;
+let categoriesListSelectElement = null;
+let hasCategoriesListNullCategory;
+
+const nullCategoryName = "- No Category -";
 
 function getSelectedCategoryId() {
-	if (categories == null || selectElement == null) {
+	if (categoriesForCategoriesList == null || categoriesListSelectElement == null) {
 		console.error("Categories list wasn't initialized");
 		return null;
 	}
 
-	return categories[selectElement.selectedIndex].id;
+	let index = hasCategoriesListNullCategory ? categoriesListSelectElement.selectedIndex - 1 : categoriesListSelectElement.selectedIndex;
+
+	if (index == -1) {
+		return null;
+	}
+	else {
+		return categoriesForCategoriesList[index].id;
+	}
 }
 
 function selectCategoryById(guid = String) {
-	if (categories == null || selectElement == null) {
+	if (categoriesForCategoriesList == null || categoriesListSelectElement == null) {
 		console.error("Categories list wasn't initialized");
 		return;
 	}
 
-	let index = guid == null ? 0 : categories.findIndex(c => c.id == guid);
-	if (index >= 0) {
-		selectElement.options.selectedIndex = index;
+	if (guid == null && hasCategoriesListNullCategory) {
+		categoriesListSelectElement.options.selectedIndex = 0;
 	}
 	else {
-		console.error("Can't find category with id " + guid);
+		let index = guid == null ? 0 : categoriesForCategoriesList.findIndex(c => c.id == guid);
+		if (index >= 0) {
+			categoriesListSelectElement.options.selectedIndex = index;
+		}
+		else {
+			console.error("Can't find category with id " + guid);
+		}
 	}
 }
 
-function loadCategories(fromCache = Boolean, onComplete) {
-	if (categories == null) {
+function categoriesListLoadCategories(fromCache = Boolean, onComplete) {
+	if (categoriesForCategoriesList == null) {
 		let request = new XMLHttpRequest();
 		request.open("GET", "/AdminPanel/GetAllCategories?fromCache=" + fromCache);
 
 		request.onreadystatechange = () => {
 			if (request.readyState == 4) {
 				if (request.status == 200) {
-					onLoadCategoriesComplete(request.responseText);
+					onLoadCategoriesListComplete(request.responseText);
 					onComplete();
 				}
 				else {
-					onLoadCategoriesFailed(request.responseText);
+					onLoadCategoriesListFailed(request.responseText);
 				}
 			}
 		};
@@ -48,15 +63,15 @@ function loadCategories(fromCache = Boolean, onComplete) {
 	}
 }
 
-function onLoadCategoriesComplete(responce) {
+function onLoadCategoriesListComplete(responce) {
 	loadedCategoriesList = JSON.parse(responce).categories;
-	categories = [];
+	categoriesForCategoriesList = [];
 	if (loadedCategoriesList != null) {
 		var parentCategories = loadedCategoriesList.filter(c => c.subCategoryGuid == null);
 		loadedCategoriesList = loadedCategoriesList.filter(c => c.subCategoryGuid != null);
 
 		for (category of parentCategories) {
-			processCategory(category, 0);
+			processCategoryForCategoriesList(category, 0);
 		}
 
 		loadedCategoriesList = null;
@@ -66,35 +81,41 @@ function onLoadCategoriesComplete(responce) {
 	}
 }
 
-function processCategory(nowCategory, nestingCounter = Number) {
+function processCategoryForCategoriesList(nowCategory, nestingCounter = Number) {
 	nowCategory.nestingCounter = nestingCounter;
-	categories.push(nowCategory);
+	categoriesForCategoriesList.push(nowCategory);
 	loadedCategoriesList = loadedCategoriesList.filter(c => c.id != nowCategory.id);
 
 	var children = loadedCategoriesList.filter(c => c.subCategoryGuid == nowCategory.id);
 	nestingCounter++;
 	for (child of children) {
-		processCategory(child, nestingCounter);
+		processCategoryForCategoriesList(child, nestingCounter);
 	}
 }
 
-function onLoadCategoriesFailed(responce) {
+function onLoadCategoriesListFailed(responce) {
 	console.error('Loading of categories error\n' + responce);
 }
 
-function createSelectElement(htmlParent) {
-	if (categories == null) {
+function createSelectElementForCategoriesList(htmlParent, createNullCategory = false) {
+	if (categoriesForCategoriesList == null) {
 		console.error("Can't create select element without loaded list of categories");
 		return;
 	}
 
-	if (selectElement != null) {
-		selectElement.remove();
+	if (categoriesListSelectElement != null) {
+		categoriesListSelectElement.remove();
 	}
 
-	selectElement = document.createElement("select");
-	selectElement.setAttribute("size", "1");
-	for (category of categories) {
+	categoriesListSelectElement = document.createElement("select");
+	categoriesListSelectElement.setAttribute("size", "1");
+
+	hasCategoriesListNullCategory = createNullCategory;
+	if (createNullCategory) {
+		categoriesListSelectElement.options.add(new Option());
+	}
+
+	for (category of categoriesForCategoriesList) {
 		let prefix = '';
 		for (let counter = 0; counter < category.nestingCounter; counter++) {
 			prefix += '-';
@@ -104,8 +125,8 @@ function createSelectElement(htmlParent) {
 		}
 
 		let option = new Option(prefix + category.name);
-		selectElement.add(option);
+		categoriesListSelectElement.add(option);
 	}
 
-	htmlParent.appendChild(selectElement);
+	htmlParent.appendChild(categoriesListSelectElement);
 }

@@ -15,8 +15,7 @@
 	<strong id="selectedCategoryHeader">HEADER_UNDEFINED_CONTENT</strong> <br /><br />
 	<label for="selectedCategoryName">Name: </label><input type="text" required="required" max="60" id="selectedCategoryName" /><br /><br />
 	<label for="selectedCategoryDescription">Description: </label><textarea required="required" maxlength="250" id="selectedCategoryDescription"></textarea><br /><br />
-	<label for="selectedCategorySubcatGuid">Subcategory guid: </label><input type="text" id="selectedCategorySubcatGuid" /><br />
-	<span><em>Paste guid of desired parent category here</em></span><br /><br /> <!--TODO: DropDownList-->
+	<label for="selectedCategorySubcatGuid">Subcategory: </label><div id="selectedCategorySubcategoryContainter"></div><br /><br />
 
 	<label for="selectedCategoryGuid">GUID: </label><input type="text" id="selectedCategoryGuid" readonly="readonly" /><br /><br />
 
@@ -24,15 +23,17 @@
 	<button style="display: none;" id="selectedCategoryAdd">UNDEFINED_ACTION_1</button> <button style="display: none;" id="selectedCategoryRemove">UNDEFINED_ACTION_2</button>
 </div>
 
+<script src="~/js/CategoriesList.js"></script>
+
 <script>
 	const idCategoriesListParent = "listItemsParent";
 	const idSelectedCategoryHeader = "selectedCategoryHeader";
 	const idSelectedCategoryName = "selectedCategoryName";
 	const idSelectedCategoryDescription = "selectedCategoryDescription";
-	const idSelectedCategorySubcatGuid = "selectedCategorySubcatGuid";
 	const idSelectedCategoryGuid = "selectedCategoryGuid";
 	const idSelectedCategoryButtonAdd = "selectedCategoryAdd";
 	const idSelectedCategoryButtonRemove = "selectedCategoryRemove";
+	const idSelectedProductCategoryContainer  = "selectedCategorySubcategoryContainter";
 
 	//TODO: from localization
 	const textDefault = "Select the category or add new one";
@@ -91,20 +92,22 @@
 	}
 
 	function renderCategoryList() {
-		var categoriesParent = document.getElementById(idCategoriesListParent);
-		while (categoriesParent.firstChild != null) {
-			categoriesParent.removeChild(categoriesParent.firstChild);
-		}
+		categoriesListLoadCategories(false, () => {
+			var categoriesParent = document.getElementById(idCategoriesListParent);
+			while (categoriesParent.firstChild != null) {
+				categoriesParent.removeChild(categoriesParent.firstChild);
+			}
 
-		var roots = categories.filter(cat => cat.SubCategoryGuid == "" || cat.SubCategoryGuid == undefined);
-		var broken = categories.filter(cat => cat.SubCategoryGuid != "" && cat.SubCategoryGuid != undefined
-			&& !categories.some(cat2 => cat2.Id == cat.SubCategoryGuid));
-		for (var rootCat of roots) {
-			addCategoriesWithNesting(categoriesParent, rootCat, 0);
-		}
-		for (var brokenCat of broken) {
-			addCategoriesWithNesting(categoriesParent, brokenCat, 0, true);
-		}
+			var roots = categories.filter(cat => cat.SubCategoryGuid == "" || cat.SubCategoryGuid == undefined);
+			var broken = categories.filter(cat => cat.SubCategoryGuid != "" && cat.SubCategoryGuid != undefined
+				&& !categories.some(cat2 => cat2.Id == cat.SubCategoryGuid));
+			for (var rootCat of roots) {
+				addCategoriesWithNesting(categoriesParent, rootCat, 0);
+			}
+			for (var brokenCat of broken) {
+				addCategoriesWithNesting(categoriesParent, brokenCat, 0, true);
+			}
+		});
 	}
 
 	function addCategoriesWithNesting(parent = HTMLElement, rootCategory = Category, nestingLevel = 0, broken = false) {
@@ -140,7 +143,7 @@
 
 		document.getElementById(idSelectedCategoryName).style = currentStyleValue;
 		document.getElementById(idSelectedCategoryDescription).style = currentStyleValue;
-		document.getElementById(idSelectedCategorySubcatGuid).style = currentStyleValue;
+		document.getElementById(idSelectedProductCategoryContainer).style = currentStyleValue;
 		document.getElementById(idSelectedCategoryGuid).style = currentStyleValue;
 		document.getElementById(idSelectedCategoryButtonAdd).style = currentStyleValue;
 		document.getElementById(idSelectedCategoryButtonRemove).style = currentStyleValue;
@@ -151,7 +154,8 @@
 
 		document.getElementById(idSelectedCategoryName).value = selectedCategory.Name;
 		document.getElementById(idSelectedCategoryDescription).value = selectedCategory.Description;
-		document.getElementById(idSelectedCategorySubcatGuid).value = selectedCategory.SubCategoryGuid;
+		createSelectElement(document.getElementById(idSelectedProductCategoryContainer), true);
+		selectCategoryById(selectedCategory.SubCategoryGuid);
 		document.getElementById(idSelectedCategoryGuid).value = selectedCategory.Id;
 
 		document.getElementById(idSelectedCategoryButtonAdd).innerText = "Save";
@@ -171,7 +175,7 @@
 
 		category.Name = document.getElementById(idSelectedCategoryName).value;
 		category.Description = document.getElementById(idSelectedCategoryDescription).value;
-		category.SubCategoryGuid = document.getElementById(idSelectedCategorySubcatGuid).value;
+		category.SubCategoryGuid = getSelectedCategoryId();
 
 		if (category == null || !category.isValid()) {
 			alert(textModelValidationFailed);
@@ -230,13 +234,14 @@
 		event.stopPropagation();
 	}
 
-	function addCategory(event, subCatGuid = "", name = "", desc = "") {
+	function addCategory(event, subCatGuid = null, name = "", desc = "") {
 		setWaitingSelectedContent(textAddHeader, false);
 		document.getElementById(idSelectedCategoryButtonRemove).style = "display: none;";
 
 		document.getElementById(idSelectedCategoryName).value = name;
 		document.getElementById(idSelectedCategoryDescription).value = desc;
-		document.getElementById(idSelectedCategorySubcatGuid).value = subCatGuid;
+		createSelectElement(document.getElementById(idSelectedProductCategoryContainer), true);
+		selectCategoryById(selectedCategory.SubCategoryGuid);
 		document.getElementById(idSelectedCategoryGuid).value = "";
 
 		document.getElementById(idSelectedCategoryButtonAdd).innerText = "Add";
@@ -288,6 +293,7 @@
 	}
 
 	var categories = [];
+
 	setWaitingSelectedContent(textDefault, true);
 
 	@foreach (var category in Model)
