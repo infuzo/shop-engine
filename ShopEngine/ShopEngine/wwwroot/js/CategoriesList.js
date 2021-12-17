@@ -33,6 +33,10 @@ function selectCategoryById(guid = String) {
 	}
 	else {
 		let index = guid == null ? 0 : categoriesForCategoriesList.findIndex(c => c.id == guid);
+		if (hasCategoriesListNullCategory) {
+			index++;
+		}
+
 		if (index >= 0) {
 			categoriesListSelectElement.options.selectedIndex = index;
 		}
@@ -112,7 +116,7 @@ function createSelectElementForCategoriesList(htmlParent, createNullCategory = f
 
 	hasCategoriesListNullCategory = createNullCategory;
 	if (createNullCategory) {
-		categoriesListSelectElement.options.add(new Option());
+		categoriesListSelectElement.options.add(new Option(nullCategoryName));
 	}
 
 	for (category of categoriesForCategoriesList) {

@@ -67,9 +67,13 @@
 		}
 
 		getFormData() {
-			return "Id=" + (this.Id == "" ? undefinedGuid : encodeURIComponent(this.Id)) +
-				"&SubCategoryGuid=" + (this.SubCategoryGuid == "" ? undefinedGuid : encodeURIComponent(this.SubCategoryGuid)) +
-				"&Name=" + encodeURIComponent(this.Name) + "&Description=" + encodeURIComponent(this.Description);
+			let formData = "Id=" + (this.Id == "" ? undefinedGuid : encodeURIComponent(this.Id)) +
+				"&Name=" + encodeURIComponent(this.Name) +
+				"&Description=" + encodeURIComponent(this.Description);
+			if (this.SubCategoryGuid != null) {
+				formData += "&SubCategoryGuid=" + encodeURIComponent(this.SubCategoryGuid);
+			}
+			return formData;
 		}
 
 		isValid() {
@@ -108,6 +112,31 @@
 				addCategoriesWithNesting(categoriesParent, brokenCat, 0, true);
 			}
 		});
+	}
+
+	function updateCategoriesArray(onComplete) {
+		let request = new XMLHttpRequest();
+		request.open("GET", "/AdminPanel/GetAllCategories?fromCache=false");
+
+		request.onreadystatechange = () => {
+			if (request.readyState == 4) {
+				if (request.status == 200) {
+					categories = [];
+					var jsonCategories = JSON.parse(request.response).categories;
+					for (category of jsonCategories) {
+						addCategoryToList(category.id, category.subCategoryGuid, category.name, category.description);
+					}
+
+					onComplete();
+				}
+				else {
+					console.error(`${textEditFailed}\n${request.status} - ${request.responseText}`);
+					onComplete();
+				}
+			}
+		};
+
+		request.send();
 	}
 
 	function addCategoriesWithNesting(parent = HTMLElement, rootCategory = Category, nestingLevel = 0, broken = false) {
@@ -154,7 +183,7 @@
 
 		document.getElementById(idSelectedCategoryName).value = selectedCategory.Name;
 		document.getElementById(idSelectedCategoryDescription).value = selectedCategory.Description;
-		createSelectElement(document.getElementById(idSelectedProductCategoryContainer), true);
+		createSelectElementForCategoriesList(document.getElementById(idSelectedProductCategoryContainer), true);
 		selectCategoryById(selectedCategory.SubCategoryGuid);
 		document.getElementById(idSelectedCategoryGuid).value = selectedCategory.Id;
 
@@ -189,15 +218,17 @@
 		request.onreadystatechange = () => {
 			if (request.readyState == 4) {
 				if (request.status == 200) {
-					removeCategoryFromList(category);
-					category = addCategoryToList(category.Id, category.SubCategoryGuid, category.Name, category.Description);
-					renderCategoryList();
+					updateCategoriesArray(() => {
+						setWaitingSelectedContent("", false);
+						selectCategory(null, category);
+						renderCategoryList();
+					});
 				}
 				else {
 					alert(`${textEditFailed}\n${request.status} - ${request.responseText}`);
+					setWaitingSelectedContent("", false);
+					selectCategory(null, category);
 				}
-				setWaitingSelectedContent("", false);
-				selectCategory(null, category);
 			}
 		};
 
@@ -240,7 +271,7 @@
 
 		document.getElementById(idSelectedCategoryName).value = name;
 		document.getElementById(idSelectedCategoryDescription).value = desc;
-		createSelectElement(document.getElementById(idSelectedProductCategoryContainer), true);
+		createSelectElementForCategoriesList(document.getElementById(idSelectedProductCategoryContainer), true);
 		selectCategoryById(selectedCategory.SubCategoryGuid);
 		document.getElementById(idSelectedCategoryGuid).value = "";
 
