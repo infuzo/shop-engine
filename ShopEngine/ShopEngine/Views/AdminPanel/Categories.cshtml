@@ -39,7 +39,8 @@
 	const textDefault = "Select the category or add new one";
 	const textEditHeader = "Editing the ";
 	const textAddHeader = "Adding the new category";
-	const textModelValidationFailed = "Name and description should have values.";
+	const textIncorrectNameOrDesc = "Name and description should have values.";
+	const textIncorrectSubcategory = "You can't use same category as subcategory";
 	const textAddingModelProcess = "Category is adding... Please wait";
 	const textAddingFailed = "Adding the new category failed.";
 	const textDeleteCategoryConfirmation = "Do you want to delete categery ";
@@ -76,9 +77,17 @@
 			return formData;
 		}
 
-		isValid() {
-			return this.Name != null && this.Name.length > 0
-				&& this.Description != null && this.Description.length > 0;
+		getValidationError() {
+			if (this.Name == null || this.Name.length == 0
+				&& this.Description == null && this.Description.length == 0) {
+				return textIncorrectNameOrDesc;
+			}
+
+			if (this.SubCategoryGuid == this.Id) {
+				return textIncorrectSubcategory;
+			}
+
+			return null;
 		}
 	}
 
@@ -206,8 +215,12 @@
 		category.Description = document.getElementById(idSelectedCategoryDescription).value;
 		category.SubCategoryGuid = getSelectedCategoryId();
 
-		if (category == null || !category.isValid()) {
-			alert(textModelValidationFailed);
+		if (category == null) {
+			return;
+		}
+		var validationError = category.getValidationError();
+		if (validationError != null) {
+			alert(validationError);
 			return;
 		}
 
@@ -220,7 +233,6 @@
 				if (request.status == 200) {
 					updateCategoriesArray(() => {
 						setWaitingSelectedContent("", false);
-						selectCategory(null, category);
 						renderCategoryList();
 					});
 				}
@@ -293,8 +305,12 @@
 	function onAddCategory(event, category = new Category()) {
 		event.stopPropagation();
 
-		if (category == null || !category.isValid()) {
-			alert(textModelValidationFailed);
+		if (category == null) {
+			return;
+		}
+		var validationError = category.getValidationError();
+		if (validationError != null) {
+			alert(validationError);
 			return;
 		}
 

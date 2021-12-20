@@ -47,24 +47,22 @@ function selectCategoryById(guid = String) {
 }
 
 function categoriesListLoadCategories(fromCache = Boolean, onComplete) {
-	if (categoriesForCategoriesList == null) {
-		let request = new XMLHttpRequest();
-		request.open("GET", "/AdminPanel/GetAllCategories?fromCache=" + fromCache);
+	let request = new XMLHttpRequest();
+	request.open("GET", "/AdminPanel/GetAllCategories?fromCache=" + fromCache);
 
-		request.onreadystatechange = () => {
-			if (request.readyState == 4) {
-				if (request.status == 200) {
-					onLoadCategoriesListComplete(request.responseText);
-					onComplete();
-				}
-				else {
-					onLoadCategoriesListFailed(request.responseText);
-				}
+	request.onreadystatechange = () => {
+		if (request.readyState == 4) {
+			if (request.status == 200) {
+				onLoadCategoriesListComplete(request.responseText);
+				onComplete();
 			}
-		};
+			else {
+				onLoadCategoriesListFailed(request.responseText);
+			}
+		}
+	};
 
-		request.send();
-	}
+	request.send();
 }
 
 function onLoadCategoriesListComplete(responce) {
