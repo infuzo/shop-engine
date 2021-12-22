@@ -102,6 +102,7 @@ const textAddProduct = 'Add';
 const textDeleteProduct = 'Delete';
 const textAddingNewProduct = 'Adding the new product';
 const textNewProductImagesFail = 'Error - Creation of product was successful, but there were errors when uploading of images.';
+const textConfirmDeleteProduct = 'Do you want to delete product ';
 
 const startRelativeUrl = '/img';
 const urlAddProduct = '/AdminPanel/AddProduct';
@@ -278,8 +279,10 @@ function onNewProductImagesFails(product = Product, response) {
 	console.log(response);
 }
 
-function buttonProductRemoveClick(product = Product) {
-	//todo: implement
+function buttonProductRemoveClick(product = Product) {	
+	if (confirm(textConfirmDeleteProduct + product.name + "?")) {
+		//todo: implement
+	}
 }
 
 function setActionButtonsVisibility(isVisible = Boolean) {
