@@ -180,5 +180,37 @@ namespace ShopEngine.Controllers
                 return StatusCode(500);
             }
         }
+
+
+        [HttpDelete]
+        [Route("AdminPanel/RemoveProduct")]
+        public async Task<IActionResult> RemoveProduct(
+            Guid guid,
+            [FromServices] ShopEngineDbContext dbContext,
+            [FromServices] ILoggerFactory loggerFactory)
+        {
+            if (ModelState.ErrorCount > 0)
+            {
+                return StatusCode(500, ModelErrorHelper.GetModelErrors(ModelState));
+            }
+
+            try
+            {
+                var productToRemove = await dbContext.Products.FindAsync(guid);
+                if (productToRemove == null)
+                {
+                    throw new ArgumentException("There isn't product with this guid.");
+                }
+                dbContext.Products.Remove(productToRemove);
+                await dbContext.SaveChangesAsync();
+            }
+            catch (Exception exception)
+            {
+                loggerFactory.CreateLogger<AdminPanelController>().LogError($"Remove product with guid {guid} failed. {exception}");
+                return StatusCode(500);
+            }
+
+            return Ok();
+        }
     }
 }

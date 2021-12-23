@@ -107,6 +107,7 @@ const textConfirmDeleteProduct = 'Do you want to delete product ';
 const startRelativeUrl = '/img';
 const urlAddProduct = '/AdminPanel/AddProduct';
 const urlEditProduct = '/AdminPanel/EditProduct';
+const urlRemoveProduct = '/AdminPanel/RemoveProduct';
 
 let listOfImages = EditableListOfImagesView;
 let productsSearchableList = new ProductsSearchableList();
@@ -280,9 +281,37 @@ function onNewProductImagesFails(product = Product, response) {
 }
 
 function buttonProductRemoveClick(product = Product) {	
-	if (confirm(textConfirmDeleteProduct + product.name + "?")) {
-		//todo: implement
+	if (confirm(textConfirmDeleteProduct + product.Name + "?")) {
+		setActionButtonsVisibility(false);
+		sendRemoveProductRequest(product.Guid, () =>
+		{
+			let currentPage = 1;
+			if (productsSearchableList.productsList != null && productsSearchableList.productsList.length > 1) {
+				currentPage = productsSearchableList.currentPage;
+			}
+			loadProductsPageAndFillList(currentPage, false);
+		});
 	}
+}
+
+function sendRemoveProductRequest(guid = String, onComplete) {
+	let request = new XMLHttpRequest();
+	request.open("DELETE", urlRemoveProduct);
+	request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded; charset=utf-8');
+
+	request.onreadystatechange = () => {
+		if (request.readyState == 4) {
+			if (request.status == 200) {
+				onComplete();
+			}
+			else {
+				setActionButtonsVisibility(true);
+				alert(`${request.status} - ${request.responseText}`);
+			}
+		}
+	};
+
+	request.send("guid=" + guid);
 }
 
 function setActionButtonsVisibility(isVisible = Boolean) {

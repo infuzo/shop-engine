@@ -90,7 +90,7 @@ namespace ShopEngine.Controllers
             }
             catch(Exception exception)
             {
-                loggerFactory.CreateLogger("RemoveCategory").LogError($"Remove category with guid {guid} failed. {exception}");
+                loggerFactory.CreateLogger<AdminPanelController>().LogError($"Remove category with guid {guid} failed. {exception}");
                 return StatusCode(500);
             }
 
