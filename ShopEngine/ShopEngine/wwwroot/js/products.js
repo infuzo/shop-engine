@@ -203,6 +203,7 @@ function showProductInfo(product = Product, isNew = Boolean) {
 		addOrSaveButton.onclick = event => buttonSaveProductClick(product);
 	}
 	addOrSaveButton.innerText = isNew ? textAddProduct : textSaveProduct;
+	addOrSaveButton.style.display = 'inline-block';
 
 	let removeButton = document.getElementById(selectedProductRemoveId);
 
@@ -255,8 +256,8 @@ function buttonAddProductClick(product = Product) {
 					response => onNewProductImagesFails(newProduct, response));
 			}
 			else {
-				showProductInfo(newProduct, false);
 				setActionButtonsVisibility(true);
+				showProductInfo(newProduct, false);
 			}
 			
 		}
@@ -268,8 +269,8 @@ function onNewProductImagesComplete(product = Product) {
 		urlEditProduct,
 		product,
 		finalProduct => {
-			showProductInfo(finalProduct, false);
 			setActionButtonsVisibility(true);
+			showProductInfo(finalProduct, false);
 		});
 }
 
