@@ -95,8 +95,12 @@ namespace ShopEngine.Services
                     {
                         result.Append(" - ");
                     }
+                    subCatId = currentCategory.SubCategoryGuid;
                 }
-                subCatId = currentCategory.SubCategoryGuid;
+                else
+                {
+                    return string.Empty;
+                }
             }
 
             return result.ToString();

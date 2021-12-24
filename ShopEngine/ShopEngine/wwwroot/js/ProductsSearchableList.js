@@ -83,6 +83,10 @@
 		newProductLink.onclick = () => showProductInfo(product, false);
 		newProductLink.innerText = `${product.Name} (${product.CategoriesChain})`;
 
+		if (product.CategoriesChain == null || product.CategoriesChain == "") {
+			newProductLink.style = "color: red;";
+		}
+
 		parent.appendChild(newProductLink);
 
 		var newBr = document.createElement("br");

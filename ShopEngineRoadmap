@@ -11,8 +11,8 @@
 		+ Saving of all edited product fields
 		+ Add read-only guid field for selected product
 		+ Add new product
-		Remove products
-		+Categories drop down instead of text box
+		+ Remove products
+		+ Categories drop down instead of text box
 		Emphasis at products and categories which have missing categories (category was deleted earlier for example)
 	
 	Управление заказами: просмотр, изменение статуса (новый, комплектуется, скоплектован и отправлен, не принят заказчиком, завершён, отменен на этапе комплектации)

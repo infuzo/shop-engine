@@ -168,6 +168,9 @@ function showProductInfo(product = Product, isNew = Boolean) {
 	document.getElementById(idSelectedProductHeader).innerText = isNew ? textAddingNewProduct : product.Name;
 	document.getElementById(idSelectedProductName).value = product.Name;
 	document.getElementById(idSelectedProductDescription).value = product.Description;
+	if (product.CategoriesChain == null || product.categoriesChain == "") {
+		createMissingCategoryWarn(product.CategoryId);
+	}
 	createSelectElementForCategoriesList(document.getElementById(idSelectedProductCategoryContainer));
 	selectCategoryById(product.CategoryId);
 	document.getElementById(idSelectedProductPrice).value = product.Price;
@@ -217,6 +220,16 @@ function showProductInfo(product = Product, isNew = Boolean) {
 	}
 
 	document.getElementById(idSelectedProductCustomVendorCode).value = product.CustomVendorCode;
+}
+
+function createMissingCategoryWarn(categoryId = String) {
+	var parent = document.getElementById(idSelectedProductCategoryContainer);
+	if (loadedCategoriesList != null) {
+		var name = loadedCategoriesList.find(c => c.id == categoryId);
+		if (name != undefined) {
+			console.log("This product has broken category. Please change category or fix " + name + " category");
+		}
+	}
 }
 
 function clearProductInfo() {

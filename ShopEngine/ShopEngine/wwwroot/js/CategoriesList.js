@@ -75,8 +75,6 @@ function onLoadCategoriesListComplete(responce) {
 		for (category of parentCategories) {
 			processCategoryForCategoriesList(category, 0);
 		}
-
-		loadedCategoriesList = null;
 	}
 	else {
 		console.error("Can't initialize list of categories");
