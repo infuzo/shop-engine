@@ -93,6 +93,7 @@ const idSelectedProductInStock = "selectedProductInStock";
 const idListOfImages = "productListImages";
 const idSelectedProductCustomVendorCode = "selectedProductCustomVendorCode";
 const idSelectedProductCategoryContainer = "selectedProductCategoryContainer";
+const idSelectedBrokenCategory = "selectedBrokenCategory";
 
 const selectedProductAddOrSaveId = 'selectedProductAddOrSave';
 const selectedProductRemoveId = 'selectedProductRemove';
@@ -168,8 +169,11 @@ function showProductInfo(product = Product, isNew = Boolean) {
 	document.getElementById(idSelectedProductHeader).innerText = isNew ? textAddingNewProduct : product.Name;
 	document.getElementById(idSelectedProductName).value = product.Name;
 	document.getElementById(idSelectedProductDescription).value = product.Description;
-	if (product.CategoriesChain == null || product.categoriesChain == "") {
-		createMissingCategoryWarn(product.CategoryId);
+	if (product.CategoriesChain == null || product.CategoriesChain == "") {
+		updateBrokenCategoryWarn(product.CategoryId);
+	}
+	else {
+		updateBrokenCategoryWarn();
 	}
 	createSelectElementForCategoriesList(document.getElementById(idSelectedProductCategoryContainer));
 	selectCategoryById(product.CategoryId);
@@ -222,13 +226,17 @@ function showProductInfo(product = Product, isNew = Boolean) {
 	document.getElementById(idSelectedProductCustomVendorCode).value = product.CustomVendorCode;
 }
 
-function createMissingCategoryWarn(categoryId = String) {
-	var parent = document.getElementById(idSelectedProductCategoryContainer);
-	if (loadedCategoriesList != null) {
-		var name = loadedCategoriesList.find(c => c.id == categoryId);
+function updateBrokenCategoryWarn(categoryId = String) {
+	var brokenCategoryWarnDiv = document.getElementById(idSelectedBrokenCategory);
+	if (categoryId == undefined || categoryId == "") {
+		brokenCategoryWarnDiv.style.display = "none";
+	}
+	else {
+		brokenCategoryWarnDiv.textContent = 'This product has broken category. Please change category';
 		if (name != undefined) {
-			console.log("This product has broken category. Please change category or fix " + name + " category");
+			brokenCategoryWarnDiv.textContent += ' or fix "' + name + '" category';
 		}
+		brokenCategoryWarnDiv.style.display = "inline-block";
 	}
 }
 

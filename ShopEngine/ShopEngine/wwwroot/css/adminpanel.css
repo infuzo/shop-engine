@@ -173,3 +173,7 @@ div.selectedItemContent {
 #selectedProductCategoryContainer, #selectedCategorySubcategoryContainter {
 	display: inline-block;
 }
+#selectedBrokenCategory {
+	color: red;
+	display: none;
+}

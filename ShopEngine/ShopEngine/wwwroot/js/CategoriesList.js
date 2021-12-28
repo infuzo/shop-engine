@@ -1,5 +1,6 @@
 ﻿let categoriesForCategoriesList = null;
 let loadedCategoriesList = null;
+let sourceCategoriesList = null;
 
 let categoriesListSelectElement = null;
 let hasCategoriesListNullCategory;
@@ -67,6 +68,7 @@ function categoriesListLoadCategories(fromCache = Boolean, onComplete) {
 
 function onLoadCategoriesListComplete(responce) {
 	loadedCategoriesList = JSON.parse(responce).categories;
+	sourceCategoriesList = loadedCategoriesList;
 	categoriesForCategoriesList = [];
 	if (loadedCategoriesList != null) {
 		var parentCategories = loadedCategoriesList.filter(c => c.subCategoryGuid == null);
