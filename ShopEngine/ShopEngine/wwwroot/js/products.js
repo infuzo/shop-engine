@@ -94,6 +94,7 @@ const idListOfImages = "productListImages";
 const idSelectedProductCustomVendorCode = "selectedProductCustomVendorCode";
 const idSelectedProductCategoryContainer = "selectedProductCategoryContainer";
 const idSelectedBrokenCategory = "selectedBrokenCategory";
+const idSelectedBrokenCategoryContent = "selectedBrokenCategoryContent";
 
 const selectedProductAddOrSaveId = 'selectedProductAddOrSave';
 const selectedProductRemoveId = 'selectedProductRemove';
@@ -173,7 +174,7 @@ function showProductInfo(product = Product, isNew = Boolean) {
 		updateBrokenCategoryWarn(product.CategoryId);
 	}
 	else {
-		updateBrokenCategoryWarn();
+		updateBrokenCategoryWarn("");
 	}
 	createSelectElementForCategoriesList(document.getElementById(idSelectedProductCategoryContainer));
 	selectCategoryById(product.CategoryId);
@@ -227,14 +228,20 @@ function showProductInfo(product = Product, isNew = Boolean) {
 }
 
 function updateBrokenCategoryWarn(categoryId = String) {
+	console.log(categoryId);
 	var brokenCategoryWarnDiv = document.getElementById(idSelectedBrokenCategory);
 	if (categoryId == undefined || categoryId == "") {
 		brokenCategoryWarnDiv.style.display = "none";
 	}
 	else {
-		brokenCategoryWarnDiv.textContent = 'This product has broken category. Please change category';
-		if (name != undefined) {
-			brokenCategoryWarnDiv.textContent += ' or fix "' + name + '" category';
+		let content = document.getElementById(idSelectedBrokenCategoryContent);
+		content.textContent = 'This product has broken category. Please change category';
+		let name = "";
+		if (sourceCategoriesList != null) {
+			name = sourceCategoriesList.find(c => c.id == categoryId).name;
+		}
+		if (name != undefined && name != "") {
+			content.textContent += ' or fix "' + name + '" category';
 		}
 		brokenCategoryWarnDiv.style.display = "inline-block";
 	}
