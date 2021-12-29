@@ -13,7 +13,15 @@
 		+ Add new product
 		+ Remove products
 		+ Categories drop down instead of text box
-		Emphasis at products and categories which have missing categories (category was deleted earlier for example)
+		+ Emphasis at products and categories which have missing categories (category was deleted earlier for example)
+	
+	Orders tab:
+		Order model: guid, human-readable number, current state, log of states changes, customer phone number and email, list of products guids and actual price
+		Create table for orders and populate it with test orders
+		View order form - list for products and its prices
+		Find orders by id, phone or email, status
+		Group found orders by status
+		Create order form
 	
 	Управление заказами: просмотр, изменение статуса (новый, комплектуется, скоплектован и отправлен, не принят заказчиком, завершён, отменен на этапе комплектации)
 	Уведомление по e-mail при новом заказе или изменения статуса заказа
