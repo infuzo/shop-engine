@@ -17,6 +17,8 @@
 		this.isSearchRequestInAction = false;
 	}
 
+	currentPage = Number;
+
 	setProductsListWaitingStatus(waiting = Boolean) {
 
 		var listOfProductsParent = document.getElementById(this.idProductsListParent);
@@ -42,19 +44,9 @@
 		this.productsList = new Array(Product);
 		this.productsList = [];
 		for (let product of response.products) {
-			this.productsList.push(new Product(
-				product.id,
-				product.categoryId,
-				product.name,
-				product.description,
-				product.specificationsJson,
-				product.price,
-				product.categoriesChain,
-				product.inStock,
-				product.imagesUrlJson,
-				product.previewImageIndex,
-				product.customVendorCode
-			));
+			var newProduct = new Product();
+			newProduct.initializeFromJson(product);
+			this.productsList.push(newProduct);
 		}
 
 		this.renderPageOfProductsList(
@@ -70,6 +62,8 @@
 		productsCount = Number,
 		onButtonChangePageClick) {
 
+		this.currentPage = page;
+
 		this.createPagesNavigationBar(page, totalPages, productsCount, onButtonChangePageClick);
 		this.subscribeSearchButton();
 		this.setClearSerchResultButtonVisibilty();
@@ -77,17 +71,21 @@
 		var productsListParent = document.getElementById(this.idProductsListParent);
 		this.removeAllChildren(productsListParent);
 
-		for (let product of this.productsList) {
-			this.createShowProductLink(product, productsListParent);
+		for (let index = 0; index < this.productsList.length; index++) {
+			this.createShowProductLink(index, productsListParent);
 		}
 	}
 
-	createShowProductLink(product = Product, parent = HTMLElement) {
+	createShowProductLink(productIndex = Number, parent = HTMLElement) {
+		let product = this.productsList[productIndex];
 		var newProductLink = document.createElement("a");
 		newProductLink.href = "#";
-		var productToShow = product;
-		newProductLink.onclick = () => showProductInfo(productToShow);
+		newProductLink.onclick = () => showProductInfo(product, false);
 		newProductLink.innerText = `${product.Name} (${product.CategoriesChain})`;
+
+		if (product.CategoriesChain == null || product.CategoriesChain == "") {
+			newProductLink.style = "color: red;";
+		}
 
 		parent.appendChild(newProductLink);
 
@@ -129,7 +127,6 @@
 
 		document.getElementById(this.idClearSearchResultsButtonContainer).style.display = visible ? "table-cell" : "none";
 	}
-
 
 	subscribeSearchButton() {
 		document.getElementById(this.idSearchButton).onclick = () => this.onSearchButtonClick(null);

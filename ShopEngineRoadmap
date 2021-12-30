@@ -1,5 +1,3 @@
-!!!Add indication of product guid
-
 Итерация 1
 Админ-панель:
 	+ Изменение названия, описания, логотипа сайта, контактная информация
@@ -9,15 +7,22 @@
 	Products tab:
 		+ Find products by name, guid or vendor code
 		+ Reusable controller for list of preview images - adding, removing, uploading images
-		Set main product preview from list of previews or unique by uploading
-		Saving of all edited product fields
-		Add read-only guid field for selected product
-		Add new product
-		Remove products
-		Emphasis at products which have missing categories (category was deleted earlier for example)
+		+ Set main product preview from list of previews or unique by uploading
+		+ Saving of all edited product fields
+		+ Add read-only guid field for selected product
+		+ Add new product
+		+ Remove products
+		+ Categories drop down instead of text box
+		+ Emphasis at products and categories which have missing categories (category was deleted earlier for example)
 	
-	Добавление\изменение\удаление\+поиск товаров (товары для удалённых категорий)
-	Управление заказами: просмотр, изменение статуса (новый, комплектуется, скоплектован и отправлен, не принят заказчиком, завершён, отменен на этапе комплектации)
+	Orders tab:
+		Order model: guid, human-readable number, current state, log of states changes, customer phone number and email, list of products guids and actual price. Where state can be "new, paid, making up, sent, received, returned, canceled"
+		Create table for orders and populate it with test orders
+		View order form - list for products and its prices
+		Find orders by id, phone or email, status
+		Group found orders by status
+		Create order form
+	
 	Уведомление по e-mail при новом заказе или изменения статуса заказа
 	
 Сайт
@@ -48,4 +53,5 @@ TODO:
 	Админ-панель: список пользователей
 	Уведомление по СМС
 	Переключатель: выбрать файл или ввести URL на всех формах выбора изображения
+	Separate one order on several orders
 	

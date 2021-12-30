@@ -19,11 +19,15 @@
 		this.labelAddNewImageText = "Add new image: ";
 
 		this.addNewImageButtonName = "newImage";
+
+		this.currentImagesUrl = [];
 	}
 
 	fileInput;
 	filesToUpload = new Map();
 	isAbleToChangeArray = true;
+	previewImageIndex = 0;
+	currentPreviewImageCheckboxes = new Array(HTMLInputElement);
 
 	initialize() {
 		this.divParent = document.getElementById(this.DivId);
@@ -49,7 +53,7 @@
 		head.appendChild(link);
 	}
 
-	updateImagesList(imagesUrl) {
+	updateImagesList(imagesUrl, currentPreviewIndex) {
 		if (this.divParent == null) {
 			errorDivParentDoesntExist();
 			return;
@@ -59,6 +63,7 @@
 			this.divParent.removeChild(this.divParent.firstChild);
 		}
 
+		this.currentPreviewImageCheckboxes = [];
 		if (imagesUrl == null) {
 			this.currentImagesUrl = Array(String);
 			this.currentImagesUrl = [];
@@ -72,6 +77,13 @@
 		}
 
 		this.createAddingNewImageDiv();
+
+		if (currentPreviewIndex == undefined || currentPreviewIndex < 0 || currentPreviewIndex >= this.currentImagesUrl.length) {
+			currentPreviewIndex = 0;
+		}
+
+		this.previewImageIndex = currentPreviewIndex;
+		this.updateCurrentPreviewImageCheckbox(); 
 	}
 
 	createImageItem(indexInUrls = Number) {
@@ -99,6 +111,8 @@
 		this.createItemButton("X", buttonsParent, false, () => this.onDeleteElement(closureIndex));
 		this.createItemButton(">", buttonsParent, indexInUrls + 1 == this.currentImagesUrl.length,
 			() => this.onShiftElementRight(closureIndex));
+
+		this.currentPreviewImageCheckboxes[indexInUrls] = this.createPreviewImageCheckbox(imageParent, indexInUrls);
 	}
 
 	openImageByIndex(index = Number) {
@@ -113,7 +127,27 @@
 		button.hidden = hidden;
 
 		parent.appendChild(button);
+	}
 
+	createPreviewImageCheckbox(parent = HTMLDivElement, index = Number) {
+		let checkbox = document.createElement("input");
+		checkbox.setAttribute("type", "checkbox");
+
+		checkbox.onchange = (event) => {
+			this.previewImageIndex = index;
+			this.updateCurrentPreviewImageCheckbox();
+		}
+
+		parent.appendChild(checkbox);
+
+		return checkbox;
+	}
+
+	updateCurrentPreviewImageCheckbox() {
+		for (let index = 0; index < this.currentPreviewImageCheckboxes.length; index++) {
+			let checkbox = this.currentPreviewImageCheckboxes[index];
+			checkbox.checked = index == this.previewImageIndex;
+		}
 	}
 
 	createAddingNewImageDiv() {
@@ -178,7 +212,7 @@
 		this.currentImagesUrl[newIndex] = this.currentImagesUrl[elementIndex];
 		this.currentImagesUrl[elementIndex] = temp;
 
-		this.updateImagesList(this.currentImagesUrl);
+		this.updateImagesList(this.currentImagesUrl, this.previewImageIndex - 1);
 	}
 
 	onShiftElementRight(elementIndex = Number) {
@@ -197,7 +231,7 @@
 		this.currentImagesUrl[newIndex] = this.currentImagesUrl[elementIndex];
 		this.currentImagesUrl[elementIndex] = temp;
 
-		this.updateImagesList(this.currentImagesUrl);
+		this.updateImagesList(this.currentImagesUrl, this.previewImageIndex + 1);
 	}
 
 	onDeleteElement(elementIndex = Number) {
@@ -207,7 +241,10 @@
 
 		if (confirm(this.confirmMessageText)) {
 			this.currentImagesUrl.splice(elementIndex, 1);
-			this.updateImagesList(this.currentImagesUrl);
+
+			let newPreviewIndex = elementIndex > 0 ? elementIndex - 1 : 0;
+
+			this.updateImagesList(this.currentImagesUrl, newPreviewIndex);
 
 			if (this.filesToUpload.has(elementIndex)) {
 				this.filesToUpload.delete(elementIndex);
@@ -237,6 +274,11 @@
 	}
 
 	uploadNewImages(productGuid, onComplete, onFail) {
+		if (this.filesToUpload.size == 0) {
+			onComplete();
+			return;
+		}
+
 		this.setAddNewImageVisibility(false);
 
 		let request = new XMLHttpRequest();
@@ -279,6 +321,15 @@
 		}
 
 		this.filesToUpload.clear();
+	}
+
+	getRelativeUrls(relativeUrlStart = String) {
+		var relatives = [];
+		for (let index = 0; index < this.currentImagesUrl.length; index++) {
+			let url = this.currentImagesUrl[index];
+			relatives[index] = url.substring(url.indexOf(relativeUrlStart));
+		}
+		return relatives;
 	}
 
 	onUploadingImageFail() {

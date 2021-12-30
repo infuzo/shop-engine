@@ -20,6 +20,7 @@ namespace ShopEngine.Services
         private ShopEngineDbContext dbContext;
         private IMemoryCache cacheProvider;
         private IConfiguration configuration;
+        private ICategoriesService categoriesService;
 
         private ILogger logger;
 
@@ -27,11 +28,13 @@ namespace ShopEngine.Services
             ShopEngineDbContext dbContext,
             IMemoryCache cacheProvider,
             IConfiguration configuration,
-            ILoggerFactory loggerFactory)
+            ILoggerFactory loggerFactory,
+            ICategoriesService categoriesService)
         {
             this.dbContext = dbContext;
             this.cacheProvider = cacheProvider;
             this.configuration = configuration;
+            this.categoriesService = categoriesService;
 
             logger = loggerFactory.CreateLogger<ProductsService>();
         }
@@ -100,39 +103,19 @@ namespace ShopEngine.Services
 
         private async Task<IEnumerable<ProductModel>> GetAllProductsSortedByAlphabetFromDatabase()
         {
-            var products = dbContext.Products
-                .ToArray()
-                .OrderBy(p => p.Name)
+            var products = await dbContext.Products
+                .ToArrayAsync();
+            products = products.OrderBy(p => p.Name)
                 .ToArray();
 
+            bool categoriesFromCache = false;
             foreach (var product in products) 
             {
-                product.CategoriesChain = await GetCategoriesChainOfProduct(product);
+                product.CategoriesChain = await categoriesService.GetCategoriesChainOfProduct(product, categoriesFromCache);
+                categoriesFromCache = true;
             }
 
             return products;
-        }
-
-        private async Task<string> GetCategoriesChainOfProduct(ProductModel product)
-        {
-            var result = new StringBuilder();
-
-            Guid? subCatId = product.CategoryId;
-            while (subCatId != null)
-            {
-                var currentCategory = await dbContext.Categories.FirstOrDefaultAsync(c => c.Id == subCatId.Value);
-                if (currentCategory != null)
-                {
-                    result.Append(currentCategory.Name);
-                    if(currentCategory.SubCategoryGuid != null)
-                    {
-                        result.Append(" - ");
-                    }
-                }
-                subCatId = currentCategory.SubCategoryGuid;
-            }
-
-            return result.ToString();
         }
 
         public IEnumerable<ProductModel> FindProducts(

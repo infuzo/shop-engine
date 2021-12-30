@@ -23,7 +23,7 @@
 	</table>
 	<div class="bordered" id="listItemsParent"></div>
 	<div class="pagesNavigation"></div>
-	<button style="display: block; margin: 5px auto;" onclick="addCategory(event)">Add product</button>
+	<button style="display: block; margin: 5px auto;" onclick="addProduct(event)">Add product</button>
 </div>
 <div class="selectedItemContent selectedItemForm">
 	<br />
@@ -32,16 +32,14 @@
 	</div>
 	<div id="selectedItemContent">
 		<strong id="selectedProductHeader">HEADER_UNDEFINED_CONTENT</strong> <br /><br />
+		<label for="selectedProductGuid">GUID: </label><input type="text" id="selectedProductGuid" readonly="readonly" /><br /><br />
 		<label for="selectedProductName">Name: </label><input type="text" required="required" max="60" id="selectedProductName" /><br /><br />
 		<label for="selectedProductDescription">Description: </label><textarea required="required" maxlength="250" id="selectedProductDescription"></textarea><br /><br />
-		<label for="selectedProductCategoryGuid">Category guid: </label><input type="text" id="selectedProductCategoryGuid" required="required" /><br />
-		<span><em>Paste guid of desired category here</em></span><br /><br /> <!--TODO: DropDownList-->
-		<!--List for edit specifications-->
+		<div id="selectedBrokenCategory"><span id="selectedBrokenCategoryContent"></span><br /></div><br />
+		<label>Category: </label><div id="selectedProductCategoryContainer"></div><br /><br />
+		<!--List to edit specifications-->
 		<label for="selectedProductPrice">Price: </label><input type="number" id="selectedProductPrice" required="required" /><br /><br />
-		<label for="selectedProductCategoriesChain">Categories chain: </label><i id="selectedProductCategoriesChain"></i><br /><br />
 		<label for="selectedProductInStock">In stock: </label><input type="checkbox" id="selectedProductInStock" /><br /><br />
-		<!--List for edit icon urls-->
-		<label for="selectedProductIconUrl">Icon URL: </label><input type="text" id="selectedProductIconUrl" required="required" /><br /><br />
 
 		<div id="productListImages"></div>
 
@@ -55,8 +53,9 @@
 
 <script src="~/js/EditableListOfImagesView.js"></script>
 <script src="~/js/ProductsSearchableList.js"></script>
+<script src="~/js/CategoriesList.js"></script>
 <script src="~/js/products.js"></script>
 
 <script>
-loadProductsPageAndFillList(@Model, false);
+	categoriesListLoadCategories(false, () => loadProductsPageAndFillList(@Model, false));
 </script>

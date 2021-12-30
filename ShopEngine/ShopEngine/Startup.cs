@@ -1,11 +1,9 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Globalization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,6 +15,9 @@ namespace ShopEngine
 {
     public class Startup
     {
+        private static readonly IList<CultureInfo> supportedCultures = new CultureInfo[] { new CultureInfo("en-US") };
+        private static readonly RequestCulture defaultRequestCulture = new RequestCulture("en-US");
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -38,6 +39,7 @@ namespace ShopEngine
 
             services.AddTransient<IProductsService, ProductsService>();
             services.AddTransient<IFileUploadService, FileUploadService>();
+            services.AddTransient<ICategoriesService, CategoriesService>();
 
             services.AddControllersWithViews();
         }
@@ -59,6 +61,13 @@ namespace ShopEngine
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseRequestLocalization(new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = defaultRequestCulture,
+                SupportedCultures = supportedCultures,
+                SupportedUICultures = supportedCultures
+            });
 
             app.UseEndpoints(endpoints =>
             {

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using ShopEngine.Helpers;
 using ShopEngine.Models;
 using ShopEngine.Services;
 using System;
@@ -19,6 +20,7 @@ namespace ShopEngine.Controllers
     public class AdminPanelProductsController : Controller
     {
         private const string noProductsAfterSearch = "There are no products by this search request.";
+        private const string invalidCategoryOfProduct = "Category doesn't exits";
 
         private const string productImagesDirectory = "img/productIcons";
 
@@ -109,6 +111,106 @@ namespace ShopEngine.Controllers
                 urls = urls,
                 relatives = uploadedImagesPaths
             }) ;
+        }
+
+        [HttpPost]
+        [Route("AdminPanel/EditProduct")]
+        public async Task<IActionResult> EditProduct(
+            ProductModel model,
+            [FromServices] ShopEngineDbContext dbContext,
+            [FromServices] ILoggerFactory loggerFactory,
+            [FromServices] ICategoriesService categoriesService)
+        {
+            if (ModelState.ErrorCount > 0)
+            {
+                var modelErrors = ModelErrorHelper.GetModelErrors(ModelState);
+                loggerFactory.CreateLogger<AdminPanelController>().LogError(modelErrors);
+                return StatusCode(500, modelErrors);
+            }
+
+            if(!await categoriesService.IsCategoryValid(model, false))
+            {
+                return StatusCode(500, invalidCategoryOfProduct);
+            }
+
+            try
+            {
+                var result = dbContext.Products.Update(model);
+                await dbContext.SaveChangesAsync();
+                result.Entity.CategoriesChain = await categoriesService.GetCategoriesChainOfProduct(result.Entity, false);
+                return Json(result.Entity);
+            }
+            catch (Exception exception)
+            {
+                loggerFactory.CreateLogger<AdminPanelController>().LogError(exception.ToString());
+                return StatusCode(500);
+            }
+        }
+
+        [HttpPost]
+        [Route("AdminPanel/AddProduct")]
+        public async Task<IActionResult> AddProduct(
+            ProductModel model,
+            [FromServices] ShopEngineDbContext dbContext,
+            [FromServices] ILoggerFactory loggerFactory,
+            [FromServices] ICategoriesService categoriesService)
+        {
+            if (ModelState.ErrorCount > 0)
+            {
+                var errors = ModelErrorHelper.GetModelErrors(ModelState);
+                loggerFactory.CreateLogger<AdminPanelController>().LogError(errors);
+
+                return StatusCode(500, errors);
+            }
+
+            if (!await categoriesService.IsCategoryValid(model, false))
+            {
+                return StatusCode(500, invalidCategoryOfProduct);
+            }
+
+            try
+            {
+                var result = await dbContext.Products.AddAsync(model);
+                await dbContext.SaveChangesAsync();
+                return Json(result.Entity);
+            }
+            catch (Exception exception)
+            {
+                loggerFactory.CreateLogger<AdminPanelController>().LogError(exception.ToString());
+                return StatusCode(500);
+            }
+        }
+
+
+        [HttpDelete]
+        [Route("AdminPanel/RemoveProduct")]
+        public async Task<IActionResult> RemoveProduct(
+            Guid guid,
+            [FromServices] ShopEngineDbContext dbContext,
+            [FromServices] ILoggerFactory loggerFactory)
+        {
+            if (ModelState.ErrorCount > 0)
+            {
+                return StatusCode(500, ModelErrorHelper.GetModelErrors(ModelState));
+            }
+
+            try
+            {
+                var productToRemove = await dbContext.Products.FindAsync(guid);
+                if (productToRemove == null)
+                {
+                    throw new ArgumentException("There isn't product with this guid.");
+                }
+                dbContext.Products.Remove(productToRemove);
+                await dbContext.SaveChangesAsync();
+            }
+            catch (Exception exception)
+            {
+                loggerFactory.CreateLogger<AdminPanelController>().LogError($"Remove product with guid {guid} failed. {exception}");
+                return StatusCode(500);
+            }
+
+            return Ok();
         }
     }
 }

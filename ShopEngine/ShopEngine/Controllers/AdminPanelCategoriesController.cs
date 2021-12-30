@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 using ShopEngine.Models;
 using Microsoft.Extensions.Logging;
-using System.Text;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using System.Threading;
+using ShopEngine.Helpers;
+using ShopEngine.Services;
 
 namespace ShopEngine.Controllers
 {
@@ -25,6 +23,18 @@ namespace ShopEngine.Controllers
             return View("~/Views/AdminPanel/Categories.cshtml", allCategories);
         }
 
+        [Route("AdminPanel/GetAllCategories")]
+        [HttpGet]
+        public async Task<IActionResult> GetAllCategories(
+            bool fromCache,
+            [FromServices] ICategoriesService categoriesService)
+        {
+            return new JsonResult(new
+            {
+                categories = await categoriesService.GetCategoriesAsync(fromCache)
+            });
+        }
+
         [Route("AdminPanel/AddCategory")]
         [HttpPost]
         public async Task<IActionResult> AddCategory(
@@ -34,7 +44,7 @@ namespace ShopEngine.Controllers
         {
             if (ModelState.ErrorCount > 0)
             {
-                return StatusCode(500, GetModelErrors(ModelState));
+                return StatusCode(500, ModelErrorHelper.GetModelErrors(ModelState));
             }
 
             try
@@ -49,7 +59,7 @@ namespace ShopEngine.Controllers
             }
             catch (Exception exception)
             {
-                loggerFactory.CreateLogger("AdminPanel").LogError(exception.ToString());
+                loggerFactory.CreateLogger<AdminPanelController>().LogError(exception.ToString());
                 return StatusCode(500);
             }
 
@@ -65,7 +75,7 @@ namespace ShopEngine.Controllers
         {
             if (ModelState.ErrorCount > 0)
             {
-                return StatusCode(500, GetModelErrors(ModelState));
+                return StatusCode(500, ModelErrorHelper.GetModelErrors(ModelState));
             }
 
             try
@@ -80,7 +90,7 @@ namespace ShopEngine.Controllers
             }
             catch(Exception exception)
             {
-                loggerFactory.CreateLogger("RemoveCategory").LogError($"Remove category with guid {guid} failed. {exception}");
+                loggerFactory.CreateLogger<AdminPanelController>().LogError($"Remove category with guid {guid} failed. {exception}");
                 return StatusCode(500);
             }
 
@@ -96,7 +106,7 @@ namespace ShopEngine.Controllers
         {
             if (ModelState.ErrorCount > 0)
             {
-                return StatusCode(500, GetModelErrors(ModelState));
+                return StatusCode(500, ModelErrorHelper.GetModelErrors(ModelState));
             }
 
             try
@@ -111,29 +121,13 @@ namespace ShopEngine.Controllers
             }
             catch (Exception exception)
             {
-                loggerFactory.CreateLogger("AdminPanel").LogError(exception.ToString());
+                loggerFactory.CreateLogger<AdminPanelController>().LogError(exception.ToString());
                 return StatusCode(500);
             }
 
             return Ok();
         }
 
-        private string GetModelErrors(ModelStateDictionary modelState)
-        {
-            StringBuilder message = new StringBuilder("There are errors in the model.\n");
-            foreach (var error in modelState)
-            {
-                if (error.Value.Errors.Count > 0)
-                {
-                    message.Append(error.Key + ": ");
-                    foreach (var errorMessage in error.Value.Errors)
-                    {
-                        message.Append(errorMessage.ErrorMessage + "; ");
-                    }
-                    message.AppendLine();
-                }
-            }
-            return message.ToString();
-        }
+        
     }
 }
