@@ -49,3 +49,15 @@ CREATE TABLE dbo.Products(
 		FOREIGN KEY(CategoryId)
 		REFERENCES dbo.Categories
 );
+
+CREATE TABLE dbo.Orders(
+	Id UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID(),
+	Number INT Identity(10000, 1),
+	StateNumber INT NOT NULL,
+	LogStatesChangesJson NVARCHAR(max),
+	CustomerPhoneNumber NVARCHAR(max),
+	CustomerEmail NVARCHAR(max),
+	ProductsJson NVARCHAR(max),
+	CONSTRAINT PK_Orders
+		PRIMARY KEY(Id)
+);
