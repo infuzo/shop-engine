@@ -1,11 +1,20 @@
 ﻿using ShopEngine.Models;
 using System;
+using System.Diagnostics;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace ShopEngine.Tests
 {
     public class OrderModelTest
     {
+        private readonly ITestOutputHelper output;
+
+        public OrderModelTest(ITestOutputHelper output)
+        {
+            this.output = output;
+        }
+
         [Fact]
         public void CheckStateCasting()
         {
@@ -28,7 +37,7 @@ namespace ShopEngine.Tests
 
             Assert.True(changes.Count == 1);
             Assert.True(changes[0].Key == OrderModel.OrderStateType.Paid);
-            Assert.True(changes[0].Value == firstDateTime);
+            Assert.True(EqualsDateRough(changes[0].Value, firstDateTime));
 
             var secondDateTime = firstDateTime.AddDays(1);
             model.AddStateLogEntry(OrderModel.OrderStateType.MakingUp, secondDateTime);
@@ -37,9 +46,9 @@ namespace ShopEngine.Tests
 
             Assert.True(changes.Count == 2);
             Assert.True(changes[0].Key == OrderModel.OrderStateType.Paid);
-            Assert.True(changes[0].Value == firstDateTime);
+            Assert.True(EqualsDateRough(changes[0].Value, firstDateTime));
             Assert.True(changes[1].Key == OrderModel.OrderStateType.MakingUp);
-            Assert.True(changes[1].Value == secondDateTime);
+            Assert.True(EqualsDateRough(changes[1].Value, secondDateTime));
         }
 
         [Fact]
@@ -82,5 +91,17 @@ namespace ShopEngine.Tests
             Assert.True(productsList[1].Price == secondProduct.Price);
             Assert.True(productsList[1].Quantity == secondProduct.Quantity);
         }
+
+        private bool EqualsDateRough(DateTime first, DateTime second)
+        {
+            return first.Day == second.Day &&
+                first.Month == second.Month &&
+                first.Year == second.Year &&
+                first.Hour == second.Hour &&
+                first.Minute == second.Minute &&
+                first.Second == second.Second &&
+                first.Millisecond == second.Millisecond;
+        }
+
     }
 }
