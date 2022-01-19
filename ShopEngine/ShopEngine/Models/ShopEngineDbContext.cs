@@ -8,6 +8,7 @@ namespace ShopEngine.Models
         public DbSet<EmailSettingsModel> EmailSettings { get; set; }
         public DbSet<CategoryModel> Categories { get; set; }
         public DbSet<ProductModel> Products { get; set; }
+        public DbSet<OrderModel> Orders { get; set; }
 
         public ShopEngineDbContext(DbContextOptions<ShopEngineDbContext> options) : base(options) 
         {

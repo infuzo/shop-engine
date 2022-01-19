@@ -1,11 +1,11 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
 using System.Linq;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace ShopEngine.Models
 {
@@ -13,8 +13,7 @@ namespace ShopEngine.Models
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
-
-        [Required]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Number { get; set; }
         [Required]
         public int StateNumber { get; set; }
@@ -25,6 +24,7 @@ namespace ShopEngine.Models
         [Required]
         public string ProductsJson { get; set; }
 
+        [NotMapped]
         public OrderStateType State
         {
             get => (OrderStateType)StateNumber;
