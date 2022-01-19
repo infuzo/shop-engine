@@ -8,6 +8,5 @@ namespace ShopEngine.Controllers
     [Authorize(Roles = Consts.AdminRoleName)]
     public class AdminPanelOrdersController : Controller
     {
-        
     }
 }

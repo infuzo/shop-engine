@@ -17,7 +17,7 @@
 	
 	Orders tab:
 		+ Order model: guid, human-readable number, current state, log of states changes, customer phone number and email, list of products guids and actual price. Where state can be "new, paid, making up, sent, received, returned, canceled"
-		Create table for orders and populate it with test orders
+		+ Create table for orders
 		View order form - list for products and its prices
 		Find orders by id, phone or email, status
 		Group found orders by status
