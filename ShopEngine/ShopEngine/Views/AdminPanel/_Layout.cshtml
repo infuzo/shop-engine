@@ -8,14 +8,15 @@
 <body>
 	@if (User.IsInRole(Consts.AdminRoleName))
 	{
-		<div class="header">
-			<a href="/AdminPanel/SiteAbout">Site About</a>
-			<a href="/AdminPanel/EmailSettings">Email settings</a>
-			<a href="/AdminPanel/Categories">Categories</a>
-			<a href="/AdminPanel/Products">Products</a>
+	<div class="header">
+		<a href="/AdminPanel/SiteAbout">Site About</a>
+		<a href="/AdminPanel/EmailSettings">Email settings</a>
+		<a href="/AdminPanel/Categories">Categories</a>
+		<a href="/AdminPanel/Products">Products</a>
+		<a href="/AdminPanel/Orders">Orders</a>
 
-			<a href="/AdminPanel/Logout" class="signOutButton">Sign Out</a>
-		</div>
+		<a href="/AdminPanel/Logout" class="signOutButton">Sign Out</a>
+	</div>
 		<h2>@ViewData["Title"]</h2>
 
 	}

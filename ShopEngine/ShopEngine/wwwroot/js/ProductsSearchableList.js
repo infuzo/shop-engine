@@ -1,13 +1,20 @@
 ﻿class ProductsSearchableList {
 
-	constructor() {
-		this.classPagesNavigation = "pagesNavigation";
-		this.idProductsListParent = "listItemsParent";
-		this.idSearchInputField = "productSearchInput";
-		this.idSearchButton = "productSearchButton";
-		this.idSearchInput = "productSearchInput";
-		this.idClearSearchResultsButton = "clearSearchResultsButton";
-		this.idClearSearchResultsButtonContainer = "clearSearchResultsButtonContainer";
+	constructor(
+		classPagesNavigation = "pagesNavigation",
+		idProductsListParent = "listItemsParent",
+		idSearchInputField = "productSearchInput",
+		idSearchButton = "productSearchButton",
+		idSearchInput = "productSearchInput",
+		idClearSearchResultsButton = "clearSearchResultsButton",
+		idClearSearchResultsButtonContainer = "clearSearchResultsButtonContainer") {
+		this.classPagesNavigation = classPagesNavigation;
+		this.idProductsListParent = idProductsListParent;
+		this.idSearchInputField = idSearchInputField;
+		this.idSearchButton = idSearchButton;
+		this.idSearchInput = idSearchInput;
+		this.idClearSearchResultsButton = idClearSearchResultsButton;
+		this.idClearSearchResultsButtonContainer = idClearSearchResultsButtonContainer;
 
 		this.textWaitingForProductsList = "Products list are loading. Please wait";
 		this.textEmptySearchRequest = "Search request is empty";

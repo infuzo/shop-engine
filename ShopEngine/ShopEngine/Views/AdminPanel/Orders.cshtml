@@ -1,3 +1,43 @@
 ﻿@{
-	ViewData["Title"] = "Edit information about site";
+	ViewData["Title"] = "Orders View/Add/Delete";
+	Layout = "~/Views/AdminPanel/_Layout.cshtml";
 }
+<!--TODO partial view-->
+<div id="ordersSelectProductWindow">
+	<table class="productsListSearchForm">
+		<tr>
+			<td>
+				<input type="text" id="productSearchInput" placeholder="Enter the name, guid or vendor code" />
+			</td>
+			<td class="searchButtonContainer" id="clearSearchResultsButtonContainer">
+				<button id="clearSearchResultsButton">Clear</button>
+			</td>
+			<td class="searchButtonContainer">
+				<button id="productSearchButton">Search</button>
+			</td>
+		</tr>
+	</table>
+	<div class="bordered" id="listItemsParent"></div>
+	<div class="pagesNavigation"></div>
+</div>
+
+<script src="~/js/ProductModel.js"></script>
+<script src="~/js/ProductsSearchableList.js"></script>
+<script>
+	const productsSearchableList = new ProductsSearchableList();
+
+	loadProductsPageAndFillList(1, true);
+
+	function loadProductsPageAndFillList(page, fromCache) {
+		productsSearchableList.setProductsListWaitingStatus(true);
+		productsSearchableList.getProductsOnPage(page, fromCache)
+			.then(content => {
+				productsSearchableList.setProductsListWaitingStatus(false);
+				productsSearchableList.initializeArrayAndPaginationFromJson(content, page => loadProductsPageAndFillList(page, true));
+			})
+			.catch(content => {
+				productsSearchableList.setProductsListWaitingStatus(false);
+				alert(content);
+			});
+	}
+</script>
