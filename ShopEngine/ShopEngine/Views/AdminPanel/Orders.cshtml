@@ -24,8 +24,11 @@
 <script src="~/js/ProductModel.js"></script>
 <script src="~/js/ProductsSearchableList.js"></script>
 <script>
+
+
 	const productsSearchableList = new ProductsSearchableList();
 
+	loadCss();
 	loadProductsPageAndFillList(1, true);
 
 	function loadProductsPageAndFillList(page, fromCache) {
@@ -39,5 +42,14 @@
 				productsSearchableList.setProductsListWaitingStatus(false);
 				alert(content);
 			});
+	}
+
+	function loadCss() {
+		var head = document.getElementsByTagName("head")[0];
+		var link = document.createElement("link");
+		link.rel = "stylesheet";
+		link.href = "/css/listOfProducts.css";
+
+		head.appendChild(link);
 	}
 </script>

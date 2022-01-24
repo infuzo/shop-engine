@@ -1,0 +1,15 @@
+﻿#ordersSelectProductWindow {
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	bottom: 0px;
+	right: 0px;
+}
+
+#listItemsParent {
+	position: relative;
+	width: 450px;
+	height: 45%;
+	margin: 150px auto;
+
+}
