@@ -4,7 +4,7 @@
 }
 <!--TODO partial view-->
 <div id="ordersSelectProductWindow">
-	<table class="productsListSearchForm">
+	<table class="ordersProductsListSearchForm">
 		<tr>
 			<td>
 				<input type="text" id="productSearchInput" placeholder="Enter the name, guid or vendor code" />
@@ -17,8 +17,8 @@
 			</td>
 		</tr>
 	</table>
-	<div class="bordered" id="listItemsParent"></div>
-	<div class="pagesNavigation"></div>
+	<div class="bordered" id="ordersListItemsParent"></div>
+	<div class="ordersProductsPagesNavigation"></div>
 </div>
 
 <script src="~/js/ProductModel.js"></script>
@@ -27,6 +27,8 @@
 
 
 	const productsSearchableList = new ProductsSearchableList();
+	productsSearchableList.idProductsListParent = "ordersListItemsParent";
+	productsSearchableList.classPagesNavigation = "ordersProductsPagesNavigation";
 
 	loadCss();
 	loadProductsPageAndFillList(1, true);
