@@ -25,6 +25,7 @@
 	}
 
 	currentPage = Number;
+	eventOnSearchButtonClick = new Event("onSearchButtonClick");
 
 	setProductsListWaitingStatus(waiting = Boolean) {
 
@@ -172,7 +173,8 @@
 
 		productsSearchableList.cachedSearchRequest = searchRequest;
 		productsSearchableList.setClearSerchResultButtonVisibilty();
-		clearProductInfo();
+		//clearProduct
+		document.dispatchEvent(productsSearchableList.eventOnSearchButtonClick);
 		productsSearchableList.findProductsRequestByCached(1, true);
 	}
 

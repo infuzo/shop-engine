@@ -30,6 +30,8 @@ const urlRemoveProduct = '/AdminPanel/RemoveProduct';
 
 let listOfImages = EditableListOfImagesView;
 let productsSearchableList = new ProductsSearchableList();
+document.addEventListener("onSearchButtonClick", clearProductInfo, false);
+document.addEventListener("onSearchButtonClick", () => setSelectedContentVisibility(false), false);
 
 let wasFirstActionButtonVisible = true;
 let wasSecondActionButtonVisible = true;
