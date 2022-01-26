@@ -26,6 +26,7 @@
 
 	currentPage = Number;
 	eventOnSearchButtonClick = new Event("onSearchButtonClick");
+	//todo: event for selected product
 
 	setProductsListWaitingStatus(waiting = Boolean) {
 
