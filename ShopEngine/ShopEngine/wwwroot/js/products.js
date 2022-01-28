@@ -33,6 +33,8 @@ let productsSearchableList = new ProductsSearchableList();
 document.addEventListener("onSearchButtonClick", clearProductInfo, false);
 document.addEventListener("onSearchButtonClick", () => setSelectedContentVisibility(false), false);
 
+document.addEventListener("onProductSelect", event => showProductInfo(event.product, event.isNew));
+
 let wasFirstActionButtonVisible = true;
 let wasSecondActionButtonVisible = true;
 

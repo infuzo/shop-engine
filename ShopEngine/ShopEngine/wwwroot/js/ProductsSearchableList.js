@@ -26,7 +26,7 @@
 
 	currentPage = Number;
 	eventOnSearchButtonClick = new Event("onSearchButtonClick");
-	//todo: event for selected product
+	eventOnProductSelect = new Event("onProductSelect");
 
 	setProductsListWaitingStatus(waiting = Boolean) {
 
@@ -89,7 +89,11 @@
 		let product = this.productsList[productIndex];
 		var newProductLink = document.createElement("a");
 		newProductLink.href = "#";
-		newProductLink.onclick = () => showProductInfo(product, false);
+		newProductLink.onclick = () => {
+			productsSearchableList.eventOnProductSelect.isNew = false;
+			productsSearchableList.eventOnProductSelect.product = product;
+			document.dispatchEvent(productsSearchableList.eventOnProductSelect);
+		}
 		newProductLink.innerText = `${product.Name} (${product.CategoriesChain})`;
 
 		if (product.CategoriesChain == null || product.CategoriesChain == "") {
@@ -174,7 +178,6 @@
 
 		productsSearchableList.cachedSearchRequest = searchRequest;
 		productsSearchableList.setClearSerchResultButtonVisibilty();
-		//clearProduct
 		document.dispatchEvent(productsSearchableList.eventOnSearchButtonClick);
 		productsSearchableList.findProductsRequestByCached(1, true);
 	}
