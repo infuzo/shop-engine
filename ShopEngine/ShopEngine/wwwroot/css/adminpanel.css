@@ -150,6 +150,10 @@ div.selectedItemContent {
 	margin-left: 2px;
 	margin-right: 2px;
 }
+.searchButtonContainer {
+	width: 80px;
+}
+
 .productsListSearchForm {
 	position: relative;
 	height: 25px;
@@ -167,13 +171,28 @@ div.selectedItemContent {
 .productsListSearchForm input {
 	width: 95%;
 }
-.searchButtonContainer {
-	width: 80px;
-}
 #selectedProductCategoryContainer, #selectedCategorySubcategoryContainter {
 	display: inline-block;
 }
 #selectedBrokenCategory {
 	color: red;
 	display: none;
+}
+
+.ordersListSearchForm {
+	position: relative;
+	height: 25px;
+	width: 370px;
+	margin-left: 5px;
+	margin-top: 5px;
+	border-style: none;
+}
+.ordersListSearchForm button, .productsListSearchForm input {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	display: block;
+}
+.ordersListSearchForm input {
+	width: 95%;
 }

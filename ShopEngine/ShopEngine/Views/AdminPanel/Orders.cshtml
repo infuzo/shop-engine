@@ -21,6 +21,26 @@
 	<div class="ordersProductsPagesNavigation"></div>
 </div>
 
+<div class="leftList bordered">
+	<br /><strong style="margin: 5px 5px;">List of orders:</strong>
+	<table class="ordersListSearchForm">
+		<tr>
+			<td>
+				<input type="text" id="orderSearchInput" placeholder="Enter the number, guid or customer code\email" />
+			</td>
+			<td class="searchButtonContainer" id="clearOrdersSearchResultsButtonContainer">
+				<button id="clearOrdersSearchResultsButton">Clear</button>
+			</td>
+			<td class="searchButtonContainer">
+				<button id="ordersSearchButton">Search</button>
+			</td>
+		</tr>
+	</table>
+	<div class="bordered" id="listItemsParent"></div>
+	<div class="pagesNavigation"></div>
+	<button style="display: block; margin: 5px auto;" onclick="addOrder(event)">Add order</button>
+</div>
+
 <script src="~/js/ProductModel.js"></script>
 <script src="~/js/ProductsSearchableList.js"></script>
 <script>
