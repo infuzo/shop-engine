@@ -41,10 +41,31 @@
 	<button style="display: block; margin: 5px auto;" onclick="addOrder(event)">Add order</button>
 </div>
 
+<div class="selectedItemContent selectedItemForm">
+	<br />
+	<div id="noSelectedContent">
+		<strong>Please select the product</strong>
+	</div>
+	<div id="selectedItemContent">
+		<strong id="selectedOrderHeader">HEADER_UNDEFINED_CONTENT</strong> <br /><br />
+		<label for="selectedOrderGuid">GUID: </label><input type="text" id="selectedOrderGuid" readonly="readonly" /><br /><br />
+		<label for="selectedOrdernNumber">Number: </label><input type="number" id="selectedOrdernNumber" required="required" /><br /><br />
+		<label for="selectedOrderState">State: </label><select id="selectedOrderState"></select><br /><br />
+		<!--TODO log of changes-->
+		<label for="selectedOrderCustomerPhone">Customer phone: </label><input type="text" id="selectedOrderCustomerPhone" /><br /><br />
+		<label for="selectedOrderCustomerEmail">Customer email: </label><input type="text" id="selectedOrderCustomerEmail" /><br /><br />
+		<label for="selectedOrderProductsList">Products: </label><br />
+		<select id="selectedOrderProductsList" multiple>
+		</select><br />
+		<button id="selectedOrderAddProduct">Add product</button><button id="selectedOrderEditCount">Edit count</button><button id="selectedOrderEditPrice">Edit price</button><button id="selectedOrderRemoveProduct">Remove product</button>
+	</div>
+</div>
+
 <script src="~/js/ProductModel.js"></script>
 <script src="~/js/ProductsSearchableList.js"></script>
 <script>
-
+	const idSelectedOrderState = "selectedOrderState";
+	const idSelectedOrderProductsList = "selectedOrderProductsList";
 
 	const productsSearchableList = new ProductsSearchableList();
 	productsSearchableList.idProductsListParent = "ordersListItemsParent";
