@@ -1,0 +1,5 @@
+﻿var Orders = new function () {
+
+	
+
+}

@@ -15,6 +15,7 @@
 	margin: -140px auto;
 	overflow: scroll;
 	padding: 5px;
+	background-color: #FFFFFF;
 }
 
 .ordersProductsListSearchForm {
@@ -53,3 +54,16 @@
 		margin-left: 2px;
 		margin-right: 2px;
 	}
+
+.ordersProductsControlButtons {
+	position: relative;
+	margin: 150px auto;
+	width: 450px;
+	height: 20px;
+	top: -150px;
+	text-align: center;
+}
+.ordersProductsControlButtons button {
+	display: inline-block;
+	width: 150px;
+}
