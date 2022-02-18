@@ -1,19 +1,16 @@
 ﻿var Orders = new function () {
-
 	const idProductsList = "ordersSelectProductWindow";
 	const idSelectedOrderState = "selectedOrderState";
 	const idSelectedOrderProductsList = "selectedOrderProductsList";
 
-	let productsSearchableList;
+	let orderProductsList;
 
 	this.initialize = function () {
 		loadCss();
 
-		productsSearchableList = new ProductsSearchableList(
-			"ordersProductsPagesNavigation",
-			"ordersListItemsParent");
-
 		loadProductsPageAndFillList(1, true);
+		document.addEventListener("onProductSelect", event => onProductSelected(event.product));
+		orderProductsList = document.getElementById(idSelectedOrderProductsList);
 	}
 
 	function loadProductsPageAndFillList(page, fromCache) {
@@ -49,5 +46,17 @@
 
 	this.onProductsListButtonCloseClick = function() {
 		setProductsListVisible(false);
+	}
+
+	function onProductSelected(product) {
+		console.log(product);
+		addProductToList(product);
+	}
+
+	function addProductToList(product) {
+		let option = document.createElement('option');
+		option.value = product;
+		option.innerHTML = product.Name;
+		orderProductsList.appendChild(option);
 	}
 }

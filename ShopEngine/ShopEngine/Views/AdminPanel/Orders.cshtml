@@ -68,6 +68,10 @@
 <script src="~/js/ProductsSearchableList.js"></script>
 <script src="~/js/orders.js"></script>
 <script>
+	const productsSearchableList = new ProductsSearchableList(
+		"ordersProductsPagesNavigation",
+		"ordersListItemsParent");
+
 	Orders.initialize();	
 </script>
 
