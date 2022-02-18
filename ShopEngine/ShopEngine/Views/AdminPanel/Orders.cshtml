@@ -42,6 +42,28 @@
 	</div>
 </div>
 
+<!--TODO partial view-->
+<div id="ordersSelectProductWindow">
+	<table class="ordersProductsListSearchForm">
+		<tr>
+			<td>
+				<input type="text" id="productSearchInput" placeholder="Enter the name, guid or vendor code" />
+			</td>
+			<td class="searchButtonContainer" id="clearSearchResultsButtonContainer">
+				<button id="clearSearchResultsButton">Clear</button>
+			</td>
+			<td class="searchButtonContainer">
+				<button id="productSearchButton">Search</button>
+			</td>
+		</tr>
+	</table>
+	<div class="bordered" id="ordersListItemsParent"></div>
+	<div class="ordersProductsPagesNavigation"></div>
+	<div class="ordersProductsControlButtons">
+		<button>Add selected</button> <button onclick="onProductsListButtonCloseClick()">Close</button>
+	</div>
+</div>
+
 <script src="~/js/ProductModel.js"></script>
 <script src="~/js/ProductsSearchableList.js"></script>
 <script src="~/js/orders.js"></script>
@@ -50,9 +72,9 @@
 	const idSelectedOrderState = "selectedOrderState";
 	const idSelectedOrderProductsList = "selectedOrderProductsList";
 
-	const productsSearchableList = new ProductsSearchableList();
-	productsSearchableList.idProductsListParent = "ordersListItemsParent";
-	productsSearchableList.classPagesNavigation = "ordersProductsPagesNavigation";
+	const productsSearchableList = new ProductsSearchableList(
+		"ordersProductsPagesNavigation",
+		"ordersListItemsParent");
 
 	loadCss();
 	loadProductsPageAndFillList(1, true);
@@ -93,24 +115,4 @@
 	}
 </script>
 
-<!--TODO partial view-->
-<div id="ordersSelectProductWindow">
-	<table class="ordersProductsListSearchForm">
-		<tr>
-			<td>
-				<input type="text" id="productSearchInput" placeholder="Enter the name, guid or vendor code" />
-			</td>
-			<td class="searchButtonContainer" id="clearSearchResultsButtonContainer">
-				<button id="clearSearchResultsButton">Clear</button>
-			</td>
-			<td class="searchButtonContainer">
-				<button id="productSearchButton">Search</button>
-			</td>
-		</tr>
-	</table>
-	<div class="bordered" id="ordersListItemsParent"></div>
-	<div class="ordersProductsPagesNavigation"></div>
-	<div class="ordersProductsControlButtons">
-		<button>Add selected</button> <button onclick="onProductsListButtonCloseClick()">Close</button>
-	</div>
-</div>
+
