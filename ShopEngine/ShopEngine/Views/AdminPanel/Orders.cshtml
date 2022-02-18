@@ -38,7 +38,7 @@
 		<label for="selectedOrderProductsList">Products: </label><br />
 		<select id="selectedOrderProductsList" multiple>
 		</select><br />
-		<button id="selectedOrderAddProduct" onclick="onAddProductClick()">Add product</button><button id="selectedOrderEditCount">Edit count</button><button id="selectedOrderEditPrice">Edit price</button><button id="selectedOrderRemoveProduct">Remove product</button>
+		<button id="selectedOrderAddProduct" onclick="Orders.onAddProductClick()">Add product</button><button id="selectedOrderEditCount">Edit count</button><button id="selectedOrderEditPrice">Edit price</button><button id="selectedOrderRemoveProduct">Remove product</button>
 	</div>
 </div>
 
@@ -60,7 +60,7 @@
 	<div class="bordered" id="ordersListItemsParent"></div>
 	<div class="ordersProductsPagesNavigation"></div>
 	<div class="ordersProductsControlButtons">
-		<button>Add selected</button> <button onclick="onProductsListButtonCloseClick()">Close</button>
+		<button onclick="Orders.onProductsListButtonCloseClick()">Close</button>
 	</div>
 </div>
 
@@ -68,51 +68,7 @@
 <script src="~/js/ProductsSearchableList.js"></script>
 <script src="~/js/orders.js"></script>
 <script>
-	const idProductsList = "ordersSelectProductWindow";
-	const idSelectedOrderState = "selectedOrderState";
-	const idSelectedOrderProductsList = "selectedOrderProductsList";
-
-	const productsSearchableList = new ProductsSearchableList(
-		"ordersProductsPagesNavigation",
-		"ordersListItemsParent");
-
-	loadCss();
-	loadProductsPageAndFillList(1, true);
-
-	function loadProductsPageAndFillList(page, fromCache) {
-		productsSearchableList.setProductsListWaitingStatus(true);
-		productsSearchableList.getProductsOnPage(page, fromCache)
-			.then(content => {
-				productsSearchableList.setProductsListWaitingStatus(false);
-				productsSearchableList.initializeArrayAndPaginationFromJson(content, page => loadProductsPageAndFillList(page, true));
-			})
-			.catch(content => {
-				productsSearchableList.setProductsListWaitingStatus(false);
-				alert(content);
-			});
-	}
-
-	function loadCss() {
-		var head = document.getElementsByTagName("head")[0];
-		var link = document.createElement("link");
-		link.rel = "stylesheet";
-		link.href = "/css/listOfProducts.css";
-
-		head.appendChild(link);
-	}
-
-	function onAddProductClick() {
-		setProductsListVisible(true);
-	}
-
-	function setProductsListVisible(visible = Boolean) {
-		document.getElementById(idProductsList).style.display =
-			visible ? 'block' : 'none';
-	}
-
-	function onProductsListButtonCloseClick() {
-		setProductsListVisible(false);
-	}
+	Orders.initialize();	
 </script>
 
 
