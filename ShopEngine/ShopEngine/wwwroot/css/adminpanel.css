@@ -196,3 +196,14 @@ div.selectedItemContent {
 .ordersListSearchForm input {
 	width: 95%;
 }
+#selectedOrderProductsList {
+	width: 100%;
+	height: 100px;
+}
+.selectedOrderProductsControlButtons {
+	text-align: center;
+}
+	.selectedOrderProductsControlButtons button {
+		width: 120px;
+		margin: 5px;
+	}

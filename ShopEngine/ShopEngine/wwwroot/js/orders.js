@@ -1,16 +1,13 @@
 ﻿var Orders = new function () {
 	const idProductsList = "ordersSelectProductWindow";
 	const idSelectedOrderState = "selectedOrderState";
-	const idSelectedOrderProductsList = "selectedOrderProductsList";
-
-	let orderProductsList;
 
 	this.initialize = function () {
 		loadCss();
 
 		loadProductsPageAndFillList(1, true);
 		document.addEventListener("onProductSelect", event => onProductSelected(event.product));
-		orderProductsList = document.getElementById(idSelectedOrderProductsList);
+		OrderProductsList.initialize();
 	}
 
 	function loadProductsPageAndFillList(page, fromCache) {
@@ -50,13 +47,6 @@
 
 	function onProductSelected(product) {
 		console.log(product);
-		addProductToList(product);
-	}
-
-	function addProductToList(product) {
-		let option = document.createElement('option');
-		option.value = product;
-		option.innerHTML = product.Name;
-		orderProductsList.appendChild(option);
+		OrderProductsList.addProductToList(product);
 	}
 }
