@@ -6,10 +6,11 @@
 	const idEditProductPrice = "selectedOrderEditPrice";
 	const idRemoveProduct = "selectedOrderRemoveProduct";
 
-	let orderProductsSelectElement;
+	let orderProductsSelectElement = HTMLSelectElement;
 
 	this.initialize = function () {
 		orderProductsSelectElement = document.getElementById(idSelectedOrderProductsList);
+		updateProductsListButtonsVisibility();
 	}
 
 	this.addProductToList = function (product) {
@@ -19,9 +20,7 @@
 		orderProductsSelectElement.appendChild(option);
 	}
 
-
-
 	function updateProductsListButtonsVisibility() {
-
+		orderProductsSelectElement.op
 	}
 }
