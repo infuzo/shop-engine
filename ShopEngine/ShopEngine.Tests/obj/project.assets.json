@@ -9627,23 +9627,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\infuzo\\.nuget\\packages\\": {},
-    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
+    "C:\\Users\\Valerii\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\infuzo\\Documents\\InGames\\ShopEngine\\shop-engine\\ShopEngine\\ShopEngine.Tests\\ShopEngine.Tests.csproj",
+      "projectUniqueName": "C:\\Users\\Valerii\\Documents\\shop engine\\shop-engine\\ShopEngine\\ShopEngine.Tests\\ShopEngine.Tests.csproj",
       "projectName": "ShopEngine.Tests",
-      "projectPath": "C:\\Users\\infuzo\\Documents\\InGames\\ShopEngine\\shop-engine\\ShopEngine\\ShopEngine.Tests\\ShopEngine.Tests.csproj",
-      "packagesPath": "C:\\Users\\infuzo\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\infuzo\\Documents\\InGames\\ShopEngine\\shop-engine\\ShopEngine\\ShopEngine.Tests\\obj\\",
+      "projectPath": "C:\\Users\\Valerii\\Documents\\shop engine\\shop-engine\\ShopEngine\\ShopEngine.Tests\\ShopEngine.Tests.csproj",
+      "packagesPath": "C:\\Users\\Valerii\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Valerii\\Documents\\shop engine\\shop-engine\\ShopEngine\\ShopEngine.Tests\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-      ],
       "configFilePaths": [
-        "C:\\Users\\infuzo\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Valerii\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -9657,8 +9653,8 @@
         "netcoreapp3.1": {
           "targetAlias": "netcoreapp3.1",
           "projectReferences": {
-            "C:\\Users\\infuzo\\Documents\\InGames\\ShopEngine\\shop-engine\\ShopEngine\\ShopEngine\\ShopEngine.csproj": {
-              "projectPath": "C:\\Users\\infuzo\\Documents\\InGames\\ShopEngine\\shop-engine\\ShopEngine\\ShopEngine\\ShopEngine.csproj"
+            "C:\\Users\\Valerii\\Documents\\shop engine\\shop-engine\\ShopEngine\\ShopEngine\\ShopEngine.csproj": {
+              "projectPath": "C:\\Users\\Valerii\\Documents\\shop engine\\shop-engine\\ShopEngine\\ShopEngine\\ShopEngine.csproj"
             }
           }
         }
@@ -9703,7 +9699,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.200\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.300\\RuntimeIdentifierGraph.json"
       }
     }
   }
